@@ -1,5 +1,11 @@
-# Flutter SDK가 포함된 공식 이미지를 기반으로 사용
-FROM cirrusci/flutter:stable
+# 빌드 명령어   
+# docker build --platform linux/arm64 -t flutter_japanese_app .
+
+# 실행 명령어
+# docker run -it flutter_japanese_app
+
+# ARM64를 지원하는 공식 Flutter 이미지 사용
+FROM --platform=linux/arm64 ghcr.io/cirruslabs/flutter:stable
 
 # 작업 디렉토리 설정
 WORKDIR /app
@@ -14,8 +20,8 @@ RUN flutter pub get
 COPY . .
 
 # 앱 빌드 (원하는 플랫폼에 따라 명령어 선택)
-# iOS 빌드
-RUN flutter build ios --release --no-codesign
+# iOS 빌드 -> Docker 컨테이너에서는 IOS 빌드가 제한적...
+#RUN flutter build ios --release --no-codesign
 
 # Android 빌드
 # RUN flutter build apk --release
