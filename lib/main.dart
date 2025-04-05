@@ -2,15 +2,23 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:japanese/models/japanese_level.dart';
+import 'package:japanese/providers/theme_provider.dart';
 import 'package:japanese/services/japanese_data_service.dart';
 import 'package:japanese/views/screens/home_screen.dart';
 import 'package:japanese/views/screens/level_list_screen.dart';
 import 'package:japanese/theme/app_theme.dart';
 import 'package:japanese/views/screens/sublevel_screen.dart';
 import 'package:japanese/views/screens/word_card_screen.dart';
+import 'package:japanese/views/screens/settings_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -18,14 +26,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '일본어 학습',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      home: const HomeScreen(),
-      debugShowCheckedModeBanner: false,
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: '일본어 학습',
+          theme: themeProvider.themeData,
+          home: const HomeScreen(),
+          debugShowCheckedModeBanner: false,
+        );
+      },
     );
   }
 }
@@ -97,6 +106,22 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    return LevelListScreen(levels: _levels);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('일본어 학습'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            },
+          ),
+        ],
+      ),
+      body: LevelListScreen(levels: _levels),
+    );
   }
 }
