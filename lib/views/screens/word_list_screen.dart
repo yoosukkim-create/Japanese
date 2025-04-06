@@ -16,10 +16,124 @@ class WordListScreen extends StatefulWidget {
   State<WordListScreen> createState() => _WordListScreenState();
 }
 
-class _WordListScreenState extends State<WordListScreen> {
+class _WordListScreenState extends State<WordListScreen> with SingleTickerProviderStateMixin {
   bool showHiragana = false;
   bool showMeaning = false;
-  int currentIndex = 0;
+  bool showTimeAgo = false;
+
+  String _getTimeAgoText(StudyProvider studyProvider, String wordId) {
+    final wordState = studyProvider.getWordState(wordId);
+    return wordState?.timeAgoText ?? '아직 학습하지 않음';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<StudyProvider>(
+      builder: (context, studyProvider, child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              widget.title,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+              ),
+            ),
+          ),
+          body: studyProvider.isFlashcardMode
+              ? FlashcardView(
+                  words: widget.words,
+                  showHiragana: showHiragana,
+                  showMeaning: showMeaning,
+                  onCardTap: _toggleBoth,
+                  showTimeAgo: showTimeAgo,
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  itemCount: widget.words.length,
+                  itemBuilder: (context, index) {
+                    final word = widget.words[index];
+                    final wordId = word['id'].toString();
+                    
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          _toggleBoth();
+                          studyProvider.updateWordState(wordId);
+                        },
+                        child: WordListItem(
+                          word: word,
+                          showHiragana: showHiragana,
+                          showMeaning: showMeaning,
+                          isFlashcardMode: false,
+                          timeAgo: showTimeAgo ? _getTimeAgoText(studyProvider, wordId) : null,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+          bottomNavigationBar: SafeArea(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, -2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildButton(
+                    context,
+                    text: studyProvider.isFlashcardMode ? '목록모드' : '단어장모드',
+                    isSelected: studyProvider.isFlashcardMode,
+                    onPressed: studyProvider.toggleFlashcardMode,
+                    alwaysActive: true,
+                  ),
+                  _buildButton(
+                    context,
+                    text: '메모리모드',
+                    isSelected: showTimeAgo,
+                    onPressed: () {
+                      setState(() {
+                        showTimeAgo = !showTimeAgo;
+                      });
+                    },
+                  ),
+                  _buildButton(
+                    context,
+                    text: '히라가나',
+                    isSelected: showHiragana,
+                    onPressed: () {
+                      setState(() {
+                        showHiragana = !showHiragana;
+                      });
+                    },
+                  ),
+                  _buildButton(
+                    context,
+                    text: '뜻',
+                    isSelected: showMeaning,
+                    onPressed: () {
+                      setState(() {
+                        showMeaning = !showMeaning;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   void _toggleBoth() {
     setState(() {
@@ -59,106 +173,6 @@ class _WordListScreenState extends State<WordListScreen> {
       ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<StudyProvider>(
-      builder: (context, studyProvider, child) {
-        final sortedWords = studyProvider.isMemoryMode
-            ? studyProvider.getSortedWordIds(widget.words.map((w) => w['id'].toString()).toList())
-                .map((id) => widget.words.firstWhere((w) => w['id'].toString() == id))
-                .toList()
-            : widget.words;
-
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              widget.title,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 20,
-              ),
-            ),
-          ),
-          body: studyProvider.isFlashcardMode
-              ? FlashcardView(
-                  words: sortedWords,
-                  showHiragana: showHiragana,
-                  showMeaning: showMeaning,
-                  onCardTap: _toggleBoth,
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  itemCount: sortedWords.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: _toggleBoth,
-                      child: WordListItem(
-                        word: sortedWords[index],
-                        showHiragana: showHiragana,
-                        showMeaning: showMeaning,
-                        isFlashcardMode: false,
-                      ),
-                    );
-                  },
-                ),
-          bottomNavigationBar: SafeArea(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, -2),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildButton(
-                    context,
-                    text: studyProvider.isFlashcardMode ? '단어장모드' : '목록모드',
-                    isSelected: false,
-                    onPressed: studyProvider.toggleFlashcardMode,
-                    alwaysActive: true,
-                  ),
-                  _buildButton(
-                    context,
-                    text: '메모리모드',
-                    isSelected: studyProvider.isMemoryMode,
-                    onPressed: studyProvider.toggleMemoryMode,
-                  ),
-                  _buildButton(
-                    context,
-                    text: '히라가나',
-                    isSelected: showHiragana,
-                    onPressed: () {
-                      setState(() {
-                        showHiragana = !showHiragana;
-                      });
-                    },
-                  ),
-                  _buildButton(
-                    context,
-                    text: '뜻',
-                    isSelected: showMeaning,
-                    onPressed: () {
-                      setState(() {
-                        showMeaning = !showMeaning;
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 }
 
 class WordListItem extends StatelessWidget {
@@ -166,6 +180,7 @@ class WordListItem extends StatelessWidget {
   final bool showHiragana;
   final bool showMeaning;
   final bool isFlashcardMode;
+  final String? timeAgo;
 
   const WordListItem({
     Key? key,
@@ -173,6 +188,7 @@ class WordListItem extends StatelessWidget {
     required this.showHiragana,
     required this.showMeaning,
     this.isFlashcardMode = false,
+    this.timeAgo,
   }) : super(key: key);
 
   @override
@@ -193,6 +209,19 @@ class WordListItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            if (timeAgo != null)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  timeAgo!,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                  textAlign: TextAlign.right,
+                ),
+              ),
             if (showHiragana)
               Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
@@ -234,6 +263,7 @@ class FlashcardView extends StatefulWidget {
   final bool showHiragana;
   final bool showMeaning;
   final VoidCallback onCardTap;
+  final bool showTimeAgo;
 
   const FlashcardView({
     Key? key,
@@ -241,6 +271,7 @@ class FlashcardView extends StatefulWidget {
     required this.showHiragana,
     required this.showMeaning,
     required this.onCardTap,
+    required this.showTimeAgo,
   }) : super(key: key);
 
   @override
@@ -290,6 +321,7 @@ class _FlashcardViewState extends State<FlashcardView> {
                 showHiragana: widget.showHiragana,
                 showMeaning: widget.showMeaning,
                 isFlashcardMode: true,
+                timeAgo: widget.showTimeAgo ? wordState?.timeAgoText : null,
               ),
             ),
           ),
