@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:japanese/providers/study_provider.dart';
 
-class WordListScreen extends StatelessWidget {
+class WordListScreen extends StatefulWidget {
   final List<Map<String, dynamic>> words;
   final String title;
 
@@ -13,19 +13,67 @@ class WordListScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<WordListScreen> createState() => _WordListScreenState();
+}
+
+class _WordListScreenState extends State<WordListScreen> {
+  bool showHiragana = false;
+  bool showMeaning = false;
+  int currentIndex = 0;
+
+  void _toggleBoth() {
+    setState(() {
+      if (showHiragana && showMeaning) {
+        showHiragana = false;
+        showMeaning = false;
+      } else {
+        showHiragana = true;
+        showMeaning = true;
+      }
+    });
+  }
+
+  Widget _buildButton(
+    BuildContext context, {
+    required String text,
+    required bool isSelected,
+    required VoidCallback onPressed,
+    bool alwaysActive = false,
+  }) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        side: BorderSide(
+          color: alwaysActive || isSelected ? Theme.of(context).primaryColor : Colors.grey,
+        ),
+        backgroundColor: alwaysActive || isSelected ? Theme.of(context).primaryColor.withOpacity(0.1) : null,
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: alwaysActive || isSelected ? Theme.of(context).primaryColor : Colors.grey,
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<StudyProvider>(
       builder: (context, studyProvider, child) {
         final sortedWords = studyProvider.isMemoryMode
-            ? studyProvider.getSortedWordIds(words.map((w) => w['id'].toString()).toList())
-                .map((id) => words.firstWhere((w) => w['id'].toString() == id))
+            ? studyProvider.getSortedWordIds(widget.words.map((w) => w['id'].toString()).toList())
+                .map((id) => widget.words.firstWhere((w) => w['id'].toString() == id))
                 .toList()
-            : words;
+            : widget.words;
 
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              title,
+              widget.title,
               style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 20,
@@ -33,22 +81,23 @@ class WordListScreen extends StatelessWidget {
             ),
           ),
           body: studyProvider.isFlashcardMode
-              ? FlashcardView(words: sortedWords)
+              ? FlashcardView(
+                  words: sortedWords,
+                  showHiragana: showHiragana,
+                  showMeaning: showMeaning,
+                  onCardTap: _toggleBoth,
+                )
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   itemCount: sortedWords.length,
                   itemBuilder: (context, index) {
-                    final word = sortedWords[index];
-                    final wordState = studyProvider.getWordState(word['id'].toString());
-                    
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
+                    return GestureDetector(
+                      onTap: _toggleBoth,
                       child: WordListItem(
-                        word: word,
-                        showHiragana: studyProvider.showHiragana,
-                        showMeaning: studyProvider.showMeaning,
-                        timeAgo: wordState?.timeAgoText,
-                        isFlashcardMode: studyProvider.isFlashcardMode,
+                        word: sortedWords[index],
+                        showHiragana: showHiragana,
+                        showMeaning: showMeaning,
+                        isFlashcardMode: false,
                       ),
                     );
                   },
@@ -71,9 +120,10 @@ class WordListScreen extends StatelessWidget {
                 children: [
                   _buildButton(
                     context,
-                    text: studyProvider.isFlashcardMode ? '목록모드' : '단어장모드',
-                    isSelected: studyProvider.isFlashcardMode,
+                    text: studyProvider.isFlashcardMode ? '단어장모드' : '목록모드',
+                    isSelected: false,
                     onPressed: studyProvider.toggleFlashcardMode,
+                    alwaysActive: true,
                   ),
                   _buildButton(
                     context,
@@ -84,14 +134,22 @@ class WordListScreen extends StatelessWidget {
                   _buildButton(
                     context,
                     text: '히라가나',
-                    isSelected: studyProvider.showHiragana,
-                    onPressed: studyProvider.toggleHiragana,
+                    isSelected: showHiragana,
+                    onPressed: () {
+                      setState(() {
+                        showHiragana = !showHiragana;
+                      });
+                    },
                   ),
                   _buildButton(
                     context,
                     text: '뜻',
-                    isSelected: studyProvider.showMeaning,
-                    onPressed: studyProvider.toggleMeaning,
+                    isSelected: showMeaning,
+                    onPressed: () {
+                      setState(() {
+                        showMeaning = !showMeaning;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -101,39 +159,12 @@ class WordListScreen extends StatelessWidget {
       },
     );
   }
-
-  Widget _buildButton(
-    BuildContext context, {
-    required String text,
-    required bool isSelected,
-    required VoidCallback onPressed,
-  }) {
-    return OutlinedButton(
-      onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        side: BorderSide(
-          color: isSelected ? Theme.of(context).primaryColor : Colors.grey,
-        ),
-        backgroundColor: isSelected ? Theme.of(context).primaryColor.withOpacity(0.1) : null,
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: isSelected ? Theme.of(context).primaryColor : Colors.grey,
-        ),
-      ),
-    );
-  }
 }
 
 class WordListItem extends StatelessWidget {
   final Map<String, dynamic> word;
   final bool showHiragana;
   final bool showMeaning;
-  final String? timeAgo;
   final bool isFlashcardMode;
 
   const WordListItem({
@@ -141,7 +172,6 @@ class WordListItem extends StatelessWidget {
     required this.word,
     required this.showHiragana,
     required this.showMeaning,
-    this.timeAgo,
     this.isFlashcardMode = false,
   }) : super(key: key);
 
@@ -192,17 +222,6 @@ class WordListItem extends StatelessWidget {
                   ),
                 ),
               ),
-            if (timeAgo != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  timeAgo!,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
           ],
         ),
       ),
@@ -212,10 +231,16 @@ class WordListItem extends StatelessWidget {
 
 class FlashcardView extends StatefulWidget {
   final List<Map<String, dynamic>> words;
+  final bool showHiragana;
+  final bool showMeaning;
+  final VoidCallback onCardTap;
 
   const FlashcardView({
     Key? key,
     required this.words,
+    required this.showHiragana,
+    required this.showMeaning,
+    required this.onCardTap,
   }) : super(key: key);
 
   @override
@@ -255,15 +280,17 @@ class _FlashcardViewState extends State<FlashcardView> {
         final word = widget.words[index];
         final wordState = context.read<StudyProvider>().getWordState(word['id'].toString());
         
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: WordListItem(
-              word: word,
-              showHiragana: context.watch<StudyProvider>().showHiragana,
-              showMeaning: context.watch<StudyProvider>().showMeaning,
-              timeAgo: wordState?.timeAgoText,
-              isFlashcardMode: true,
+        return GestureDetector(
+          onTap: widget.onCardTap,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: WordListItem(
+                word: word,
+                showHiragana: widget.showHiragana,
+                showMeaning: widget.showMeaning,
+                isFlashcardMode: true,
+              ),
             ),
           ),
         );
