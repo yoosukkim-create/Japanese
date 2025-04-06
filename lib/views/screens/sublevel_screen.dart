@@ -11,30 +11,56 @@ class SubLevelScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(level.title)),
+      appBar: AppBar(
+        title: Text(
+          level.title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
+          ),
+        ),
+      ),
       body: ListView.builder(
+        padding: const EdgeInsets.all(16.0),
         itemCount: level.subLevels.length,
         itemBuilder: (context, index) {
           String key = level.subLevels.keys.elementAt(index);
           return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => WordListScreen(
-                      words: level.subLevels[key]!.words.map((word) => {
-                        'id': word.id,
-                        '단어': word.word,
-                        '읽기': word.reading,
-                        '뜻': word.meaning,
-                      }).toList(),
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(15.0),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WordListScreen(
+                        title: key,
+                        words: level.subLevels[key]!.words.map((word) => {
+                          'id': word.id,
+                          '단어': word.word,
+                          '읽기': word.reading,
+                          '뜻': word.meaning,
+                        }).toList(),
+                      ),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    key,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                );
-              },
-              child: Text(key),
+                ),
+              ),
             ),
           );
         },

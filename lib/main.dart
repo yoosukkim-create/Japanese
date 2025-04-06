@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return MaterialApp(
-          title: '일본어 학습',
+          title: '메모리 メモリ',
           theme: themeProvider.themeData,
           home: const HomeScreen(),
           debugShowCheckedModeBanner: false,
@@ -112,7 +112,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('일본어 학습'),
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            '메모리 メモリ',
+            style: TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 24,
+              letterSpacing: 1.2,
+            ),
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
