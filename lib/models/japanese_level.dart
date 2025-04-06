@@ -37,11 +37,13 @@ class SubLevel {
 
 // 단어 카드
 class WordCard {
+  final String id;     // 고유 식별자
   final String word;    // 단어
   final String reading; // 읽기
   final String meaning; // 뜻
 
   WordCard({
+    required this.id,
     required this.word,
     required this.reading,
     required this.meaning,
@@ -49,6 +51,7 @@ class WordCard {
 
   factory WordCard.fromJson(Map<String, dynamic> json) {
     return WordCard(
+      id: '${json['단어']}_${json['읽기']}',  // 단어와 읽기를 조합하여 고유 ID 생성
       word: json['단어'] ?? '',
       reading: json['읽기'] ?? '',
       meaning: json['뜻'] ?? '',

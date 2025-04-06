@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/japanese_level.dart';
-import 'word_card_screen.dart';
+import 'word_list_screen.dart';
 
 // 서브 레벨 선택 화면
 class SubLevelScreen extends StatelessWidget {
@@ -23,8 +23,13 @@ class SubLevelScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => WordCardScreen(
-                      subLevel: level.subLevels[key]!,
+                    builder: (context) => WordListScreen(
+                      words: level.subLevels[key]!.words.map((word) => {
+                        'id': word.id,
+                        '단어': word.word,
+                        '읽기': word.reading,
+                        '뜻': word.meaning,
+                      }).toList(),
                     ),
                   ),
                 );

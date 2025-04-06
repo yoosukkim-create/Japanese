@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:japanese/models/japanese_level.dart';
 import 'package:japanese/providers/theme_provider.dart';
+import 'package:japanese/providers/study_provider.dart';
 import 'package:japanese/services/japanese_data_service.dart';
 import 'package:japanese/views/screens/home_screen.dart';
 import 'package:japanese/views/screens/level_list_screen.dart';
@@ -14,8 +15,11 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => StudyProvider()),
+      ],
       child: const MyApp(),
     ),
   );
