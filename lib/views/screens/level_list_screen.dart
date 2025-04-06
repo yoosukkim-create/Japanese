@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/japanese_level.dart';
+import '../../providers/theme_provider.dart';
 import 'sublevel_screen.dart';
 
 // 메인 레벨 선택 화면
@@ -10,14 +12,12 @@ class LevelListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('일본어 학습')),
-      body: ListView.builder(
-        itemCount: levels.length,
-        itemBuilder: (context, index) {
-          return LevelButton(level: levels[index]);
-        },
-      ),
+    return ListView.builder(
+      padding: const EdgeInsets.all(16.0),
+      itemCount: levels.length,
+      itemBuilder: (context, index) {
+        return LevelButton(level: levels[index]);
+      },
     );
   }
 }
@@ -30,18 +30,37 @@ class LevelButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SubLevelScreen(level: level),
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(15.0),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SubLevelScreen(level: level),
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              level.title,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: themeProvider.mainColor,
+              ),
             ),
-          );
-        },
-        child: Text(level.title),
+          ),
+        ),
       ),
     );
   }

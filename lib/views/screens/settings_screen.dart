@@ -36,21 +36,15 @@ class SettingsScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _ColorOption(
-                      color: Colors.red,
-                      isSelected: themeProvider.mainColor == Colors.red,
-                      onTap: () => themeProvider.setMainColor(Colors.red),
+                      color: ThemeProvider.navyBlue,
+                      isSelected: themeProvider.mainColor == ThemeProvider.navyBlue,
+                      onTap: () => themeProvider.setMainColor(ThemeProvider.navyBlue),
                     ),
                     const SizedBox(width: 8),
                     _ColorOption(
-                      color: Colors.yellow,
-                      isSelected: themeProvider.mainColor == Colors.yellow,
-                      onTap: () => themeProvider.setMainColor(Colors.yellow),
-                    ),
-                    const SizedBox(width: 8),
-                    _ColorOption(
-                      color: Colors.green,
-                      isSelected: themeProvider.mainColor == Colors.green,
-                      onTap: () => themeProvider.setMainColor(Colors.green),
+                      color: ThemeProvider.cherryBlossom,
+                      isSelected: themeProvider.mainColor == ThemeProvider.cherryBlossom,
+                      onTap: () => themeProvider.setMainColor(ThemeProvider.cherryBlossom),
                     ),
                   ],
                 ),
