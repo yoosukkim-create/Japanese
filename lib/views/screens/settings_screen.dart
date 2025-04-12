@@ -9,6 +9,13 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
+        // 메인 색상을 기반으로 연한 색상 생성
+        final Color lightColor = Color.alphaBlend(
+          Colors.white.withOpacity(0.85),
+          themeProvider.mainColor,
+        );
+        final Color trackColor = themeProvider.mainColor.withOpacity(0.3);
+
         return Scaffold(
           appBar: AppBar(
             title: const Text(
@@ -63,6 +70,9 @@ class SettingsScreen extends StatelessWidget {
                 onChanged: (bool value) {
                   themeProvider.toggleLastViewedTime();
                 },
+                activeColor: themeProvider.mainColor,
+                activeTrackColor: trackColor,
+                inactiveTrackColor: Colors.grey.withOpacity(0.3),
               ),
               const Divider(),
             ],
