@@ -222,17 +222,19 @@ class WordListItem extends StatelessWidget {
                   textAlign: TextAlign.right,
                 ),
               ),
-            if (showHiragana)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                  word['읽기'],
-                  style: TextStyle(
-                    fontSize: word['단어'].toString().length > 2 ? 16 : 18,
-                    color: Colors.grey[700],
-                  ),
-                ),
-              ),
+            Container(
+              height: 32,
+              alignment: Alignment.center,
+              child: showHiragana
+                ? Text(
+                    word['읽기'],
+                    style: TextStyle(
+                      fontSize: word['단어'].toString().length > 2 ? 16 : 18,
+                      color: Colors.grey[700],
+                    ),
+                  )
+                : null,
+            ),
             Text(
               word['단어'],
               style: TextStyle(
@@ -240,17 +242,19 @@ class WordListItem extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            if (showMeaning)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  word['뜻'],
-                  style: TextStyle(
-                    fontSize: word['단어'].toString().length > 2 ? 16 : 18,
-                    color: Colors.grey[700],
-                  ),
-                ),
-              ),
+            Container(
+              height: 32,
+              alignment: Alignment.center,
+              child: showMeaning
+                ? Text(
+                    word['뜻'],
+                    style: TextStyle(
+                      fontSize: word['단어'].toString().length > 2 ? 16 : 18,
+                      color: Colors.grey[700],
+                    ),
+                  )
+                : null,
+            ),
           ],
         ),
       ),
