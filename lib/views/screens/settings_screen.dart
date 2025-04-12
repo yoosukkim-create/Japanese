@@ -7,13 +7,19 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('설정'),
-      ),
-      body: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return ListView(
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              '설정',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+              ),
+            ),
+          ),
+          body: ListView(
             children: [
               ListTile(
                 title: const Text('테마'),
@@ -49,10 +55,20 @@ class SettingsScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              // 마지막으로 본 시간 설정
+              SwitchListTile(
+                title: const Text('마지막으로 본 시간 표시'),
+                subtitle: const Text('각 단어를 마지막으로 학습한 시간을 표시합니다'),
+                value: themeProvider.showLastViewedTime,
+                onChanged: (bool value) {
+                  themeProvider.toggleLastViewedTime();
+                },
+              ),
+              const Divider(),
             ],
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -21,7 +21,6 @@ class WordListScreen extends StatefulWidget {
 class _WordListScreenState extends State<WordListScreen> with SingleTickerProviderStateMixin {
   bool showHiragana = false;
   bool showMeaning = false;
-  bool showTimeAgo = false;
 
   String _getTimeAgoText(StudyProvider studyProvider, String wordId) {
     final wordState = studyProvider.getWordState(wordId);
@@ -61,7 +60,7 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                   showHiragana: showHiragana,
                   showMeaning: showMeaning,
                   onCardTap: _toggleBoth,
-                  showTimeAgo: showTimeAgo,
+                  showTimeAgo: themeProvider.showLastViewedTime,
                 )
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -82,7 +81,9 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                           showHiragana: showHiragana,
                           showMeaning: showMeaning,
                           isFlashcardMode: false,
-                          timeAgo: showTimeAgo ? _getTimeAgoText(studyProvider, wordId) : null,
+                          timeAgo: themeProvider.showLastViewedTime
+                              ? _getTimeAgoText(studyProvider, wordId)
+                              : null,
                         ),
                       ),
                     );
@@ -114,11 +115,9 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                   _buildButton(
                     context,
                     text: '메모리모드',
-                    isSelected: showTimeAgo,
+                    isSelected: false,
                     onPressed: () {
-                      setState(() {
-                        showTimeAgo = !showTimeAgo;
-                      });
+                      // 빈 기능으로 남김
                     },
                   ),
                   _buildButton(
