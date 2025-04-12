@@ -1,17 +1,20 @@
 import 'dart:convert';
+import 'dart:math' show Random;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:japanese/models/word_study_state.dart';
 
 class StudyProvider extends ChangeNotifier {
   final Map<String, WordStudyState> _wordStates = {};
+  final Map<String, DateTime> _tempWordStates = {};
+  
   bool _isFlashcardMode = false;
-  bool _isMemoryMode = false;
+  bool _isShuffleMode = false;
   bool _showHiragana = false;
   bool _showMeaning = false;
 
   bool get isFlashcardMode => _isFlashcardMode;
-  bool get isMemoryMode => _isMemoryMode;
+  bool get isShuffleMode => _isShuffleMode;
   bool get showHiragana => _showHiragana;
   bool get showMeaning => _showMeaning;
 
@@ -43,16 +46,17 @@ class StudyProvider extends ChangeNotifier {
   void toggleFlashcardMode() {
     _isFlashcardMode = !_isFlashcardMode;
     if (!_isFlashcardMode) {
-      _isMemoryMode = false;
+      _isShuffleMode = false;
     }
     notifyListeners();
   }
 
-  void toggleMemoryMode() {
-    _isMemoryMode = !_isMemoryMode;
-    if (_isMemoryMode) {
-      _isFlashcardMode = true;
-    }
+  void setShuffleMode(bool value) {
+    _isShuffleMode = value;
+  }
+
+  void toggleShuffleMode() {
+    _isShuffleMode = !_isShuffleMode;
     notifyListeners();
   }
 
@@ -81,8 +85,48 @@ class StudyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateTempWordState(String wordId) {
+    _tempWordStates[wordId] = DateTime.now();
+  }
+
+  Future<void> commitTempStates() async {
+    if (_tempWordStates.isEmpty) return;
+
+    _tempWordStates.forEach((wordId, lastViewedAt) {
+      final currentState = _wordStates[wordId];
+      _wordStates[wordId] = WordStudyState(
+        wordId: wordId,
+        lastViewedAt: lastViewedAt,
+        wasHiraganaViewed: _showHiragana || (currentState?.wasHiraganaViewed ?? false),
+        wasMeaningViewed: _showMeaning || (currentState?.wasMeaningViewed ?? false),
+      );
+    });
+
+    _tempWordStates.clear();
+
+    await _saveStates();
+    notifyListeners();
+  }
+
+  void clearTempStates() {
+    _tempWordStates.clear();
+  }
+
+  WordStudyState? getEffectiveWordState(String wordId) {
+    if (_tempWordStates.containsKey(wordId)) {
+      final currentState = _wordStates[wordId];
+      return WordStudyState(
+        wordId: wordId,
+        lastViewedAt: _tempWordStates[wordId]!,
+        wasHiraganaViewed: _showHiragana || (currentState?.wasHiraganaViewed ?? false),
+        wasMeaningViewed: _showMeaning || (currentState?.wasMeaningViewed ?? false),
+      );
+    }
+    return _wordStates[wordId];
+  }
+
   List<String> getSortedWordIds(List<String> originalIds) {
-    if (!_isMemoryMode) return originalIds;
+    if (!_isShuffleMode) return originalIds;
 
     return List<String>.from(originalIds)..sort((a, b) {
       final stateA = _wordStates[a];
@@ -102,4 +146,22 @@ class StudyProvider extends ChangeNotifier {
   }
 
   WordStudyState? getWordState(String wordId) => _wordStates[wordId];
+
+  List<Map<String, dynamic>> getSortedWords(List<Map<String, dynamic>> words) {
+    if (!_isShuffleMode) {
+      return List<Map<String, dynamic>>.from(words);
+    }
+
+    final shuffledWords = List<Map<String, dynamic>>.from(words);
+    final random = Random();
+    
+    for (var i = shuffledWords.length - 1; i > 0; i--) {
+      final j = random.nextInt(i + 1);
+      final temp = shuffledWords[i];
+      shuffledWords[i] = shuffledWords[j];
+      shuffledWords[j] = temp;
+    }
+
+    return shuffledWords;
+  }
 } 

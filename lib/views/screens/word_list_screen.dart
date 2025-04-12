@@ -21,10 +21,34 @@ class WordListScreen extends StatefulWidget {
 class _WordListScreenState extends State<WordListScreen> with SingleTickerProviderStateMixin {
   bool showHiragana = false;
   bool showMeaning = false;
+  late List<Map<String, dynamic>> currentWords;
+  late StudyProvider _studyProvider;
 
-  String _getTimeAgoText(StudyProvider studyProvider, String wordId) {
-    final wordState = studyProvider.getWordState(wordId);
-    return wordState?.timeAgoText ?? '아직 학습하지 않음';
+  @override
+  void initState() {
+    super.initState();
+    currentWords = List<Map<String, dynamic>>.from(widget.words);
+    _studyProvider = Provider.of<StudyProvider>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    _studyProvider.commitTempStates();
+    _studyProvider.setShuffleMode(false);
+    super.dispose();
+  }
+
+  // 단어 순서를 섞는 함수
+  void _shuffleWords() {
+    setState(() {
+      if (_studyProvider.isShuffleMode) {
+        // 셔플 모드가 켜질 때마다 새로운 순서로 섞기
+        currentWords = _studyProvider.getSortedWords(widget.words);
+      } else {
+        // 셔플 모드가 꺼지면 원래 순서로 복원
+        currentWords = List<Map<String, dynamic>>.from(widget.words);
+      }
+    });
   }
 
   @override
@@ -57,7 +81,7 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
           ),
           body: studyProvider.isFlashcardMode
               ? FlashcardView(
-                  words: widget.words,
+                  words: currentWords,
                   showHiragana: showHiragana,
                   showMeaning: showMeaning,
                   onCardTap: _toggleBoth,
@@ -65,9 +89,9 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                 )
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  itemCount: widget.words.length,
+                  itemCount: currentWords.length,
                   itemBuilder: (context, index) {
-                    final word = widget.words[index];
+                    final word = currentWords[index];
                     final wordId = word['id'].toString();
                     
                     return Padding(
@@ -75,7 +99,7 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                       child: GestureDetector(
                         onTap: () {
                           _toggleBoth();
-                          studyProvider.updateWordState(wordId);
+                          studyProvider.updateTempWordState(wordId);
                         },
                         child: WordListItem(
                           word: word,
@@ -115,10 +139,11 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                   ),
                   _buildButton(
                     context,
-                    text: '메모리모드',
-                    isSelected: false,
+                    text: 'シャッフル',
+                    isSelected: studyProvider.isShuffleMode,
                     onPressed: () {
-                      // 빈 기능으로 남김
+                      studyProvider.toggleShuffleMode();
+                      _shuffleWords();  // 셔플 모드 토글 시 항상 새로운 순서로 섞기
                     },
                   ),
                   _buildButton(
@@ -187,6 +212,12 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
         ),
       ),
     );
+  }
+
+  String _getTimeAgoText(StudyProvider studyProvider, String wordId) {
+    // getWordState 대신 getEffectiveWordState 사용
+    final wordState = studyProvider.getEffectiveWordState(wordId);
+    return wordState?.timeAgoText ?? '아직 학습하지 않음';
   }
 }
 
