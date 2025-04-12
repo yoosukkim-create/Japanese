@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:japanese/providers/study_provider.dart';
+import 'package:japanese/providers/theme_provider.dart';
+import 'package:japanese/views/screens/settings_screen.dart';
 
 class WordListScreen extends StatefulWidget {
   final List<Map<String, dynamic>> words;
@@ -30,6 +32,8 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
   Widget build(BuildContext context) {
     return Consumer<StudyProvider>(
       builder: (context, studyProvider, child) {
+        final themeProvider = Provider.of<ThemeProvider>(context);
+        
         return Scaffold(
           appBar: AppBar(
             title: Text(
@@ -39,6 +43,17 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                 fontSize: 20,
               ),
             ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                  );
+                },
+              ),
+            ],
           ),
           body: studyProvider.isFlashcardMode
               ? FlashcardView(
