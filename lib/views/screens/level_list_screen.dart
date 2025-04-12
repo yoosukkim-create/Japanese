@@ -30,8 +30,6 @@ class LevelButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: Card(
@@ -53,10 +51,9 @@ class LevelButton extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Text(
               level.title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: themeProvider.mainColor,
               ),
             ),
           ),

@@ -85,6 +85,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    
     if (_isLoading) {
       return const Scaffold(
         body: Center(
@@ -120,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
               fontWeight: FontWeight.w800,
               fontSize: 24,
               letterSpacing: 1.2,
+              color: themeProvider.mainColor,
             ),
           ),
         ),

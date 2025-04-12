@@ -37,9 +37,10 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
           appBar: AppBar(
             title: Text(
               widget.title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 20,
+                color: themeProvider.mainColor,
               ),
             ),
             actions: [

@@ -19,9 +19,10 @@ class SubLevelScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           level.title,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 20,
+            color: themeProvider.mainColor,
           ),
         ),
         actions: [
@@ -70,10 +71,9 @@ class SubLevelScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     key,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: themeProvider.mainColor,
                     ),
                   ),
                 ),
