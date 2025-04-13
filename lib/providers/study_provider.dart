@@ -3,6 +3,7 @@ import 'dart:math' show Random;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:japanese/models/word_study_state.dart';
+import 'package:japanese/models/japanese_level.dart';
 
 class StudyProvider extends ChangeNotifier {
   final Map<String, WordStudyState> _wordStates = {};
@@ -163,5 +164,43 @@ class StudyProvider extends ChangeNotifier {
     }
 
     return shuffledWords;
+  }
+
+  // 특정 단어 목록의 학습 현황을 반환하는 메서드
+  String getProgressText(List<Map<String, dynamic>> words) {
+    int totalWords = words.length;
+    int studiedWords = words.where((word) {
+      final state = getWordState(word['id'].toString());
+      return state != null;
+    }).length;
+    
+    return '$studiedWords/$totalWords';
+  }
+
+  // 레벨의 전체 학습 현황을 반환하는 메서드
+  String getLevelProgressText(Map<String, SubLevel> subLevels) {
+    int totalWords = 0;
+    int studiedWords = 0;
+
+    subLevels.forEach((_, subLevel) {
+      totalWords += subLevel.words.length;
+      studiedWords += subLevel.words.where((word) {
+        final state = getWordState('${word.word}_${word.reading}');
+        return state != null;
+      }).length;
+    });
+
+    return '$studiedWords/$totalWords';
+  }
+
+  // 서브레벨의 학습 현황을 반환하는 메서드
+  String getSubLevelProgressText(List<WordCard> words) {
+    int totalWords = words.length;
+    int studiedWords = words.where((word) {
+      final state = getWordState('${word.word}_${word.reading}');
+      return state != null;
+    }).length;
+    
+    return '$studiedWords/$totalWords';
   }
 } 

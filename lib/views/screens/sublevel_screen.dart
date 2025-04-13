@@ -4,6 +4,7 @@ import 'word_list_screen.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
 import 'settings_screen.dart';
+import '../../providers/study_provider.dart';
 
 // 서브 레벨 선택 화면
 class SubLevelScreen extends StatelessWidget {
@@ -14,6 +15,7 @@ class SubLevelScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final studyProvider = Provider.of<StudyProvider>(context);
     
     return Scaffold(
       appBar: AppBar(
@@ -69,12 +71,26 @@ class SubLevelScreen extends StatelessWidget {
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    key,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        key,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        studyProvider.getSubLevelProgressText(
+                          level.subLevels[key]!.words,
+                        ),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

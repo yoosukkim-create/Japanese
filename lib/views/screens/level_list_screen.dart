@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../models/japanese_level.dart';
 import '../../providers/theme_provider.dart';
 import 'sublevel_screen.dart';
+import '../../providers/study_provider.dart';
 
 // 메인 레벨 선택 화면
 class LevelListScreen extends StatelessWidget {
@@ -30,6 +31,8 @@ class LevelButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final studyProvider = Provider.of<StudyProvider>(context);
+    
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: Card(
@@ -49,12 +52,24 @@ class LevelButton extends StatelessWidget {
           },
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-              level.title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  level.title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  studyProvider.getLevelProgressText(level.subLevels),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
