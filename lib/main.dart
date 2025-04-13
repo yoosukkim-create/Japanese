@@ -189,15 +189,25 @@ class _HomeScreenState extends State<HomeScreen> {
               onChanged: _onSearchChanged,
               decoration: InputDecoration(
                 hintText: '한자/히라가나/한글로 검색...',
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: Icon(Icons.search, color: themeProvider.mainColor),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: themeProvider.mainColor),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: themeProvider.mainColor.withOpacity(0.5)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: themeProvider.mainColor, width: 2),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ),
               ),
+              cursorColor: themeProvider.mainColor,
             ),
           ),
           Expanded(
