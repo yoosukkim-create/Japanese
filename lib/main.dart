@@ -134,64 +134,71 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-          child: Text(
-            '최근 본 단어장',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: themeProvider.mainColor,
-            ),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.push_pin,
+                size: 18,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '최근 본 단어장',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: themeProvider.mainColor,
+                ),
+              ),
+            ],
           ),
         ),
 
-        if (studyProvider.recentWordLists.isEmpty)
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text(
-              '아직 확인한 단어장이 없습니다',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 14,
-              ),
-            ),
-          )
-        else
-          Card(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: ListTile(
-              title: Text(
-                studyProvider.recentWordLists[0]['title'].toString(),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+        Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: studyProvider.recentWordLists.isEmpty
+            ? const ListTile(
+                title: Text(
+                  '아직 확인한 단어장이 없습니다',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
                 ),
-              ),
-              trailing: Text(
-                studyProvider.getProgressText(
-                  List<Map<String, dynamic>>.from(
-                    studyProvider.recentWordLists[0]['words'] as List
-                  )
+              )
+            : ListTile(
+                title: Text(
+                  studyProvider.recentWordLists[0]['title'].toString(),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
+                trailing: Text(
+                  studyProvider.getProgressText(
+                    List<Map<String, dynamic>>.from(
+                      studyProvider.recentWordLists[0]['words'] as List
+                    )
+                  ),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
                 ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => WordListScreen(
-                      title: studyProvider.recentWordLists[0]['title'].toString(),
-                      words: List<Map<String, dynamic>>.from(
-                        studyProvider.recentWordLists[0]['words'] as List
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WordListScreen(
+                        title: studyProvider.recentWordLists[0]['title'].toString(),
+                        words: List<Map<String, dynamic>>.from(
+                          studyProvider.recentWordLists[0]['words'] as List
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ),
+                  );
+                },
+              ),
+        ),
 
         const SizedBox(height: 16),
       ],
