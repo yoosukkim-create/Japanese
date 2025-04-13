@@ -1,9 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:japanese/providers/theme_provider.dart';
+import 'package:japanese/providers/study_provider.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  // 초기화 확인 다이얼로그를 보여주는 메서드
+  Future<void> _showResetConfirmDialog(BuildContext context) async {
+    final studyProvider = Provider.of<StudyProvider>(context, listen: false);
+    
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('학습 기록 초기화'),
+          content: const Text(
+            '모든 단어의 학습 기록이 삭제됩니다.\n정말 초기화하시겠습니까?',
+            style: TextStyle(fontSize: 16),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('아니오'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                '예',
+                style: TextStyle(color: Colors.red),  // 위험 동작임을 표시
+              ),
+              onPressed: () async {
+                await studyProvider.resetAllStudyStates();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  // 초기화 완료 메시지 표시
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('모든 학습 기록이 초기화되었습니다.'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +125,19 @@ class SettingsScreen extends StatelessWidget {
                 activeTrackColor: trackColor,
                 inactiveTrackColor: Colors.grey.withOpacity(0.3),
               ),
+              const Divider(),
+              
+              // 학습 기록 초기화 옵션
+              ListTile(
+                title: const Text('학습 기록 초기화'),
+                subtitle: const Text('모든 단어의 마지막으로 본 시간을 초기화합니다'),
+                trailing: Icon(
+                  Icons.restore,
+                  color: themeProvider.mainColor,
+                ),
+                onTap: () => _showResetConfirmDialog(context),
+              ),
+              
               const Divider(),
             ],
           ),

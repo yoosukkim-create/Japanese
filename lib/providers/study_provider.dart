@@ -203,4 +203,13 @@ class StudyProvider extends ChangeNotifier {
     
     return '$studiedWords/$totalWords';
   }
+
+  // 모든 학습 기록을 초기화하는 메서드
+  Future<void> resetAllStudyStates() async {
+    _wordStates.clear();
+    _tempWordStates.clear();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('word_states');  // SharedPreferences에서도 데이터 삭제
+    notifyListeners();
+  }
 } 
