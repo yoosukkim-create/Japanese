@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  bool _isDarkMode = false;
-  Color _mainColor = const Color(0xFF4A5568); // 기본값: 네이비 블루
+  bool _isDarkMode = true;
+  Color _mainColor = const Color(0xFFFFB7C5); // 기본값: 체리 블러썸
   bool _showLastViewedTime = true;  // 마지막으로 본 시간 표시 여부
 
   static const Color navyBlue = Color(0xFF4A5568);
