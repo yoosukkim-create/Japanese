@@ -205,6 +205,88 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildBasicWordList(List<JapaneseLevel> levels, ThemeProvider themeProvider) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.menu_book,
+                size: 18,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '기본 단어장',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: themeProvider.mainColor,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          color: const Color(0xFF1C1B1F),  // 다크 모드 카드 색상
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: Column(
+            children: levels.map((level) {
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SubLevelScreen(level: level),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        level.title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Consumer<StudyProvider>(
+                        builder: (context, studyProvider, child) {
+                          int totalWords = 0;
+                          int studiedWords = 0;
+                          level.subLevels.values.forEach((sublevel) {
+                            totalWords += sublevel.words.length;
+                            studiedWords += studyProvider.getStudiedWordsCount(sublevel.words);
+                          });
+                          return Text(
+                            '$studiedWords/$totalWords',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<ThemeProvider, StudyProvider>(
@@ -299,7 +381,7 @@ class _HomeScreenState extends State<HomeScreen> {
               
               // 레벨 목록
               Expanded(
-                child: LevelListScreen(levels: _levels),
+                child: _buildBasicWordList(_levels, themeProvider),
               ),
             ],
           ),

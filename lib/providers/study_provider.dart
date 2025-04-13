@@ -266,4 +266,11 @@ class StudyProvider extends ChangeNotifier {
     await prefs.remove('recent_word_lists');
     notifyListeners();
   }
+
+  int getStudiedWordsCount(List<WordCard> words) {
+    return words.where((word) {
+      final state = getWordState('${word.word}_${word.reading}');
+      return state != null;
+    }).length;
+  }
 } 
