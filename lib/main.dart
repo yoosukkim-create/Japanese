@@ -7,11 +7,13 @@ import 'package:japanese/providers/study_provider.dart';
 import 'package:japanese/services/japanese_data_service.dart';
 import 'package:japanese/views/screens/home_screen.dart';
 import 'package:japanese/views/screens/level_list_screen.dart';
+import 'package:japanese/views/screens/word_list_screen.dart';
 import 'package:japanese/theme/app_theme.dart';
 import 'package:japanese/views/screens/sublevel_screen.dart';
 import 'package:japanese/views/screens/word_card_screen.dart';
 import 'package:japanese/views/screens/settings_screen.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 
 void main() {
   runApp(
@@ -52,14 +54,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final JapaneseDataService _dataService = JapaneseDataService();
+  final TextEditingController _searchController = TextEditingController();
   bool _isLoading = true;
   String _error = '';
   List<JapaneseLevel> _levels = [];
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -81,6 +92,37 @@ class _HomeScreenState extends State<HomeScreen> {
         _isLoading = false;
       });
     }
+  }
+
+  // 검색 처리 함수
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      if (query.isEmpty) return;
+
+      try {
+        final results = await _dataService.searchWords(query);
+        if (results.isNotEmpty) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WordListScreen(
+                title: '"$query" 검색 결과',
+                words: results,
+              ),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('검색 결과가 없습니다.')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('검색 중 오류가 발생했습니다: $e')),
+        );
+      }
+    });
   }
 
   @override
@@ -138,7 +180,31 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: LevelListScreen(levels: _levels),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: _searchController,
+              onChanged: _onSearchChanged,
+              decoration: InputDecoration(
+                hintText: '한자/히라가나/한글로 검색...',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: LevelListScreen(levels: _levels),
+          ),
+        ],
+      ),
     );
   }
 }
