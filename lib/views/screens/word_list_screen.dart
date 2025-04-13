@@ -29,6 +29,7 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
     super.initState();
     currentWords = List<Map<String, dynamic>>.from(widget.words);
     _studyProvider = Provider.of<StudyProvider>(context, listen: false);
+    _studyProvider.addToRecentLists(widget.title, widget.words);
   }
 
   @override

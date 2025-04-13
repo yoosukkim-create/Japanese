@@ -14,10 +14,15 @@ class StudyProvider extends ChangeNotifier {
   bool _showHiragana = false;
   bool _showMeaning = false;
 
+  static const int _maxRecentLists = 1;
+  List<Map<String, dynamic>> _recentWordLists = [];
+
   bool get isFlashcardMode => _isFlashcardMode;
   bool get isShuffleMode => _isShuffleMode;
   bool get showHiragana => _showHiragana;
   bool get showMeaning => _showMeaning;
+
+  List<Map<String, dynamic>> get recentWordLists => _recentWordLists;
 
   StudyProvider() {
     _loadStates();
@@ -166,18 +171,22 @@ class StudyProvider extends ChangeNotifier {
     return shuffledWords;
   }
 
-  // 특정 단어 목록의 학습 현황을 반환하는 메서드
-  String getProgressText(List<Map<String, dynamic>> words) {
-    int totalWords = words.length;
-    int studiedWords = words.where((word) {
-      final state = getWordState(word['id'].toString());
-      return state != null;
-    }).length;
-    
-    return '$studiedWords/$totalWords';
+  String getProgressText(List<dynamic> words) {
+    try {
+      int totalWords = words.length;
+      int studiedWords = words.where((word) {
+        final wordMap = Map<String, dynamic>.from(word);
+        final id = '${wordMap['단어']}_${wordMap['읽기']}';
+        return getWordState(id) != null;
+      }).length;
+      
+      return '$studiedWords/$totalWords';
+    } catch (e) {
+      debugPrint('Error calculating progress: $e');
+      return '0/0';
+    }
   }
 
-  // 레벨의 전체 학습 현황을 반환하는 메서드
   String getLevelProgressText(Map<String, SubLevel> subLevels) {
     int totalWords = 0;
     int studiedWords = 0;
@@ -193,7 +202,6 @@ class StudyProvider extends ChangeNotifier {
     return '$studiedWords/$totalWords';
   }
 
-  // 서브레벨의 학습 현황을 반환하는 메서드
   String getSubLevelProgressText(List<WordCard> words) {
     int totalWords = words.length;
     int studiedWords = words.where((word) {
@@ -204,12 +212,58 @@ class StudyProvider extends ChangeNotifier {
     return '$studiedWords/$totalWords';
   }
 
-  // 모든 학습 기록을 초기화하는 메서드
+  Future<void> addToRecentLists(String title, List<Map<String, dynamic>> words) async {
+    try {
+      final newItem = {
+        'title': title,
+        'words': words.map((word) => Map<String, dynamic>.from(word)).toList(),
+        'timestamp': DateTime.now().toIso8601String(),
+      };
+
+      _recentWordLists = [newItem];
+
+      await _saveRecentLists();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error adding to recent lists: $e');
+    }
+  }
+
+  Future<void> loadRecentLists() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final recentListsJson = prefs.getString('recent_word_lists');
+      if (recentListsJson != null) {
+        final List<dynamic> decoded = json.decode(recentListsJson);
+        if (decoded.isNotEmpty) {
+          _recentWordLists = [
+            Map<String, dynamic>.from(decoded.first)
+          ];
+        }
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error loading recent lists: $e');
+      _recentWordLists = [];
+    }
+  }
+
+  Future<void> _saveRecentLists() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('recent_word_lists', json.encode(_recentWordLists));
+    } catch (e) {
+      debugPrint('Error saving recent lists: $e');
+    }
+  }
+
   Future<void> resetAllStudyStates() async {
     _wordStates.clear();
     _tempWordStates.clear();
+    _recentWordLists.clear();
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('word_states');  // SharedPreferences에서도 데이터 삭제
+    await prefs.remove('word_states');
+    await prefs.remove('recent_word_lists');
     notifyListeners();
   }
 } 

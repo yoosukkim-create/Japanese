@@ -64,6 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadData();
+    // 최근 본 단어장 목록 로드
+    Provider.of<StudyProvider>(context, listen: false).loadRecentLists();
   }
 
   @override
@@ -125,96 +127,177 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    
-    if (_isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-
-    if (_error.isNotEmpty) {
-      return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('오류: $_error'),
-              ElevatedButton(
-                onPressed: _loadData,
-                child: const Text('다시 시도'),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Align(
-          alignment: Alignment.centerLeft,
+  // 최근 본 단어장 위젯
+  Widget _buildRecentLists(StudyProvider studyProvider, ThemeProvider themeProvider) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: Text(
-            '메모리 メモリ',
+            '최근 본 단어장',
             style: TextStyle(
-              fontWeight: FontWeight.w800,
-              fontSize: 24,
-              letterSpacing: 1.2,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
               color: themeProvider.mainColor,
             ),
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
-              );
-            },
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              onChanged: _onSearchChanged,
-              decoration: InputDecoration(
-                hintText: '한자/히라가나/한글로 검색...',
-                prefixIcon: Icon(Icons.search, color: themeProvider.mainColor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: themeProvider.mainColor),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: themeProvider.mainColor.withOpacity(0.5)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: themeProvider.mainColor, width: 2),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
+
+        if (studyProvider.recentWordLists.isEmpty)
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(
+              '아직 확인한 단어장이 없습니다',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 14,
+              ),
+            ),
+          )
+        else
+          Card(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: ListTile(
+              title: Text(
+                studyProvider.recentWordLists[0]['title'].toString(),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              cursorColor: themeProvider.mainColor,
+              trailing: Text(
+                studyProvider.getProgressText(
+                  List<Map<String, dynamic>>.from(
+                    studyProvider.recentWordLists[0]['words'] as List
+                  )
+                ),
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WordListScreen(
+                      title: studyProvider.recentWordLists[0]['title'].toString(),
+                      words: List<Map<String, dynamic>>.from(
+                        studyProvider.recentWordLists[0]['words'] as List
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-          Expanded(
-            child: LevelListScreen(levels: _levels),
+
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer2<ThemeProvider, StudyProvider>(
+      builder: (context, themeProvider, studyProvider, child) {
+        final themeProvider = Provider.of<ThemeProvider>(context);
+        
+        if (_isLoading) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        if (_error.isNotEmpty) {
+          return Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('오류: $_error'),
+                  ElevatedButton(
+                    onPressed: _loadData,
+                    child: const Text('다시 시도'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '메모리 メモリ',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 24,
+                  letterSpacing: 1.2,
+                  color: themeProvider.mainColor,
+                ),
+              ),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                  );
+                },
+              ),
+            ],
           ),
-        ],
-      ),
+          body: Column(
+            children: [
+              // 검색창
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: _onSearchChanged,
+                  decoration: InputDecoration(
+                    hintText: '한자/히라가나/한글로 검색...',
+                    prefixIcon: Icon(Icons.search, color: themeProvider.mainColor),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: themeProvider.mainColor),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: themeProvider.mainColor.withOpacity(0.5)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: themeProvider.mainColor, width: 2),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
+                  cursorColor: themeProvider.mainColor,
+                ),
+              ),
+              
+              // 최근 본 단어장 섹션
+              _buildRecentLists(studyProvider, themeProvider),
+              
+              // 레벨 목록
+              Expanded(
+                child: LevelListScreen(levels: _levels),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
