@@ -79,6 +79,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           body: ListView(
             children: [
+              // 계정 섹션 추가
+              ListTile(
+                leading: const Icon(Icons.account_circle, size: 32),
+                title: const Text('로그인'),
+                subtitle: const Text('Coming soon...'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('준비 중인 기능입니다.'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                },
+              ),
+              const Divider(),
               ListTile(
                 title: const Text('테마'),
                 trailing: Container(

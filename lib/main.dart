@@ -287,6 +287,57 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildCustomWordbooks(BuildContext context, ThemeProvider themeProvider) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.edit_note,
+                size: 18,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '커스텀 단어장',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: themeProvider.mainColor,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          color: const Color(0xFF1C1B1F),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            child: Row(
+              children: [
+                Text(
+                  'Coming soon...',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<ThemeProvider, StudyProvider>(
@@ -344,47 +395,34 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          body: Column(
-            children: [
-              // 검색창
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
-                  controller: _searchController,
-                  onChanged: _onSearchChanged,
-                  decoration: InputDecoration(
-                    hintText: '한자/히라가나/한글로 검색...',
-                    prefixIcon: Icon(Icons.search, color: themeProvider.mainColor),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: themeProvider.mainColor),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: themeProvider.mainColor.withOpacity(0.5)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: themeProvider.mainColor, width: 2),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
+          body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : _error.isNotEmpty
+              ? Center(child: Text(_error))
+              : SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: TextField(
+                          controller: _searchController,
+                          onChanged: _onSearchChanged,
+                          decoration: InputDecoration(
+                            hintText: '단어 검색...',
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      _buildRecentLists(studyProvider, themeProvider),
+                      _buildBasicWordList(_levels, themeProvider),
+                      _buildCustomWordbooks(context, themeProvider),
+                    ],
                   ),
-                  cursorColor: themeProvider.mainColor,
                 ),
-              ),
-              
-              // 최근 본 단어장 섹션
-              _buildRecentLists(studyProvider, themeProvider),
-              
-              // 레벨 목록
-              Expanded(
-                child: _buildBasicWordList(_levels, themeProvider),
-              ),
-            ],
-          ),
         );
       },
     );
