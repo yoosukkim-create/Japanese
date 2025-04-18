@@ -238,6 +238,46 @@ class WordListItem extends StatelessWidget {
     this.timeAgo,
   }) : super(key: key);
 
+  Widget _buildMemoryQualityButtons(BuildContext context, String wordId) {
+    return Consumer<StudyProvider>(
+      builder: (context, provider, child) {
+        if (!provider.isMemoryMode) return const SizedBox.shrink();
+        
+        return Column(
+          children: [
+            const SizedBox(height: 16),
+            const Text(
+              '기억한 정도',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: List.generate(6, (index) {
+                return ElevatedButton(
+                  onPressed: () {
+                    provider.updateMemoryState(wordId, index);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                  ),
+                  child: Text('$index'),
+                );
+              }),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -302,6 +342,8 @@ class WordListItem extends StatelessWidget {
                   )
                 : null,
             ),
+            if (showHiragana && showMeaning)
+              _buildMemoryQualityButtons(context, word['id']),
           ],
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
 import 'settings_screen.dart';
 import '../../providers/study_provider.dart';
+import 'memory_mode_screen.dart';
 
 // 서브 레벨 선택 화면
 class SubLevelScreen extends StatelessWidget {
@@ -97,6 +98,19 @@ class SubLevelScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MemoryModeScreen(level: level),
+            ),
+          );
+        },
+        backgroundColor: themeProvider.mainColor,
+        label: const Text('메모리 모드'),
+        icon: const Icon(Icons.psychology),
       ),
     );
   }

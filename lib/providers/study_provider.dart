@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:japanese/models/word_study_state.dart';
 import 'package:japanese/models/japanese_level.dart';
+import 'package:japanese/models/word_memory_state.dart';
 
 class StudyProvider extends ChangeNotifier {
   final Map<String, WordStudyState> _wordStates = {};
@@ -17,10 +18,14 @@ class StudyProvider extends ChangeNotifier {
   static const int _maxRecentLists = 1;
   List<Map<String, dynamic>> _recentWordLists = [];
 
+  bool _isMemoryMode = false;
+  final Map<String, WordMemoryState> _memoryStates = {};
+
   bool get isFlashcardMode => _isFlashcardMode;
   bool get isShuffleMode => _isShuffleMode;
   bool get showHiragana => _showHiragana;
   bool get showMeaning => _showMeaning;
+  bool get isMemoryMode => _isMemoryMode;
 
   List<Map<String, dynamic>> get recentWordLists => _recentWordLists;
 
@@ -132,8 +137,27 @@ class StudyProvider extends ChangeNotifier {
   }
 
   List<String> getSortedWordIds(List<String> originalIds) {
-    if (!_isShuffleMode) return originalIds;
+    if (_isMemoryMode) {
+      return List<String>.from(originalIds)..sort((a, b) {
+        final stateA = _memoryStates[a];
+        final stateB = _memoryStates[b];
+        
+        if (stateA == null) return -1;
+        if (stateB == null) return 1;
+        
+        final needsReviewA = stateA.needsReview();
+        final needsReviewB = stateB.needsReview();
+        
+        if (needsReviewA != needsReviewB) {
+          return needsReviewA ? -1 : 1;
+        }
+        
+        return stateA.ef.compareTo(stateB.ef);
+      });
+    }
 
+    if (!_isShuffleMode) return originalIds;
+    
     return List<String>.from(originalIds)..sort((a, b) {
       final stateA = _wordStates[a];
       final stateB = _wordStates[b];
@@ -272,5 +296,58 @@ class StudyProvider extends ChangeNotifier {
       final state = getWordState('${word.word}_${word.reading}');
       return state != null;
     }).length;
+  }
+
+  Future<void> _loadMemoryStates() async {
+    final prefs = await SharedPreferences.getInstance();
+    final statesJson = prefs.getString('memory_states');
+    if (statesJson != null) {
+      final Map<String, dynamic> statesMap = json.decode(statesJson);
+      _memoryStates.clear();
+      statesMap.forEach((key, value) {
+        _memoryStates[key] = WordMemoryState.fromJson(value);
+      });
+    }
+  }
+
+  Future<void> _saveMemoryStates() async {
+    final prefs = await SharedPreferences.getInstance();
+    final statesMap = _memoryStates.map(
+      (key, value) => MapEntry(key, value.toJson()),
+    );
+    await prefs.setString('memory_states', json.encode(statesMap));
+  }
+
+  void updateMemoryState(String wordId, int mappedQuality) {
+    if (!_isMemoryMode) return;
+
+    _memoryStates[wordId] ??= WordMemoryState(wordId: wordId);
+    _memoryStates[wordId]!.updateWithQuality(mappedQuality);
+    _saveMemoryStates();
+    notifyListeners();
+  }
+
+  void toggleMemoryMode() {
+    _isMemoryMode = !_isMemoryMode;
+    notifyListeners();
+  }
+
+  List<Map<String, dynamic>> getSortedWordsForMemoryMode(List<Map<String, dynamic>> words) {
+    return List<Map<String, dynamic>>.from(words)..sort((a, b) {
+      final stateA = _memoryStates[a['id']];
+      final stateB = _memoryStates[b['id']];
+      
+      if (stateA == null) return -1;
+      if (stateB == null) return 1;
+      
+      final needsReviewA = stateA.needsReview();
+      final needsReviewB = stateB.needsReview();
+      
+      if (needsReviewA != needsReviewB) {
+        return needsReviewA ? -1 : 1;
+      }
+      
+      return stateA.ef.compareTo(stateB.ef);
+    });
   }
 } 
