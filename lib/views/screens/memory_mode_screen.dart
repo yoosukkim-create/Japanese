@@ -69,82 +69,159 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
             minHeight: MediaQuery.of(context).size.height * 0.6,
           ),
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
             children: [
-              Text(
-                word['단어'],
-                style: const TextStyle(
-                  fontSize: 48,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              if (_showAnswer) ...[
-                const SizedBox(height: 24),
-                Text(
-                  word['읽기'],
-                  style: const TextStyle(
-                    fontSize: 32,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  word['뜻'],
-                  style: const TextStyle(
-                    fontSize: 32,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                const Text(
-                  '이 단어를 얼마나 잘 기억하시나요?',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Consumer<StudyProvider>(
+              Positioned(
+                top: 16,
+                right: 16,
+                child: Consumer<StudyProvider>(
                   builder: (context, provider, child) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildMemoryButton(
-                          context: context,
-                          text: '모름',
-                          color: Colors.redAccent,
-                          onPressed: () {
-                            provider.updateMemoryState(word['id'], 1);
-                            _moveToNextWord();
-                          },
+                    final memoryState = provider.getMemoryState(word['id']);
+                    final ef = memoryState?.ef.toStringAsFixed(1) ?? '2.5';
+                    final interval = memoryState?.interval.toString() ?? '0';
+                    final repetition = memoryState?.repetition.toString() ?? '0';
+                    final lastReviewedText = (memoryState != null && memoryState.lastReviewedAt != null)
+                        ? _formatDate(memoryState.lastReviewedAt!)
+                        : '미학습';
+
+                    return Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.3),
+                          width: 1,
                         ),
-                        _buildMemoryButton(
-                          context: context,
-                          text: '애매함',
-                          color: Colors.orangeAccent,
-                          onPressed: () {
-                            provider.updateMemoryState(word['id'], 3);
-                            _moveToNextWord();
-                          },
+                      ),
+                      child: Text(
+                        'EF: $ef\n'
+                        'I: ${interval}일\n'
+                        'R: ${repetition}회\n'
+                        '최근: $lastReviewedText',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          height: 1.5,
+                          fontWeight: FontWeight.w500,
                         ),
-                        _buildMemoryButton(
-                          context: context,
-                          text: '잘 암',
-                          color: Colors.green,
-                          onPressed: () {
-                            provider.updateMemoryState(word['id'], 5);
-                            _moveToNextWord();
-                          },
-                        ),
-                      ],
+                        textAlign: TextAlign.right,
+                      ),
                     );
                   },
                 ),
-              ],
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 60),
+                    Expanded(
+                      flex: 5,
+                      child: Center(
+                        child: Text(
+                          word['단어'],
+                          style: const TextStyle(
+                            fontSize: 48,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 300),
+                        opacity: _showAnswer ? 1.0 : 0.0,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              word['읽기'],
+                              style: const TextStyle(
+                                fontSize: 32,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              word['뜻'],
+                              style: const TextStyle(
+                                fontSize: 32,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    AnimatedOpacity(
+                      duration: const Duration(milliseconds: 300),
+                      opacity: _showAnswer ? 1.0 : 0.0,
+                      child: Column(
+                        children: [
+                          const Text(
+                            '이 단어를 얼마나 잘 기억하시나요?',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _buildMemoryButton(
+                                context: context,
+                                text: '모름',
+                                color: Colors.redAccent,
+                                onPressed: _showAnswer
+                                    ? () {
+                                        Provider.of<StudyProvider>(context, listen: false)
+                                            .updateMemoryState(word['id'], 1);
+                                        _moveToNextWord();
+                                      }
+                                    : null,
+                              ),
+                              _buildMemoryButton(
+                                context: context,
+                                text: '애매함',
+                                color: Colors.orangeAccent,
+                                onPressed: _showAnswer
+                                    ? () {
+                                        Provider.of<StudyProvider>(context, listen: false)
+                                            .updateMemoryState(word['id'], 3);
+                                        _moveToNextWord();
+                                      }
+                                    : null,
+                              ),
+                              _buildMemoryButton(
+                                context: context,
+                                text: '잘 암',
+                                color: Colors.green,
+                                onPressed: _showAnswer
+                                    ? () {
+                                        Provider.of<StudyProvider>(context, listen: false)
+                                            .updateMemoryState(word['id'], 5);
+                                        _moveToNextWord();
+                                      }
+                                    : null,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -156,16 +233,13 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     required BuildContext context,
     required String text,
     required Color color,
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
   }) {
     return SizedBox(
       width: 100,
       height: 80,
       child: ElevatedButton(
-        onPressed: () {
-          onPressed();
-          _moveToNextWord();
-        },
+        onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           shape: RoundedRectangleBorder(
@@ -183,6 +257,19 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
         ),
       ),
     );
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+    
+    if (difference.inDays == 0) {
+      return '오늘';
+    } else if (difference.inDays == 1) {
+      return '어제';
+    } else {
+      return '${difference.inDays}일 전';
+    }
   }
 
   @override

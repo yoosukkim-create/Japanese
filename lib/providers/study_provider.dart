@@ -42,8 +42,18 @@ class StudyProvider extends ChangeNotifier {
       statesMap.forEach((key, value) {
         _wordStates[key] = WordStudyState.fromJson(value);
       });
-      notifyListeners();
     }
+
+    final memoryStatesJson = prefs.getString('memory_states');
+    if (memoryStatesJson != null) {
+      final Map<String, dynamic> memoryStatesMap = json.decode(memoryStatesJson);
+      _memoryStates.clear();
+      memoryStatesMap.forEach((key, value) {
+        _memoryStates[key] = WordMemoryState.fromJson(value);
+      });
+    }
+
+    notifyListeners();
   }
 
   Future<void> _saveStates() async {
@@ -318,11 +328,10 @@ class StudyProvider extends ChangeNotifier {
     await prefs.setString('memory_states', json.encode(statesMap));
   }
 
-  void updateMemoryState(String wordId, int mappedQuality) {
-    if (!_isMemoryMode) return;
-
-    _memoryStates[wordId] ??= WordMemoryState(wordId: wordId);
-    _memoryStates[wordId]!.updateWithQuality(mappedQuality);
+  void updateMemoryState(String wordId, int quality) {
+    final state = _memoryStates[wordId] ?? WordMemoryState(wordId: wordId);
+    state.updateWithQuality(quality);
+    _memoryStates[wordId] = state;
     _saveMemoryStates();
     notifyListeners();
   }
@@ -349,5 +358,9 @@ class StudyProvider extends ChangeNotifier {
       
       return stateA.ef.compareTo(stateB.ef);
     });
+  }
+
+  WordMemoryState? getMemoryState(String wordId) {
+    return _memoryStates[wordId];
   }
 } 
