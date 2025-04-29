@@ -129,10 +129,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
               ),
+              const Divider(),
+
               // 마지막으로 본 시간 설정
               SwitchListTile(
-                title: const Text('마지막으로 본 시간 표시'),
-                subtitle: const Text('각 단어를 마지막으로 학습한 시간을 표시합니다'),
+                title: const Text('일반 단어장 학습 시간 표시'),
+                subtitle: const Text('일반 단어장에서 마지막으로 학습한 시간을 표시합니다'),
                 value: themeProvider.showLastViewedTime,
                 onChanged: (bool value) {
                   themeProvider.toggleLastViewedTime();
@@ -141,12 +143,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 activeTrackColor: trackColor,
                 inactiveTrackColor: Colors.grey.withOpacity(0.3),
               ),
-              const Divider(),
               
               // 학습 기록 초기화 옵션
               ListTile(
-                title: const Text('학습 기록 초기화'),
-                subtitle: const Text('모든 단어의 마지막으로 본 시간을 초기화합니다'),
+                title: const Text('일반 단어장 학습 시간 초기화'),
+                subtitle: const Text('일반 단어장에서 마지막으로 학습한 시간을 초기화합니다'),
                 trailing: Icon(
                   Icons.restore,
                   color: themeProvider.mainColor,
