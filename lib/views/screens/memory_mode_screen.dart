@@ -134,7 +134,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                     Expanded(
                       flex: 4,
                       child: AnimatedOpacity(
-                        duration: const Duration(milliseconds: 300),
+                        duration: Duration(milliseconds: _showAnswer ? 300 : 0),
                         opacity: _showAnswer ? 1.0 : 0.0,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -161,7 +161,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                       ),
                     ),
                     AnimatedOpacity(
-                      duration: const Duration(milliseconds: 300),
+                      duration: Duration(milliseconds: _showAnswer ? 300 : 0),
                       opacity: _showAnswer ? 1.0 : 0.0,
                       child: Column(
                         children: [
