@@ -86,26 +86,18 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
                     return Container(
                       padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
-                          width: 1,
-                        ),
-                      ),
                       child: Text(
-                        'EF: $ef\n'
-                        'I: ${interval}일\n'
-                        'R: ${repetition}회\n'
-                        '최근: $lastReviewedText',
+                        '아는정도: $ef\n'
+                        '복습간격: ${interval}일\n'
+                        '연속정답: ${repetition}회\n'
+                        '최근학습: $lastReviewedText',
                         style: const TextStyle(
                           fontSize: 12,
-                          color: Colors.white,
+                          color: Colors.grey,
                           height: 1.5,
                           fontWeight: FontWeight.w500,
                         ),
-                        textAlign: TextAlign.right,
+                        textAlign: TextAlign.left,
                       ),
                     );
                   },
@@ -263,10 +255,12 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     final now = DateTime.now();
     final difference = now.difference(date);
     
-    if (difference.inDays == 0) {
-      return '오늘';
-    } else if (difference.inDays == 1) {
-      return '어제';
+    if (difference.inSeconds < 60) {
+      return '방금 전';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes}분 전';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours}시간 전';
     } else {
       return '${difference.inDays}일 전';
     }
