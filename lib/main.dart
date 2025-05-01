@@ -414,6 +414,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12.0),
                             ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                              borderSide: BorderSide(
+                                color: themeProvider.mainColor,
+                                width: 2.0,
+                              )
+                            )
                           ),
                         ),
                       ),
