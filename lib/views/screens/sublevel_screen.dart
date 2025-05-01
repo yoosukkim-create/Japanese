@@ -14,7 +14,7 @@ class SubLevelScreen extends StatelessWidget {
 
   @override
   bool isDarkMode(BuildContext context) => Theme.of(context).brightness == Brightness.dark;
-  Color cardColor(BuildContext context) => isDarkMode(context) ? const Color(0xFF1C1B1F) : Theme.of(context).scaffoldBackgroundColor;// const Color(0xFFF8F4F6);
+  Color cardColor(BuildContext context) => isDarkMode(context) ? const Color(0xFF1C1B1F) : Theme.of(context).scaffoldBackgroundColor;
   double cardElevation(BuildContext context) => isDarkMode(context) ? 0.0 : 2.0;
   Color textColor(BuildContext context) => isDarkMode(context) ? Colors.white : Colors.black87;
   Widget build(BuildContext context) {
@@ -107,10 +107,12 @@ class SubLevelScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 12.0), // 약간 띄워주기
+        padding: const EdgeInsets.only(bottom: 12.0),
         child: SizedBox(
-          height: 60, // 💡 기존보다 큼직한 높이
-          child: FloatingActionButton.extended(
+          width: 100, // 원하는 너비
+          height: 100, // 원하는 높이
+          child: FloatingActionButton(
+            backgroundColor: themeProvider.mainColor,
             onPressed: () {
               Navigator.push(
                 context,
@@ -119,21 +121,22 @@ class SubLevelScreen extends StatelessWidget {
                 ),
               );
             },
-            backgroundColor: themeProvider.mainColor,
-            label: const Text(
-              '메모리 모드',
-              style: TextStyle(
-                fontSize: 18, // 💡 글자도 크게!
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            icon: const Icon(
-              Icons.psychology,
-              size: 26, // 💡 아이콘도 키움!
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(Icons.psychology, size: 32),
+                SizedBox(height: 4),
+                Text(
+                  '메모리 모드',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
             ),
           ),
         ),
       ),
+        
 
     );
   }
