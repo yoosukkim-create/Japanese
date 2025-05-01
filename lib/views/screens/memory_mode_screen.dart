@@ -275,13 +275,12 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              '${widget.level.title} - 메모리 모드',
+              '${widget.level.title}',
               style: TextStyle(
                 color: themeProvider.mainColor,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            backgroundColor: Colors.white,
             elevation: 0,
           ),
           body: Padding(
