@@ -77,6 +77,10 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                 child: Consumer<StudyProvider>(
                   builder: (context, provider, child) {
                     final memoryState = provider.getMemoryState(word['id']);
+                    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+
+                    if (!themeProvider.showMemoryParams) return const SizedBox.shrink();
+
                     final ef = memoryState?.ef.toStringAsFixed(1) ?? '2.5';
                     final interval = memoryState?.interval.toString() ?? '0';
                     final repetition = memoryState?.repetition.toString() ?? '0';
@@ -87,10 +91,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                     return Container(
                       padding: const EdgeInsets.all(8),
                       child: Text(
-                        '아는정도: $ef\n'
-                        '복습간격: ${interval}일\n'
-                        '연속정답: ${repetition}회\n'
-                        '최근학습: $lastReviewedText',
+                        '아는정도: $ef\n복습간격: ${interval}일\n연속정답: ${repetition}회\n최근학습: $lastReviewedText',
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.grey,

@@ -12,6 +12,9 @@ class ThemeProvider extends ChangeNotifier {
   Color get mainColor => _mainColor;
   bool get showLastViewedTime => _showLastViewedTime;
 
+  bool _showMemoryParams = true;
+  bool get showMemoryParams => _showMemoryParams;
+  
   void toggleTheme() {
     _isDarkMode = !_isDarkMode;
     notifyListeners();
@@ -24,6 +27,11 @@ class ThemeProvider extends ChangeNotifier {
 
   void toggleLastViewedTime() {
     _showLastViewedTime = !_showLastViewedTime;
+    notifyListeners();
+  }
+
+  void toggleMemoryParams() {
+    _showMemoryParams = !_showMemoryParams;
     notifyListeners();
   }
 

@@ -11,6 +11,44 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+    Future<void> _showMemoryResetConfirmDialog(BuildContext context) async {
+    final studyProvider = Provider.of<StudyProvider>(context, listen: false);
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('메모리 학습 기록 초기화'),
+          content: const Text(
+            '메모리 단어장의 학습 기록이 초기화됩니다.\n정말 초기화하시겠습니까?',
+            style: TextStyle(fontSize: 16),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('아니오'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('예', style: TextStyle(color: Colors.red)),
+              onPressed: () async {
+                await studyProvider.resetAllMemoryStates();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('메모리 단어장 학습 기록이 초기화되었습니다.'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // 초기화 확인 다이얼로그를 보여주는 메서드
   Future<void> _showResetConfirmDialog(BuildContext context) async {
     final studyProvider = Provider.of<StudyProvider>(context, listen: false);
@@ -154,7 +192,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 onTap: () => _showResetConfirmDialog(context),
               ),
-              
+              const Divider(),
+
+              SwitchListTile(
+                title: const Text('메모리 단어장 학습 정보 표시'),
+                subtitle: const Text('메모리 단어장에서 아는정도, 복습간격, 연속정답 등을 보여줍니다'),
+                value: themeProvider.showMemoryParams,
+                onChanged: (_) => themeProvider.toggleMemoryParams(),
+                activeColor: themeProvider.mainColor,
+                activeTrackColor: trackColor,
+                inactiveTrackColor: Colors.grey.withOpacity(0.3),
+              ),
+
+              ListTile(
+                title: const Text('메모리 단어장 학습 정보 초기화'),
+                subtitle: const Text('메모리 단어장의 학습 정보를 초기화합니다'),
+                trailing: Icon(Icons.restore, color: themeProvider.mainColor),
+                onTap: () => _showMemoryResetConfirmDialog(context),
+              ),
+
               const Divider(),
             ],
           ),

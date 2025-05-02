@@ -306,6 +306,10 @@ class WordListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final studyProvider = Provider.of<StudyProvider>(context, listen: false);
+    final memoryState = studyProvider.getMemoryState(word['id']);
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -322,6 +326,26 @@ class WordListItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            if (themeProvider.showMemoryParams && studyProvider.isMemoryMode)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    '아는정도: ${memoryState?.ef.toStringAsFixed(1) ?? '-'}\n'
+                    '복습간격: ${memoryState?.interval ?? '-'}일\n'
+                    '연속정답: ${memoryState?.repetition ?? '-'}회\n'
+                    '최근학습: ${memoryState?.lastReviewedAt != null ? DateTime.now().difference(memoryState!.lastReviewedAt!).inDays.toString() + "일 전" : "미학습"}',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      height: 1.4,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+              ),
+            
             if (timeAgo != null)
               Container(
                 width: double.infinity,

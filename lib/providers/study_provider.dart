@@ -301,6 +301,20 @@ class StudyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  Future<void> resetAllMemoryStates() async {
+    for (final state in _memoryStates.values) {
+      state.ef = 2.5;
+      state.interval = 1;
+      state.repetition = 0;
+      state.lastReviewedAt = null;
+    }
+
+    await _saveMemoryStates();
+    notifyListeners();
+  }
+
+
   int getStudiedWordsCount(List<WordCard> words) {
     return words.where((word) {
       final state = getWordState('${word.word}_${word.reading}');
@@ -363,4 +377,5 @@ class StudyProvider extends ChangeNotifier {
   WordMemoryState? getMemoryState(String wordId) {
     return _memoryStates[wordId];
   }
+
 } 
