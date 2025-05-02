@@ -399,6 +399,8 @@ class FlashcardView extends StatefulWidget {
 }
 
 class _FlashcardViewState extends State<FlashcardView> {
+  final Map<String, bool> _hiraganaShown = {};
+  final Map<String, bool> _meaningShown = {};
   late PageController _pageController;
   int _currentIndex = 0;
 
@@ -412,6 +414,19 @@ class _FlashcardViewState extends State<FlashcardView> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+
+  void _toggleCardState(String wordId) {
+    final currentHira = _hiraganaShown[wordId] ?? false;
+    final currentMean = _meaningShown[wordId] ?? false;
+
+    final shouldTurnOff = currentHira && currentMean;
+
+    setState(() {
+      _hiraganaShown[wordId] = !shouldTurnOff;
+      _meaningShown[wordId] = !shouldTurnOff;
+    });
   }
 
   @override
@@ -432,14 +447,16 @@ class _FlashcardViewState extends State<FlashcardView> {
         final wordState = context.read<StudyProvider>().getWordState(word['id'].toString());
         
         return GestureDetector(
-          onTap: widget.onCardTap,
+          onTap: () {
+              _toggleCardState(word['id'].toString());
+            },
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: WordListItem(
                 word: word,
-                showHiragana: widget.showHiragana,
-                showMeaning: widget.showMeaning,
+                showHiragana: _hiraganaShown[word['id'].toString()] ?? false,
+                showMeaning: _meaningShown[word['id'].toString()] ?? false,
                 isFlashcardMode: true,
                 timeAgo: widget.showTimeAgo ? wordState?.timeAgoText : null,
               ),
