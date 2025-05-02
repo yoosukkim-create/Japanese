@@ -42,14 +42,22 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
     final shouldTurnOff = currentHira && currentMean;
 
     setState(() {
-      _hiraganaShown[wordId] = !shouldTurnOff;
-      _meaningShown[wordId] = !shouldTurnOff;
+      // 둘 다 켜져 있으면 -> 둘 다 끔
+      if (shouldTurnOff) {
+        _hiraganaShown[wordId] = false;
+        _meaningShown[wordId] = false;
+      } else {
+        // 하나라도 꺼져 있으면 -> 둘 다 켬
+        _hiraganaShown[wordId] = true;
+        _meaningShown[wordId] = true;
+      }
 
-      // 전역 상태도 마지막 상태와 동기화
-      showHiragana = _hiraganaShown[wordId]!;
-      showMeaning = _meaningShown[wordId]!;
+      // 이걸 여기에 두면 안됨: 전역 상태는 개별 토글 시 바꾸면 안돼!
+      // showHiragana = _hiraganaShown[wordId]!;
+      // showMeaning = _meaningShown[wordId]!;
     });
   }
+
 
   @override
   void dispose() {
