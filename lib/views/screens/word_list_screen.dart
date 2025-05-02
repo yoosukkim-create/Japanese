@@ -23,6 +23,9 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
   bool showMeaning = false;
   late List<Map<String, dynamic>> currentWords;
   late StudyProvider _studyProvider;
+  final Map<String, bool> _hiraganaShown = {};
+  final Map<String, bool> _meaningShown = {};
+
 
   @override
   void initState() {
@@ -30,6 +33,13 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
     currentWords = List<Map<String, dynamic>>.from(widget.words);
     _studyProvider = Provider.of<StudyProvider>(context, listen: false);
     _studyProvider.addToRecentLists(widget.title, widget.words);
+  }
+
+  void _toggleWordState(String wordId) {
+    setState(() {
+      _hiraganaShown[wordId] = !(_hiraganaShown[wordId] ?? false);
+      _meaningShown[wordId] = !(_meaningShown[wordId] ?? false);
+    });
   }
 
   @override
@@ -99,13 +109,13 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                       padding: const EdgeInsets.only(bottom: 12.0),
                       child: GestureDetector(
                         onTap: () {
-                          _toggleBoth();
+                          _toggleWordState(wordId);
                           studyProvider.updateTempWordState(wordId);
                         },
                         child: WordListItem(
                           word: word,
-                          showHiragana: showHiragana,
-                          showMeaning: showMeaning,
+                          showHiragana: _hiraganaShown[wordId] ?? false,
+                          showMeaning: _meaningShown[wordId] ?? false,
                           isFlashcardMode: false,
                           timeAgo: themeProvider.showLastViewedTime
                               ? _getTimeAgoText(studyProvider, wordId)
@@ -154,6 +164,10 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                     onPressed: () {
                       setState(() {
                         showHiragana = !showHiragana;
+                        for (var word in currentWords) {
+                          final wordId = word['id'].toString();
+                          _hiraganaShown[wordId] = showHiragana;
+                        }
                       });
                     },
                   ),
@@ -164,6 +178,10 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                     onPressed: () {
                       setState(() {
                         showMeaning = !showMeaning;
+                        for (var word in currentWords) {
+                          final wordId = word['id'].toString();
+                          _meaningShown[wordId] = showMeaning;
+                        }
                       });
                     },
                   ),
