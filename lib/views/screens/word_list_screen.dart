@@ -36,9 +36,18 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
   }
 
   void _toggleWordState(String wordId) {
+    final currentHira = _hiraganaShown[wordId] ?? showHiragana;
+    final currentMean = _meaningShown[wordId] ?? showMeaning;
+
+    final shouldTurnOff = currentHira && currentMean;
+
     setState(() {
-      _hiraganaShown[wordId] = !(_hiraganaShown[wordId] ?? false);
-      _meaningShown[wordId] = !(_meaningShown[wordId] ?? false);
+      _hiraganaShown[wordId] = !shouldTurnOff;
+      _meaningShown[wordId] = !shouldTurnOff;
+
+      // 전역 상태도 마지막 상태와 동기화
+      showHiragana = _hiraganaShown[wordId]!;
+      showMeaning = _meaningShown[wordId]!;
     });
   }
 
