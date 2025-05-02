@@ -104,7 +104,6 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                   words: currentWords,
                   showHiragana: showHiragana,
                   showMeaning: showMeaning,
-                  onCardTap: _toggleBoth,
                   showTimeAgo: themeProvider.showLastViewedTime,
                 )
               : ListView.builder(
@@ -382,7 +381,6 @@ class FlashcardView extends StatefulWidget {
   final List<Map<String, dynamic>> words;
   final bool showHiragana;
   final bool showMeaning;
-  final VoidCallback onCardTap;
   final bool showTimeAgo;
 
   const FlashcardView({
@@ -390,7 +388,6 @@ class FlashcardView extends StatefulWidget {
     required this.words,
     required this.showHiragana,
     required this.showMeaning,
-    required this.onCardTap,
     required this.showTimeAgo,
   }) : super(key: key);
 
@@ -408,25 +405,54 @@ class _FlashcardViewState extends State<FlashcardView> {
   void initState() {
     super.initState();
     _pageController = PageController();
+
+    // 초기 상태 반영
+    for (var word in widget.words) {
+      final wordId = word['id'].toString();
+      _hiraganaShown[wordId] = widget.showHiragana;
+      _meaningShown[wordId] = widget.showMeaning;
+    }
   }
 
   @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
+  void didUpdateWidget(covariant FlashcardView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // 히라가나 전역 토글 반영
+    if (oldWidget.showHiragana != widget.showHiragana) {
+      setState(() {
+        for (var word in widget.words) {
+          final wordId = word['id'].toString();
+          _hiraganaShown[wordId] = widget.showHiragana;
+        }
+      });
+    }
+
+    // 뜻 전역 토글 반영
+    if (oldWidget.showMeaning != widget.showMeaning) {
+      setState(() {
+        for (var word in widget.words) {
+          final wordId = word['id'].toString();
+          _meaningShown[wordId] = widget.showMeaning;
+        }
+      });
+    }
   }
-
-
   void _toggleCardState(String wordId) {
     final currentHira = _hiraganaShown[wordId] ?? false;
     final currentMean = _meaningShown[wordId] ?? false;
-
     final shouldTurnOff = currentHira && currentMean;
 
     setState(() {
       _hiraganaShown[wordId] = !shouldTurnOff;
       _meaningShown[wordId] = !shouldTurnOff;
     });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -444,19 +470,18 @@ class _FlashcardViewState extends State<FlashcardView> {
       },
       itemBuilder: (context, index) {
         final word = widget.words[index];
-        final wordState = context.read<StudyProvider>().getWordState(word['id'].toString());
-        
+        final wordId = word['id'].toString();
+        final wordState = context.read<StudyProvider>().getWordState(wordId);
+
         return GestureDetector(
-          onTap: () {
-              _toggleCardState(word['id'].toString());
-            },
+          onTap: () => _toggleCardState(wordId),
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: WordListItem(
                 word: word,
-                showHiragana: _hiraganaShown[word['id'].toString()] ?? false,
-                showMeaning: _meaningShown[word['id'].toString()] ?? false,
+                showHiragana: _hiraganaShown[wordId] ?? false,
+                showMeaning: _meaningShown[wordId] ?? false,
                 isFlashcardMode: true,
                 timeAgo: widget.showTimeAgo ? wordState?.timeAgoText : null,
               ),
@@ -466,4 +491,4 @@ class _FlashcardViewState extends State<FlashcardView> {
       },
     );
   }
-} 
+}
