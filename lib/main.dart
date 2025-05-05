@@ -1,15 +1,13 @@
-import 'dart:async';
-import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:japanese/models/word_book.dart';
+import 'package:japanese/viewmodels/home_viewmodel.dart';
 import 'package:japanese/providers/theme_provider.dart';
 import 'package:japanese/providers/study_provider.dart';
-import 'package:japanese/services/japanese_data_service.dart';
+
 import 'package:japanese/theme/app_theme.dart';
-import 'package:japanese/viewmodels/home_viewmodel.dart';
 import 'package:japanese/views/screens/word_book_screen.dart';
 import 'package:japanese/views/screens/word_list_screen.dart';
 import 'package:japanese/views/screens/word_group_screen.dart';
