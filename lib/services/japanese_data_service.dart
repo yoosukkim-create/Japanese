@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import '../models/japanese_level.dart';
+import '../models/word_book.dart';
 
 class JapaneseDataService {
-  Future<List<JapaneseLevel>> loadJapaneseData() async {
+  Future<List<Wordbook>> loadJapaneseData() async {
     try {
       // assets에서 JSON 파일 로드
       final String jsonString = 
@@ -12,13 +12,13 @@ class JapaneseDataService {
       // JSON 파싱
       final Map<String, dynamic> jsonData = json.decode(jsonString);
       
-      // JapaneseLevel 객체 리스트로 변환
-      List<JapaneseLevel> levels = [];
+      // Wordbook 객체 리스트로 변환
+      List<Wordbook> wordbooks = [];
       jsonData.forEach((key, value) {
-        levels.add(JapaneseLevel.fromJson(key, value));
+        wordbooks.add(Wordbook.fromJson(key, value));
       });
       
-      return levels;
+      return wordbooks;
     } catch (e) {
       throw Exception('데이터 로드 실패: $e');
     }
@@ -34,8 +34,8 @@ class JapaneseDataService {
       List<Map<String, dynamic>> results = [];
 
       // 모든 레벨과 서브레벨을 순회하며 검색
-      jsonData.forEach((levelKey, levelData) {
-        levelData.forEach((subLevelKey, words) {
+      jsonData.forEach((wordbookKey, wordbookData) {
+        wordbookData.forEach((wordgroupKey, words) {
           for (var word in words) {
             // 한자 검색 (단어)
             if (_isKanji(query) && word['단어'].toString().contains(query)) {

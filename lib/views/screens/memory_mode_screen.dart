@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/japanese_level.dart';
+import '../../models/word_book.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/study_provider.dart';
 
 class MemoryModeScreen extends StatefulWidget {
-  final JapaneseLevel level;
+  final Wordbook wordbook;
 
   const MemoryModeScreen({
     Key? key,
-    required this.level,
+    required this.wordbook,
   }) : super(key: key);
 
   @override
@@ -24,13 +24,13 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
   @override
   void initState() {
     super.initState();
-    _allWords = _getAllWordsFromLevel(widget.level);
+    _allWords = _getAllWordsFromWordbook(widget.wordbook);
   }
 
-  List<Map<String, dynamic>> _getAllWordsFromLevel(JapaneseLevel level) {
+  List<Map<String, dynamic>> _getAllWordsFromWordbook(Wordbook wordbook) {
     List<Map<String, dynamic>> words = [];
-    level.subLevels.values.forEach((sublevel) {
-      words.addAll(sublevel.words.map((word) => {
+    wordbook.wordgroups.values.forEach((wordgroup) {
+      words.addAll(wordgroup.words.map((word) => {
         'id': '${word.word}_${word.reading}',
         '단어': word.word,
         '읽기': word.reading,
@@ -276,7 +276,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              '${widget.level.title}',
+              '${widget.wordbook.title}',
               style: TextStyle(
                 color: themeProvider.mainColor,
                 fontWeight: FontWeight.w600,

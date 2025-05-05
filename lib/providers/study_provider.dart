@@ -3,7 +3,7 @@ import 'dart:math' show Random;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:japanese/models/word_study_state.dart';
-import 'package:japanese/models/japanese_level.dart';
+import 'package:japanese/models/word_book.dart';
 import 'package:japanese/models/word_memory_state.dart';
 
 class StudyProvider extends ChangeNotifier {
@@ -235,13 +235,13 @@ class StudyProvider extends ChangeNotifier {
     }
   }
 
-  String getLevelProgressText(Map<String, SubLevel> subLevels) {
+  String getWordbookProgressText(Map<String, WordGroup> wordgroups) {
     int totalWords = 0;
     int studiedWords = 0;
 
-    subLevels.forEach((_, subLevel) {
-      totalWords += subLevel.words.length;
-      studiedWords += subLevel.words.where((word) {
+    wordgroups.forEach((_, wordgroup) {
+      totalWords += wordgroup.words.length;
+      studiedWords += wordgroup.words.where((word) {
         final state = getWordState('${word.word}_${word.reading}');
         return state != null;
       }).length;
@@ -250,7 +250,7 @@ class StudyProvider extends ChangeNotifier {
     return '$studiedWords/$totalWords';
   }
 
-  String getSubLevelProgressText(List<WordCard> words) {
+  String getWordgroupProgressText(List<WordCard> words) {
     int totalWords = words.length;
     int studiedWords = words.where((word) {
       final state = getWordState('${word.word}_${word.reading}');

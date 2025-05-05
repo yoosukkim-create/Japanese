@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'package:japanese/models/japanese_level.dart';
+import 'package:japanese/models/word_book.dart';
 import 'package:japanese/providers/theme_provider.dart';
 import 'package:japanese/providers/study_provider.dart';
 import 'package:japanese/services/japanese_data_service.dart';
 import 'package:japanese/theme/app_theme.dart';
 import 'package:japanese/views/screens/home_screen.dart';
-import 'package:japanese/views/screens/level_list_screen.dart';
+import 'package:japanese/views/screens/word_book_screen.dart';
 import 'package:japanese/views/screens/word_list_screen.dart';
-import 'package:japanese/views/screens/sublevel_screen.dart';
+import 'package:japanese/views/screens/word_group_screen.dart';
 import 'package:japanese/views/screens/word_card_screen.dart';
 import 'package:japanese/views/screens/settings_screen.dart';
 
@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool _isLoading = true;
   String _error = '';
-  List<JapaneseLevel> _levels = [];
+  List<Wordbook> _wordbooks = [];
   Timer? _debounce;
 
   bool isDarkMode(BuildContext context) => Theme.of(context).brightness == Brightness.dark;
@@ -83,9 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      final levels = await _dataService.loadJapaneseData();
+      final wordbooks = await _dataService.loadJapaneseData();
       setState(() {
-        _levels = levels;
+        _wordbooks = wordbooks;
         _isLoading = false;
       });
     } catch (e) {
@@ -191,15 +191,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildBasicWordList(List<JapaneseLevel> levels, ThemeProvider themeProvider) {
+  Widget _buildBasicWordList(List<Wordbook> wordbooks, ThemeProvider themeProvider) {
     return _buildCardContainer(
       children: [
         _buildCardTitle('기본 단어장', themeProvider),
-        ...levels.map((level) => InkWell(
+        ...wordbooks.map((wordbook) => InkWell(
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SubLevelScreen(level: level),
+                  builder: (context) => WordGroupScreen(wordbook: wordbook),
                 ),
               ),
               child: Padding(
@@ -208,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      level.title,
+                      wordbook.title,
                       style: TextStyle(
                         fontSize: 16,
                         color: isDarkMode(context) ? Colors.white : Colors.black87,
@@ -216,8 +216,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Consumer<StudyProvider>(
                       builder: (context, studyProvider, _) {
-                        final totalWords = level.subLevels.values.fold(0, (sum, s) => sum + s.words.length);
-                        final studiedWords = level.subLevels.values.fold(
+                        final totalWords = wordbook.wordgroups.values.fold(0, (sum, s) => sum + s.words.length);
+                        final studiedWords = wordbook.wordgroups.values.fold(
                           0,
                           (sum, s) => sum + studyProvider.getStudiedWordsCount(s.words),
                         );
@@ -346,7 +346,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 _buildRecentLists(studyProvider, themeProvider),
-                _buildBasicWordList(_levels, themeProvider),
+                _buildBasicWordList(_wordbooks, themeProvider),
                 _buildCustomWordbooks(themeProvider),
               ],
             ),

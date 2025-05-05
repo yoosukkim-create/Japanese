@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import '../../models/japanese_level.dart';
+import '../../models/word_book.dart';
 
 // 단어 카드 화면
 class WordCardScreen extends StatelessWidget {
-  final SubLevel subLevel;
+  final WordGroup wordgroup;
 
-  const WordCardScreen({Key? key, required this.subLevel}) : super(key: key);
+  const WordCardScreen({Key? key, required this.wordgroup}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(subLevel.title)),
+      appBar: AppBar(title: Text(wordgroup.title)),
       body: ListView.builder(
-        itemCount: subLevel.words.length,
+        itemCount: wordgroup.words.length,
         itemBuilder: (context, index) {
-          return FlipWordCard(word: subLevel.words[index]);
+          return FlipWordCard(word: wordgroup.words[index]);
         },
       ),
     );

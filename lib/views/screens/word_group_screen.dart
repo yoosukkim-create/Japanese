@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import '../../models/japanese_level.dart';
+import '../../models/word_book.dart';
 import 'word_list_screen.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
 import 'settings_screen.dart';
 import '../../providers/study_provider.dart';
 import 'memory_mode_screen.dart';
-class SubLevelScreen extends StatelessWidget {
+class WordGroupScreen extends StatelessWidget {
 
-  final JapaneseLevel level;
+  final Wordbook wordbook;
 
-  const SubLevelScreen({Key? key, required this.level}) : super(key: key);
+  const WordGroupScreen({Key? key, required this.wordbook}) : super(key: key);
 
   @override
   bool isDarkMode(BuildContext context) => Theme.of(context).brightness == Brightness.dark;
@@ -24,7 +24,7 @@ class SubLevelScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          level.title,
+          wordbook.title,
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 20,
@@ -45,10 +45,10 @@ class SubLevelScreen extends StatelessWidget {
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(6.0),
-        itemCount: level.subLevels.length,
+        itemCount: wordbook.wordgroups.length,
         itemBuilder: (context, index) {
-          String key = level.subLevels.keys.elementAt(index);
-          final sublevel = level.subLevels[key]!;
+          String key = wordbook.wordgroups.keys.elementAt(index);
+          final wordgroup = wordbook.wordgroups[key]!;
 
           return Card(
             color: cardColor(context),
@@ -65,7 +65,7 @@ class SubLevelScreen extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => WordListScreen(
                       title: key,
-                      words: sublevel.words.map((word) => {
+                      words: wordgroup.words.map((word) => {
                         'id': word.id,
                         '단어': word.word,
                         '읽기': word.reading,
@@ -93,7 +93,7 @@ class SubLevelScreen extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      studyProvider.getSubLevelProgressText(sublevel.words),
+                      studyProvider.getWordgroupProgressText(wordgroup.words),
                       style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
@@ -117,7 +117,7 @@ class SubLevelScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MemoryModeScreen(level: level),
+                  builder: (context) => MemoryModeScreen(wordbook: wordbook),
                 ),
               );
             },

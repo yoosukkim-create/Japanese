@@ -1,34 +1,34 @@
 // 최상위 레벨 (JLPT N5 등)
-class JapaneseLevel {
+class Wordbook {
   final String title;  // "레벨 1 (JLPT N5)"
-  final Map<String, SubLevel> subLevels;  // "레벨 1-1" 등
+  final Map<String, WordGroup> wordgroups;  // "레벨 1-1" 등
 
-  JapaneseLevel({
+  Wordbook({
     required this.title,
-    required this.subLevels,
+    required this.wordgroups,
   });
 
-  factory JapaneseLevel.fromJson(String title, Map<String, dynamic> json) {
-    Map<String, SubLevel> subLevels = {};
+  factory Wordbook.fromJson(String title, Map<String, dynamic> json) {
+    Map<String, WordGroup> wordgroups = {};
     json.forEach((key, value) {
-      subLevels[key] = SubLevel.fromJson(key, value as List<dynamic>);
+      wordgroups[key] = WordGroup.fromJson(key, value as List<dynamic>);
     });
-    return JapaneseLevel(title: title, subLevels: subLevels);
+    return Wordbook(title: title, wordgroups: wordgroups);
   }
 }
 
 // 서브 레벨 (레벨 1-1 등)
-class SubLevel {
+class WordGroup {
   final String title;  // "레벨 1-1"
   final List<WordCard> words;
 
-  SubLevel({
+  WordGroup({
     required this.title,
     required this.words,
   });
 
-  factory SubLevel.fromJson(String title, List<dynamic> json) {
-    return SubLevel(
+  factory WordGroup.fromJson(String title, List<dynamic> json) {
+    return WordGroup(
       title: title,
       words: json.map((word) => WordCard.fromJson(word)).toList(),
     );
