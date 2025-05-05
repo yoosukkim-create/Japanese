@@ -9,6 +9,7 @@ import 'package:japanese/providers/theme_provider.dart';
 import 'package:japanese/providers/study_provider.dart';
 import 'package:japanese/services/japanese_data_service.dart';
 import 'package:japanese/theme/app_theme.dart';
+import 'package:japanese/viewmodels/home_viewmodel.dart';
 import 'package:japanese/views/screens/word_book_screen.dart';
 import 'package:japanese/views/screens/word_list_screen.dart';
 import 'package:japanese/views/screens/word_group_screen.dart';
@@ -21,6 +22,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => StudyProvider()),
+        ChangeNotifierProvider(create: (_) => HomeViewModel()..loadData()),
       ],
       child: const MyApp(),
     ),
@@ -278,20 +280,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ThemeProvider, StudyProvider>(
-      builder: (context, themeProvider, studyProvider, _) {
-        if (_isLoading) {
+    return Consumer3<HomeViewModel, ThemeProvider, StudyProvider>(
+      builder: (context, homeVM, themeProvider, studyProvider, _) {
+        if (homeVM.isLoading) {
           return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
 
-        if (_error.isNotEmpty) {
+        if (homeVM.error.isNotEmpty) {
           return Scaffold(
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('오류: $_error'),
-                  ElevatedButton(onPressed: _loadData, child: const Text('다시 시도')),
+                  Text('오류: ${homeVM.error}'),
+                  ElevatedButton(onPressed: homeVM.loadData, child: const Text('다시 시도')),
                 ],
               ),
             ),
@@ -329,27 +331,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextField(
-                    controller: _searchController,
-                    onChanged: _onSearchChanged,
+                    controller: homeVM.searchController,
+                    onChanged: (query) => homeVM.searchWords(
+                      query,
+                      (results) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => WordListScreen(title: '"$query" 검색 결과', words: results),
+                          ),
+                        );
+                      },
+                      (error) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+                      },
+                    ),
                     decoration: InputDecoration(
                       hintText: '단어 검색...',
                       prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        borderSide: BorderSide(color: themeProvider.mainColor, width: 2.0),
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: themeProvider.mainColor, width: 2),
                       ),
                     ),
                   ),
                 ),
                 _buildRecentLists(studyProvider, themeProvider),
-                _buildBasicWordList(_wordbooks, themeProvider),
+                _buildBasicWordList(homeVM.wordbooks, themeProvider),
                 _buildCustomWordbooks(themeProvider),
               ],
             ),
           ),
+
         );
       },
     );
