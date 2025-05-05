@@ -1,8 +1,10 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/word_book.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/study_provider.dart';
+
 
 class MemoryModeScreen extends StatefulWidget {
   final Wordbook wordbook;
@@ -24,7 +26,8 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
   @override
   void initState() {
     super.initState();
-    _allWords = _getAllWordsFromWordbook(widget.wordbook);
+    final rawWords = _getAllWordsFromWordbook(widget.wordbook);
+    _allWords = _shuffleWithoutConsecutiveDuplicates(rawWords);
   }
 
   List<Map<String, dynamic>> _getAllWordsFromWordbook(Wordbook wordbook) {
@@ -39,6 +42,33 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     });
     return words;
   }
+
+  List<Map<String, dynamic>> _shuffleWithoutConsecutiveDuplicates(List<Map<String, dynamic>> words) {
+    if (words.isEmpty) return [];
+
+    final random = Random();
+    int attempt = 0;
+    const maxAttempts = 100;
+
+    while (attempt < maxAttempts) {
+      final shuffled = List<Map<String, dynamic>>.from(words)..shuffle(random);
+      bool hasConsecutiveDuplicate = false;
+
+      for (int i = 0; i < shuffled.length - 1; i++) {
+        if (shuffled[i]['id'] == shuffled[i + 1]['id']) {
+          hasConsecutiveDuplicate = true;
+          break;
+        }
+      }
+
+      if (!hasConsecutiveDuplicate) {
+        return shuffled;
+      }
+      attempt++;
+    }
+
+    return words; // fallback
+  }    
 
   void _moveToNextWord() {
     setState(() {
