@@ -53,74 +53,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final JapaneseDataService _dataService = JapaneseDataService();
-  final TextEditingController _searchController = TextEditingController();
-
-  bool _isLoading = true;
-  String _error = '';
-  List<Wordbook> _wordbooks = [];
-  Timer? _debounce;
 
   bool isDarkMode(BuildContext context) => Theme.of(context).brightness == Brightness.dark;
 
   @override
   void initState() {
     super.initState();
-    _loadData();
     Provider.of<StudyProvider>(context, listen: false).loadRecentLists();
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    _debounce?.cancel();
-    super.dispose();
-  }
-
-  Future<void> _loadData() async {
-    setState(() {
-      _isLoading = true;
-      _error = '';
-    });
-
-    try {
-      final wordbooks = await _dataService.loadJapaneseData();
-      setState(() {
-        _wordbooks = wordbooks;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
-    }
-  }
-
-  void _onSearchChanged(String query) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
-      if (query.isEmpty) return;
-
-      try {
-        final results = await _dataService.searchWords(query);
-        if (results.isNotEmpty) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => WordListScreen(
-                title: '"$query" 검색 결과',
-                words: results,
-              ),
-            ),
-          );
-        } else {
-          _showSnackBar('검색 결과가 없습니다.');
-        }
-      } catch (e) {
-        _showSnackBar('검색 중 오류가 발생했습니다: $e');
-      }
-    });
   }
 
   void _showSnackBar(String message) {
