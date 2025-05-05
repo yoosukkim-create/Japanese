@@ -7,11 +7,8 @@ import 'package:japanese/viewmodels/home_viewmodel.dart';
 import 'package:japanese/providers/theme_provider.dart';
 import 'package:japanese/providers/study_provider.dart';
 
-import 'package:japanese/theme/app_theme.dart';
-import 'package:japanese/views/screens/word_book_screen.dart';
 import 'package:japanese/views/screens/word_list_screen.dart';
 import 'package:japanese/views/screens/word_group_screen.dart';
-import 'package:japanese/views/screens/word_card_screen.dart';
 import 'package:japanese/views/screens/settings_screen.dart';
 
 void main() {
