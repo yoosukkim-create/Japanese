@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  // 상태 변수들
   bool _isDarkMode = true;
   bool _showLastViewedTime = true;
   bool _showMemoryParams = true;
-  Color _mainColor = const Color(0xFFFFB7C5); // 기본 색상: 체리 블러썸
+  Color _mainColor = const Color(0xFF7F7F7F); 
 
-  // 정적 색상 정의
-  static const Color navyBlue = Color(0xFF4A5568);
-  static const Color cherryBlossom = Color(0xFFFFB7C5);
+  static const Color gray = Color(0xFF7F7F7F);
+  static const Color pastelRed = Color(0xFFFFC1CC);
+  static const Color pastelOrange = Color(0xFFFFD8A8);
+  static const Color pastelYellow = Color(0xFFFFF5A5);
+  static const Color pastelGreen = Color(0xFFB9FBC0);
+  static const Color pastelBlue = Color(0xFFA0C4FF);
+  static const Color pastelIndigo = Color(0xFFBDB2FF);
 
-  // Getter
   bool get isDarkMode => _isDarkMode;
   bool get showLastViewedTime => _showLastViewedTime;
   bool get showMemoryParams => _showMemoryParams;
