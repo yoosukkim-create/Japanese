@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:japanese/providers/study_provider.dart';
 import 'package:japanese/providers/theme_provider.dart';
+
 import 'package:japanese/views/screens/settings_screen.dart';
 
 class WordListScreen extends StatefulWidget {

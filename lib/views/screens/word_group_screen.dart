@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../models/word_book.dart';
-import 'word_list_screen.dart';
 import 'package:provider/provider.dart';
-import '../../providers/theme_provider.dart';
-import 'settings_screen.dart';
-import '../../providers/study_provider.dart';
-import 'memory_mode_screen.dart';
+
+import 'package:japanese/models/word_book.dart';
+import 'package:japanese/providers/theme_provider.dart';
+import 'package:japanese/providers/study_provider.dart';
+
+import 'package:japanese/views/screens/word_list_screen.dart';
+import 'package:japanese/views/screens/memory_mode_screen.dart';
+import 'package:japanese/views/screens/settings_screen.dart';
 
 class WordGroupScreen extends StatelessWidget {
 

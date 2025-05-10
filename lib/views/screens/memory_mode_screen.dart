@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/word_book.dart';
-import '../../providers/theme_provider.dart';
-import '../../providers/study_provider.dart';
 
+import 'package:japanese/models/word_book.dart';
+import 'package:japanese/providers/theme_provider.dart';
+import 'package:japanese/providers/study_provider.dart';
 
 class MemoryModeScreen extends StatefulWidget {
   final Wordbook wordbook;

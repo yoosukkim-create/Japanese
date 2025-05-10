@@ -98,10 +98,10 @@ class ThemeProvider extends ChangeNotifier {
   );
 
   // 3. word list Screen - list card, flash card, memory card
-  static final TextStyle wordlistBarStyle = GoogleFonts.getFont(
-    'Jua',
-    fontSize:  26.0,
-    fontWeight: FontWeight.w400,
-  );
   // 4. settings Screen 
+  static final TextStyle settingsBarStyle = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  20.0,
+    fontWeight: FontWeight.w600,
+  );
 } 

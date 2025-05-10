@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:math' show Random;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:japanese/models/word_study_state.dart';
+
 import 'package:japanese/models/word_book.dart';
 import 'package:japanese/models/word_memory_state.dart';
+import 'package:japanese/models/word_study_state.dart';
 
 class StudyProvider extends ChangeNotifier {
   // 학습 상태 관련

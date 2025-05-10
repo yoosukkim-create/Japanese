@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import '../models/word_book.dart';
+import 'package:japanese/models/word_book.dart';
 
 class JapaneseDataService {
   Future<List<Wordbook>> loadJapaneseData() async {
