@@ -55,10 +55,10 @@ class WordGroupScreen extends StatelessWidget {
             elevation:cardElevation(context),
             margin: const EdgeInsets.only(bottom: 12.0),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
             ),
             child: InkWell(
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
               onTap: () {
                 Navigator.push(
                   context,

@@ -44,4 +44,6 @@ class ThemeProvider extends ChangeNotifier {
     _showMemoryParams = !_showMemoryParams;
     notifyListeners();
   }
+
+  static const double defaultCornerRadius = 20.0;
 } 

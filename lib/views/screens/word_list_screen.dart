@@ -233,7 +233,7 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
+          borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
         ),
         side: BorderSide(
           color: alwaysActive || isSelected ? Theme.of(context).primaryColor : Colors.grey,
@@ -321,7 +321,7 @@ class WordListItem extends StatelessWidget {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
       ),
       child: Container(
         width: double.infinity,

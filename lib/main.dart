@@ -146,6 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       wordbook.title,
                       style: TextStyle(
                         fontSize: 16,
+                        fontWeight: FontWeight.w600,
                         color: isDarkMode(context) ? Colors.white : Colors.black87,
                       ),
                     ),
@@ -195,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: isDarkMode(context) ? const Color(0xFF1C1B1F) : Theme.of(context).scaffoldBackgroundColor,
       elevation: isDarkMode(context) ? 0 : 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
     );
   }
@@ -283,9 +284,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: InputDecoration(
                       hintText: '단어 검색...',
                       prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius)),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
                         borderSide: BorderSide(color: themeProvider.mainColor, width: 2),
                       ),
                     ),
