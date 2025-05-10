@@ -11,6 +11,8 @@ import 'package:japanese/views/screens/word_list_screen.dart';
 import 'package:japanese/views/screens/word_group_screen.dart';
 import 'package:japanese/views/screens/settings_screen.dart';
 
+import 'package:japanese/utils/top_bounce_only_scroll_physics.dart';
+
 void main() {
   runApp(
     MultiProvider(
@@ -71,9 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(width: 8),
           Text(
             title,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
+            style: ThemeProvider.wordbookListStyle.copyWith(
               color: themeProvider.mainColor,
             ),
           ),
@@ -144,9 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       wordbook.title,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                      style: ThemeProvider.wordbookNameStyle.copyWith(
                         color: isDarkMode(context) ? Colors.white : Colors.black87,
                       ),
                     ),
@@ -159,7 +157,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                         return Text(
                           '$studiedWords/$totalWords',
-                          style: const TextStyle(fontSize: 14, color: Colors.grey),
+                          style: ThemeProvider.wordbookCountStyle.copyWith(
+                            color: Colors.grey,
+                          ),
                         );
                       },
                     ),
@@ -238,13 +238,10 @@ class _HomeScreenState extends State<HomeScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Align(
-              alignment: Alignment.centerLeft,
+              alignment: ThemeProvider.wordbookBarAlignment,
               child: Text(
-                '메모리 メモリ',
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 24,
-                  letterSpacing: 1.2,
+                ThemeProvider.wordbookBarTitle,
+                style: ThemeProvider.wordbookBarStyle.copyWith(
                   color: themeProvider.mainColor,
                 ),
               ),
@@ -259,46 +256,59 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: TextField(
-                    controller: homeVM.searchController,
-                    onChanged: (query) => homeVM.searchWords(
-                      query,
-                      (results) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => WordListScreen(title: '"$query" 검색 결과', words: results),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 🔍 고정된 검색창
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: homeVM.searchController,
+                  onChanged: (query) => homeVM.searchWords(
+                    query,
+                    (results) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => WordListScreen(
+                            title: '"$query" 검색 결과',
+                            words: results,
                           ),
-                        );
-                      },
-                      (error) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
-                      },
+                        ),
+                      );
+                    },
+                    (error) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+                    },
+                  ),
+                  decoration: InputDecoration(
+                    hintText: '단어 검색...',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
                     ),
-                    decoration: InputDecoration(
-                      hintText: '단어 검색...',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius)),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
-                        borderSide: BorderSide(color: themeProvider.mainColor, width: 2),
-                      ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
+                      borderSide: BorderSide(color: themeProvider.mainColor, width: 2),
                     ),
                   ),
                 ),
-                _buildRecentLists(studyProvider, themeProvider),
-                _buildBasicWordList(homeVM.wordbooks, themeProvider),
-                _buildCustomWordbooks(themeProvider),
-              ],
-            ),
-          ),
+              ),
 
+              // 📜 나머지 리스트는 스크롤 가능하게
+              Expanded(
+                child: ListView(
+                  physics: const TopBounceOnlyScrollPhysics(),
+                  padding: const EdgeInsets.only(bottom: 24.0),
+                  children: [
+                    _buildRecentLists(studyProvider, themeProvider),
+                    _buildBasicWordList(homeVM.wordbooks, themeProvider),
+                    _buildCustomWordbooks(themeProvider),
+                  ],
+                ),
+              ),
+            ],
+          ),
         );
       },
     );

@@ -6,6 +6,7 @@ import '../../providers/theme_provider.dart';
 import 'settings_screen.dart';
 import '../../providers/study_provider.dart';
 import 'memory_mode_screen.dart';
+import 'package:japanese/utils/top_bounce_only_scroll_physics.dart';
 class WordGroupScreen extends StatelessWidget {
 
   final Wordbook wordbook;
@@ -23,12 +24,14 @@ class WordGroupScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          wordbook.title,
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-            color: themeProvider.mainColor,
+        titleSpacing: 0,
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            wordbook.title,
+            style: ThemeProvider.wordgroupBarStyle.copyWith(
+              color: themeProvider.mainColor,
+            ),
           ),
         ),
         actions: [
@@ -44,6 +47,7 @@ class WordGroupScreen extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
+        physics: const TopBounceOnlyScrollPhysics(),
         padding: const EdgeInsets.all(6.0),
         itemCount: wordbook.wordgroups.length,
         itemBuilder: (context, index) {
@@ -76,7 +80,7 @@ class WordGroupScreen extends StatelessWidget {
                 );
               },
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -84,18 +88,15 @@ class WordGroupScreen extends StatelessWidget {
                       children: [
                         Text(
                           key,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                          style: ThemeProvider.wordgroupNameStyle.copyWith(
                             color: textColor(context),
-                          ),
+                          ), 
                         ),
                       ],
                     ),
                     Text(
                       studyProvider.getWordgroupProgressText(wordgroup.words),
-                      style: const TextStyle(
-                        fontSize: 14,
+                      style: ThemeProvider.wordgroupCountStyle.copyWith(
                         color: Colors.grey,
                       ),
                     ),

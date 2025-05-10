@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ThemeProvider extends ChangeNotifier {
   bool _isDarkMode = true;
@@ -45,5 +46,55 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  static const double defaultCornerRadius = 20.0;
+  static const double defaultCornerRadius = 30.0;
+
+
+  //// Manage Every Text Here
+
+  // 1. wordbook list Screen (Main)
+  static const Alignment wordbookBarAlignment = Alignment.centerLeft;
+  static const String wordbookBarTitle = '메모리 メモリ'; 
+  static final TextStyle wordbookBarStyle = GoogleFonts.getFont(
+    'Do Hyeon',
+    fontSize:  24.0,
+    fontWeight: FontWeight.w900,
+    letterSpacing: 1.2,
+  );
+  static final TextStyle wordbookListStyle = GoogleFonts.getFont(
+    'Do Hyeon',
+    fontSize:  14.0,
+    fontWeight: FontWeight.w700,
+  );
+  static final TextStyle wordbookNameStyle = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  16.0,
+    fontWeight: FontWeight.w600,
+  );
+  static final TextStyle wordbookCountStyle = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  14.0,
+    fontWeight: FontWeight.w400,
+  );
+
+  // 2. wordgroup list Screen (Sub)
+  static final TextStyle wordgroupBarStyle = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  20.0,
+    fontWeight: FontWeight.w600,
+  );
+  static final TextStyle wordgroupNameStyle = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  16.0,
+    fontWeight: FontWeight.w400,
+  );
+  static final TextStyle wordgroupCountStyle = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  14.0,
+    fontWeight: FontWeight.w400,
+  );
+
+  // 3. word list Screen - flash card 
+  // 4. word list Screen - list card 
+  // 5. word list Screen - memory card 
+  // 6. settings Screen 
 } 
