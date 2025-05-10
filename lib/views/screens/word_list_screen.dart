@@ -274,51 +274,10 @@ class WordListItem extends StatelessWidget {
     this.timeAgo,
   }) : super(key: key);
 
-  Widget _buildMemoryQualityButtons(BuildContext context, String wordId) {
-    return Consumer<StudyProvider>(
-      builder: (context, provider, child) {
-        if (!provider.isMemoryMode) return const SizedBox.shrink();
-        
-        return Column(
-          children: [
-            const SizedBox(height: 16),
-            const Text(
-              '기억한 정도',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(6, (index) {
-                return ElevatedButton(
-                  onPressed: () {
-                    provider.updateMemoryState(wordId, index);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                  ),
-                  child: Text('$index'),
-                );
-              }),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     final studyProvider = Provider.of<StudyProvider>(context, listen: false);
-    final memoryState = studyProvider.getMemoryState(word['id']);
 
     return Card(
       elevation: 2,
@@ -336,26 +295,6 @@ class WordListItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (themeProvider.showMemoryParams && studyProvider.isMemoryMode)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    '아는정도: ${memoryState?.ef.toStringAsFixed(1) ?? '-'}\n'
-                    '복습간격: ${memoryState?.interval ?? '-'}일\n'
-                    '연속정답: ${memoryState?.repetition ?? '-'}회\n'
-                    '최근학습: ${memoryState?.lastReviewedAt != null ? DateTime.now().difference(memoryState!.lastReviewedAt!).inDays.toString() + "일 전" : "미학습"}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                      height: 1.4,
-                    ),
-                    textAlign: TextAlign.right,
-                  ),
-                ),
-              ),
-            
             if (timeAgo != null)
               Container(
                 width: double.infinity,
@@ -402,8 +341,6 @@ class WordListItem extends StatelessWidget {
                   )
                 : null,
             ),
-            if (showHiragana && showMeaning)
-              _buildMemoryQualityButtons(context, word['id']),
           ],
         ),
       ),

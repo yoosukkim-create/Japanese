@@ -305,14 +305,16 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
         
         return Scaffold(
           appBar: AppBar(
-            title: Text(
-              '${widget.wordbook.title}',
-              style: TextStyle(
-                color: themeProvider.mainColor,
-                fontWeight: FontWeight.w600,
+            titleSpacing: 0,
+            title: Align(
+              alignment: ThemeProvider.appBarAlignment,
+              child: Text(
+                '${widget.wordbook.title}',
+                style: ThemeProvider.wordgroupBarStyle.copyWith(
+                  color: themeProvider.mainColor,
+                ),
               ),
             ),
-            elevation: 0,
           ),
           body: Padding(
             padding: const EdgeInsets.all(16.0),

@@ -47,7 +47,7 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   static const double wordbookCornerRadius = 30.0;
-  static const double wordgroupCornerRadius = 20.0;
+  static const double wordgroupCornerRadius = 15.0;
   static const double wordlistCornerRadius = 30.0;
 
 
@@ -97,13 +97,11 @@ class ThemeProvider extends ChangeNotifier {
     fontWeight: FontWeight.w400,
   );
 
-  // 3. word list Screen - list card 
+  // 3. word list Screen - list card, flash card, memory card
   static final TextStyle wordlistBarStyle = GoogleFonts.getFont(
     'Jua',
     fontSize:  26.0,
     fontWeight: FontWeight.w400,
   );
-  // 4. word list Screen - flash card 
-  // 5. word list Screen - memory card 
-  // 6. settings Screen 
+  // 4. settings Screen 
 } 
