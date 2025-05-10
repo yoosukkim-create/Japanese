@@ -87,12 +87,14 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
         
         return Scaffold(
           appBar: AppBar(
-            title: Text(
-              widget.title,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 20,
-                color: themeProvider.mainColor,
+            titleSpacing: 0,
+            title: Align(
+              alignment: ThemeProvider.appBarAlignment,
+              child: Text(
+                widget.title,
+                style: ThemeProvider.wordgroupBarStyle.copyWith(
+                  color: themeProvider.mainColor,
+                ),
               ),
             ),
             actions: [
@@ -233,7 +235,7 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
+          borderRadius: BorderRadius.circular(ThemeProvider.wordlistCornerRadius),
         ),
         side: BorderSide(
           color: alwaysActive || isSelected ? Theme.of(context).primaryColor : Colors.grey,
@@ -321,7 +323,7 @@ class WordListItem extends StatelessWidget {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
+        borderRadius: BorderRadius.circular(ThemeProvider.wordlistCornerRadius),
       ),
       child: Container(
         width: double.infinity,

@@ -46,55 +46,64 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  static const double defaultCornerRadius = 30.0;
+  static const double wordbookCornerRadius = 30.0;
+  static const double wordgroupCornerRadius = 20.0;
+  static const double wordlistCornerRadius = 30.0;
 
 
   //// Manage Every Text Here
 
+  //'Moirai One', 'Bagel Fat One', 'Jua', 'Do Hyeon',
+
   // 1. wordbook list Screen (Main)
-  static const Alignment wordbookBarAlignment = Alignment.centerLeft;
+  static const Alignment appBarAlignment = Alignment.centerLeft;
   static const String wordbookBarTitle = '메모리 メモリ'; 
   static final TextStyle wordbookBarStyle = GoogleFonts.getFont(
-    'Do Hyeon',
-    fontSize:  24.0,
+    'Jua', 
+    fontSize:  30.0,
     fontWeight: FontWeight.w900,
     letterSpacing: 1.2,
   );
   static final TextStyle wordbookListStyle = GoogleFonts.getFont(
-    'Do Hyeon',
-    fontSize:  14.0,
+    'Jua', 
+    fontSize:  16.0,
     fontWeight: FontWeight.w700,
   );
   static final TextStyle wordbookNameStyle = GoogleFonts.getFont(
     'Roboto',
-    fontSize:  16.0,
-    fontWeight: FontWeight.w600,
+    fontSize:  18.0,
+    fontWeight: FontWeight.w400,
   );
   static final TextStyle wordbookCountStyle = GoogleFonts.getFont(
-    'Roboto',
-    fontSize:  14.0,
+    'Jua',
+    fontSize:  16.0,
     fontWeight: FontWeight.w400,
   );
 
   // 2. wordgroup list Screen (Sub)
   static final TextStyle wordgroupBarStyle = GoogleFonts.getFont(
-    'Roboto',
-    fontSize:  20.0,
-    fontWeight: FontWeight.w600,
+    'Jua',
+    fontSize:  26.0,
+    fontWeight: FontWeight.w400,
   );
   static final TextStyle wordgroupNameStyle = GoogleFonts.getFont(
     'Roboto',
-    fontSize:  16.0,
+    fontSize:  18.0,
     fontWeight: FontWeight.w400,
   );
   static final TextStyle wordgroupCountStyle = GoogleFonts.getFont(
-    'Roboto',
-    fontSize:  14.0,
+    'Jua',
+    fontSize:  16.0,
     fontWeight: FontWeight.w400,
   );
 
-  // 3. word list Screen - flash card 
-  // 4. word list Screen - list card 
+  // 3. word list Screen - list card 
+  static final TextStyle wordlistBarStyle = GoogleFonts.getFont(
+    'Jua',
+    fontSize:  26.0,
+    fontWeight: FontWeight.w400,
+  );
+  // 4. word list Screen - flash card 
   // 5. word list Screen - memory card 
   // 6. settings Screen 
 } 

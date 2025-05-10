@@ -85,7 +85,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
+        borderRadius: BorderRadius.circular(ThemeProvider.wordlistCornerRadius),
       ),
       child: InkWell(
         onTap: () {
@@ -266,7 +266,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
+            borderRadius: BorderRadius.circular(ThemeProvider.wordlistCornerRadius),
           ),
           elevation: 4,
         ),

@@ -6,7 +6,7 @@ import '../../providers/theme_provider.dart';
 import 'settings_screen.dart';
 import '../../providers/study_provider.dart';
 import 'memory_mode_screen.dart';
-import 'package:japanese/utils/top_bounce_only_scroll_physics.dart';
+
 class WordGroupScreen extends StatelessWidget {
 
   final Wordbook wordbook;
@@ -26,7 +26,7 @@ class WordGroupScreen extends StatelessWidget {
       appBar: AppBar(
         titleSpacing: 0,
         title: Align(
-          alignment: Alignment.centerLeft,
+          alignment: ThemeProvider.appBarAlignment,
           child: Text(
             wordbook.title,
             style: ThemeProvider.wordgroupBarStyle.copyWith(
@@ -47,7 +47,6 @@ class WordGroupScreen extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
-        physics: const TopBounceOnlyScrollPhysics(),
         padding: const EdgeInsets.all(6.0),
         itemCount: wordbook.wordgroups.length,
         itemBuilder: (context, index) {
@@ -59,10 +58,10 @@ class WordGroupScreen extends StatelessWidget {
             elevation:cardElevation(context),
             margin: const EdgeInsets.only(bottom: 12.0),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
+              borderRadius: BorderRadius.circular(ThemeProvider.wordgroupCornerRadius),
             ),
             child: InkWell(
-              borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
+              borderRadius: BorderRadius.circular(ThemeProvider.wordgroupCornerRadius),
               onTap: () {
                 Navigator.push(
                   context,

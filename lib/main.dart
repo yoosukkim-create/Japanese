@@ -11,8 +11,6 @@ import 'package:japanese/views/screens/word_list_screen.dart';
 import 'package:japanese/views/screens/word_group_screen.dart';
 import 'package:japanese/views/screens/settings_screen.dart';
 
-import 'package:japanese/utils/top_bounce_only_scroll_physics.dart';
-
 void main() {
   runApp(
     MultiProvider(
@@ -103,11 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Text(
                         studyProvider.recentWordLists[0]['title'].toString(),
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: isDarkMode(context) ? Colors.white : Colors.black87,
-                        ),
+                        style: ThemeProvider.wordgroupNameStyle
                       ),
                       Text(
                         studyProvider.getProgressText(
@@ -115,7 +109,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             studyProvider.recentWordLists[0]['words'] as List,
                           ),
                         ),
-                        style: const TextStyle(fontSize: 14, color: Colors.grey),
+                        style: ThemeProvider.wordgroupCountStyle.copyWith(
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
@@ -196,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: isDarkMode(context) ? const Color(0xFF1C1B1F) : Theme.of(context).scaffoldBackgroundColor,
       elevation: isDarkMode(context) ? 0 : 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(ThemeProvider.wordbookCornerRadius)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
     );
   }
@@ -238,7 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Align(
-              alignment: ThemeProvider.wordbookBarAlignment,
+              alignment: ThemeProvider.appBarAlignment,
               child: Text(
                 ThemeProvider.wordbookBarTitle,
                 style: ThemeProvider.wordbookBarStyle.copyWith(
@@ -285,10 +281,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     hintText: '단어 검색...',
                     prefixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
+                      borderRadius: BorderRadius.circular(ThemeProvider.wordbookCornerRadius),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ThemeProvider.defaultCornerRadius),
+                      borderRadius: BorderRadius.circular(ThemeProvider.wordbookCornerRadius),
                       borderSide: BorderSide(color: themeProvider.mainColor, width: 2),
                     ),
                   ),
@@ -298,7 +294,6 @@ class _HomeScreenState extends State<HomeScreen> {
               // 📜 나머지 리스트는 스크롤 가능하게
               Expanded(
                 child: ListView(
-                  physics: const TopBounceOnlyScrollPhysics(),
                   padding: const EdgeInsets.only(bottom: 24.0),
                   children: [
                     _buildRecentLists(studyProvider, themeProvider),
