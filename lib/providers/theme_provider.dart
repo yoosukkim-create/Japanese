@@ -97,8 +97,79 @@ class ThemeProvider extends ChangeNotifier {
     fontWeight: FontWeight.w400,
   );
 
-  // 3. word list Screen - list card, flash card, memory card
-  // 4. settings Screen 
+  // 3. word list Screen - list card
+  static final TextStyle wordlistWordStyle = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  48.0,
+    fontWeight: FontWeight.w700,
+  );
+  static final TextStyle wordlistWordReadStyle = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  16.0,
+    color: Colors.grey[700],
+  );
+  static final TextStyle wordlistWordMeanStyle = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  16.0,
+    color: Colors.grey[700],
+  );
+  static final TextStyle wordlistSentenceStyle = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  24.0,
+    fontWeight: FontWeight.w700,
+  );
+  static final TextStyle wordlistSentenceReadStyle = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  16.0,
+    color: Colors.grey[700],
+  );
+  static final TextStyle wordlistSentenceMeanStyle = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  16.0,
+    color: Colors.grey[700],
+  );
+
+  static final TextStyle wordlistTimeAgoStyle = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  14.0,
+    color: Colors.grey,
+  );
+
+  // 4. word list Screen - flash card
+  static final TextStyle wordlistWordStyleFlash = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  70.0,
+    fontWeight: FontWeight.w700,
+  );
+  static final TextStyle wordlistWordReadStyleFlash = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  24.0,
+    color: Colors.grey[700],
+  );
+  static final TextStyle wordlistWordMeanStyleFlash = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  24.0,
+    color: Colors.grey[700],
+  );
+  static final TextStyle wordlistSentenceStyleFlash = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  36.0,
+    fontWeight: FontWeight.w700,
+  );
+  static final TextStyle wordlistSentenceReadStyleFlash = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  24.0,
+    color: Colors.grey[700],
+  );
+  static final TextStyle wordlistSentenceMeanStyleFlash = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  24.0,
+    color: Colors.grey[700],
+  );
+  // 5. word list Screen - memory card
+
+
+  // 6. settings Screen 
   static final TextStyle settingsBarStyle = GoogleFonts.getFont(
     'Roboto',
     fontSize:  20.0,

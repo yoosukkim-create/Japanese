@@ -335,13 +335,13 @@ class WordListItem extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 4.0),
                           child: Text(
                             word['읽기'] ?? '',
-                            style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                            style: isFlashcardMode ? ThemeProvider.wordlistWordReadStyleFlash : ThemeProvider.wordlistWordReadStyle,
                             textAlign: TextAlign.center,
                           ),
                         ),
                       Text(
                         word['단어'],
-                        style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                        style: isFlashcardMode ? ThemeProvider.wordlistWordStyleFlash : ThemeProvider.wordlistWordStyle,
                         textAlign: TextAlign.center,
                       ),
                       if (showMeaning)
@@ -349,7 +349,7 @@ class WordListItem extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 4.0),
                           child: Text(
                             word['뜻'] ?? '',
-                            style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                            style: isFlashcardMode ? ThemeProvider.wordlistWordMeanStyleFlash : ThemeProvider.wordlistWordMeanStyle,
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -375,13 +375,13 @@ class WordListItem extends StatelessWidget {
                             padding: const EdgeInsets.only(bottom: 4.0),
                             child: Text(
                               word['예문읽기'] ?? '',
-                              style: const TextStyle(fontSize: 14, color: Colors.grey),
+                              style: isFlashcardMode ? ThemeProvider.wordlistSentenceReadStyleFlash : ThemeProvider.wordlistSentenceReadStyle,
                               textAlign: TextAlign.center,
                             ),
                           ),
                         Text(
                           word['예문'] ?? '',
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                          style: isFlashcardMode ? ThemeProvider.wordlistSentenceStyleFlash : ThemeProvider.wordlistSentenceStyle,
                           textAlign: TextAlign.center,
                         ),
                         if (showMeaning)
@@ -389,7 +389,7 @@ class WordListItem extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 4.0),
                             child: Text(
                               word['예문뜻'] ?? '',
-                              style: const TextStyle(fontSize: 14, color: Colors.grey),
+                              style: isFlashcardMode ? ThemeProvider.wordlistSentenceMeanStyleFlash : ThemeProvider.wordlistSentenceMeanStyle,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -407,7 +407,7 @@ class WordListItem extends StatelessWidget {
               right: 20,
               child: Text(
                 timeAgo!,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                style: ThemeProvider.wordlistTimeAgoStyle,
               ),
             ),
         ],
