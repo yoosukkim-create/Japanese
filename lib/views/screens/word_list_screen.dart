@@ -304,148 +304,117 @@ class WordListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final double containerHeight = isFlashcardMode
+        ? MediaQuery.of(context).size.height * 0.7
+        : 320;
+    final double sectionHeight = (containerHeight - 32 - 12) / 2;
 
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(ThemeProvider.wordlistCornerRadius),
       ),
-      child: Container(
-        width: double.infinity,
-        constraints: BoxConstraints(
-          minHeight: isFlashcardMode ? MediaQuery.of(context).size.height * 0.7 : 320,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 120,
-              child: Column(
-                children: [
-                  if (timeAgo != null)
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text(
-                        timeAgo!,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
-                        textAlign: TextAlign.right,
-                      ),
-                    ),
-                  SizedBox(
-                    height: 24,
-                    child: Center(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          showHiragana ? (word['읽기'] ?? '') : '',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.grey[700],
+      child: Stack(
+        children: [
+          // 콘텐츠
+          Container(
+            width: double.infinity,
+            height: containerHeight,
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // 상단 단어 영역
+                SizedBox(
+                  height: sectionHeight,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (showHiragana)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4.0),
+                          child: Text(
+                            word['읽기'] ?? '',
+                            style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                            textAlign: TextAlign.center,
                           ),
                         ),
+                      Text(
+                        word['단어'],
+                        style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          word['단어'],
-                          style: const TextStyle(
-                            fontSize: 56,
-                            fontWeight: FontWeight.bold,
+                      if (showMeaning)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Text(
+                            word['뜻'] ?? '',
+                            style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                            textAlign: TextAlign.center,
                           ),
                         ),
-                      ),
-                    ),
+                    ],
                   ),
-                  SizedBox(
-                    height: 24,
-                    child: Center(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          showMeaning ? (word['뜻'] ?? '') : '',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.grey[700],
+                ),
+                const SizedBox(height: 12),
+                // 하단 예문 영역
+                SizedBox(
+                  height: sectionHeight,
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor.withOpacity(0.06),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (showHiragana)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4.0),
+                            child: Text(
+                              word['예문읽기'] ?? '',
+                              style: const TextStyle(fontSize: 14, color: Colors.grey),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(height: 16),
-
-            // 예문 카드
-            Container(
-              width: double.infinity,
-              height: 120,
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor.withOpacity(0.06),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 24,
-                    child: Center(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          showHiragana ? (word['예문읽기'] ?? '') : '',
-                          style: const TextStyle(fontSize: 14, color: Colors.grey),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
+                        Text(
                           word['예문'] ?? '',
-                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                           textAlign: TextAlign.center,
                         ),
-                      ),
+                        if (showMeaning)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Text(
+                              word['예문뜻'] ?? '',
+                              style: const TextStyle(fontSize: 14, color: Colors.grey),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                      ],
                     ),
                   ),
-                  SizedBox(
-                    height: 24,
-                    child: Center(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          showMeaning ? (word['예문뜻'] ?? '') : '',
-                          style: const TextStyle(fontSize: 14, color: Colors.grey),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
+              ],
+            ),
+          ),
+          // timeAgo 우측 끝에 고정
+          if (timeAgo != null)
+            Positioned(
+              top: 24,
+              right: 20,
+              child: Text(
+                timeAgo!,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
 }
-
 
 class FlashcardView extends StatefulWidget {
   final List<Map<String, dynamic>> words;
