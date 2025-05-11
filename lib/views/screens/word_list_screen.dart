@@ -159,52 +159,11 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                 ],
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildButton(
-                    context,
-                    text: studyProvider.isFlashcardMode ? '목록모드' : '단어장모드',
-                    isSelected: studyProvider.isFlashcardMode,
-                    onPressed: studyProvider.toggleFlashcardMode,
-                    alwaysActive: true,
-                  ),
-                  _buildButton(
-                    context,
-                    text: 'シャッフル',
-                    isSelected: studyProvider.isShuffleMode,
-                    onPressed: () {
-                      studyProvider.toggleShuffleMode();
-                      _shuffleWords();  // 셔플 모드 토글 시 항상 새로운 순서로 섞기
-                    },
-                  ),
-                  _buildButton(
-                    context,
-                    text: '히라가나',
-                    isSelected: showHiragana,
-                    onPressed: () {
-                      setState(() {
-                        showHiragana = !showHiragana;
-                        for (var word in currentWords) {
-                          final wordId = word['id'].toString();
-                          _hiraganaShown[wordId] = showHiragana;
-                        }
-                      });
-                    },
-                  ),
-                  _buildButton(
-                    context,
-                    text: '뜻',
-                    isSelected: showMeaning,
-                    onPressed: () {
-                      setState(() {
-                        showMeaning = !showMeaning;
-                        for (var word in currentWords) {
-                          final wordId = word['id'].toString();
-                          _meaningShown[wordId] = showMeaning;
-                        }
-                      });
-                    },
-                  ),
+                  for (int i = 0; i < 4; i++) ...[
+                    Expanded(child: _buildButtonByIndex(context, i)),
+                    if (i < 3) const SizedBox(width: 8), // 마지막엔 간격 안 넣음
+                  ]
                 ],
               ),
             ),
@@ -213,6 +172,64 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
       },
     );
   }
+
+  Widget _buildButtonByIndex(BuildContext context, int index) {
+    final studyProvider = Provider.of<StudyProvider>(context, listen: false);
+
+    switch (index) {
+      case 0:
+        return _buildButton(
+          context,
+          text: studyProvider.isFlashcardMode ? '목록모드' : '단어장모드',
+          isSelected: studyProvider.isFlashcardMode,
+          onPressed: studyProvider.toggleFlashcardMode,
+          alwaysActive: true,
+        );
+      case 1:
+        return _buildButton(
+          context,
+          text: 'シャッフル',
+          isSelected: studyProvider.isShuffleMode,
+          onPressed: () {
+            studyProvider.toggleShuffleMode();
+            _shuffleWords();
+          },
+        );
+      case 2:
+        return _buildButton(
+          context,
+          text: '히라가나',
+          isSelected: showHiragana,
+          onPressed: () {
+            setState(() {
+              showHiragana = !showHiragana;
+              for (var word in currentWords) {
+                final wordId = word['id'].toString();
+                _hiraganaShown[wordId] = showHiragana;
+              }
+            });
+          },
+        );
+      case 3:
+        return _buildButton(
+          context,
+          text: '뜻',
+          isSelected: showMeaning,
+          onPressed: () {
+            setState(() {
+              showMeaning = !showMeaning;
+              for (var word in currentWords) {
+                final wordId = word['id'].toString();
+                _meaningShown[wordId] = showMeaning;
+              }
+            });
+          },
+        );
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
 
   void _toggleBoth() {
     setState(() {
@@ -233,21 +250,30 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
     required VoidCallback onPressed,
     bool alwaysActive = false,
   }) {
+    final color = alwaysActive || isSelected
+        ? Theme.of(context).primaryColor
+        : Colors.grey;
+
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(ThemeProvider.wordlistCornerRadius),
         ),
-        side: BorderSide(
-          color: alwaysActive || isSelected ? Theme.of(context).primaryColor : Colors.grey,
-        ),
-        backgroundColor: alwaysActive || isSelected ? Theme.of(context).primaryColor.withOpacity(0.1) : null,
+        side: BorderSide(color: color),
+        backgroundColor:
+            alwaysActive || isSelected ? color.withOpacity(0.1) : null,
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
       ),
       child: Text(
         text,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        softWrap: false,
+        textAlign: TextAlign.center,
         style: TextStyle(
-          color: alwaysActive || isSelected ? Theme.of(context).primaryColor : Colors.grey,
+          fontSize: 13,
+          color: color,
         ),
       ),
     );
