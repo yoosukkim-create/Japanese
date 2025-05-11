@@ -305,7 +305,6 @@ class WordListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    final studyProvider = Provider.of<StudyProvider>(context, listen: false);
 
     return Card(
       elevation: 2,
@@ -315,59 +314,130 @@ class WordListItem extends StatelessWidget {
       child: Container(
         width: double.infinity,
         constraints: BoxConstraints(
-          minHeight: isFlashcardMode ? MediaQuery.of(context).size.height * 0.7 : 180,
+          minHeight: isFlashcardMode ? MediaQuery.of(context).size.height * 0.7 : 320,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (timeAgo != null)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                  timeAgo!,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
+            SizedBox(
+              height: 120,
+              child: Column(
+                children: [
+                  if (timeAgo != null)
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text(
+                        timeAgo!,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  SizedBox(
+                    height: 24,
+                    child: Center(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          showHiragana ? (word['읽기'] ?? '') : '',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                  textAlign: TextAlign.right,
-                ),
-              ),
-            Container(
-              height: 32,
-              alignment: Alignment.center,
-              child: showHiragana
-                ? Text(
-                    word['읽기'],
-                    style: TextStyle(
-                      fontSize: word['단어'].toString().length > 2 ? 16 : 18,
-                      color: Colors.grey[700],
+                  Expanded(
+                    child: Center(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          word['단어'],
+                          style: const TextStyle(
+                            fontSize: 56,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
-                  )
-                : null,
-            ),
-            Text(
-              word['단어'],
-              style: TextStyle(
-                fontSize: word['단어'].toString().length > 2 ? 48 : 56,
-                fontWeight: FontWeight.bold,
+                  ),
+                  SizedBox(
+                    height: 24,
+                    child: Center(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          showMeaning ? (word['뜻'] ?? '') : '',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
+
+            SizedBox(height: 16),
+
+            // 예문 카드
             Container(
-              height: 32,
-              alignment: Alignment.center,
-              child: showMeaning
-                ? Text(
-                    word['뜻'],
-                    style: TextStyle(
-                      fontSize: word['단어'].toString().length > 2 ? 16 : 18,
-                      color: Colors.grey[700],
+              width: double.infinity,
+              height: 120,
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor.withOpacity(0.06),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 24,
+                    child: Center(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          showHiragana ? (word['예문읽기'] ?? '') : '',
+                          style: const TextStyle(fontSize: 14, color: Colors.grey),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
-                  )
-                : null,
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          word['예문'] ?? '',
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 24,
+                    child: Center(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          showMeaning ? (word['예문뜻'] ?? '') : '',
+                          style: const TextStyle(fontSize: 14, color: Colors.grey),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -375,6 +445,7 @@ class WordListItem extends StatelessWidget {
     );
   }
 }
+
 
 class FlashcardView extends StatefulWidget {
   final List<Map<String, dynamic>> words;

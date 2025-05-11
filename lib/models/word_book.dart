@@ -37,24 +37,33 @@ class WordGroup {
 
 // 단어 카드
 class WordCard {
-  final String id;     // 고유 식별자
-  final String word;    // 단어
-  final String reading; // 읽기
-  final String meaning; // 뜻
+  final String id;           // 고유 식별자
+  final String word;         // 단어
+  final String reading;      // 읽기
+  final String meaning;      // 뜻
+  final String example;      // 예문
+  final String exampleReading; // 예문 읽기
+  final String exampleMeaning; // 예문 뜻
 
   WordCard({
     required this.id,
     required this.word,
     required this.reading,
     required this.meaning,
+    required this.example,
+    required this.exampleReading,
+    required this.exampleMeaning,
   });
 
   factory WordCard.fromJson(Map<String, dynamic> json) {
     return WordCard(
-      id: '${json['단어']}_${json['읽기']}',  // 단어와 읽기를 조합하여 고유 ID 생성
+      id: '${json['단어']}_${json['읽기']}',
       word: json['단어'] ?? '',
       reading: json['읽기'] ?? '',
       meaning: json['뜻'] ?? '',
+      example: json['예문'] ?? '',
+      exampleReading: json['예문읽기'] ?? '',
+      exampleMeaning: json['예문뜻'] ?? '',
     );
   }
-} 
+}
