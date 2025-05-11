@@ -44,6 +44,9 @@ class JapaneseDataService {
                 '단어': word['단어'],
                 '읽기': word['읽기'],
                 '뜻': word['뜻'],
+                '예문': word['예문'],
+                '예문읽기': word['예문읽기'],
+                '예문뜻': word['예문뜻'],
               });
             }
             // 히라가나 검색 (읽기)
@@ -53,6 +56,9 @@ class JapaneseDataService {
                 '단어': word['단어'],
                 '읽기': word['읽기'],
                 '뜻': word['뜻'],
+                '예문': word['예문'],
+                '예문읽기': word['예문읽기'],
+                '예문뜻': word['예문뜻'],
               });
             }
             // 한글 검색 (뜻)
@@ -62,6 +68,9 @@ class JapaneseDataService {
                 '단어': word['단어'],
                 '읽기': word['읽기'],
                 '뜻': word['뜻'],
+                '예문': word['예문'],
+                '예문읽기': word['예문읽기'],
+                '예문뜻': word['예문뜻'],
               });
             }
           }
