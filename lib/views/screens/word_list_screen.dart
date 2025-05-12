@@ -330,29 +330,27 @@ class WordListItem extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (showHiragana)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 4.0),
-                          child: Text(
-                            word['읽기'] ?? '',
-                            style: isFlashcardMode ? ThemeProvider.wordlistWordReadStyleFlash : ThemeProvider.wordlistWordReadStyle,
-                            textAlign: TextAlign.center,
-                          ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0),
+                        child: Text(
+                          showHiragana ? (word['읽기'] ?? '') : ' ',
+                          style: isFlashcardMode ? ThemeProvider.wordlistWordReadStyleFlash : ThemeProvider.wordlistWordReadStyle,
+                          textAlign: TextAlign.center,
                         ),
+                      ),
                       Text(
                         word['단어'],
                         style: isFlashcardMode ? ThemeProvider.wordlistWordStyleFlash : ThemeProvider.wordlistWordStyle,
                         textAlign: TextAlign.center,
                       ),
-                      if (showMeaning)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4.0),
-                          child: Text(
-                            word['뜻'] ?? '',
-                            style: isFlashcardMode ? ThemeProvider.wordlistWordMeanStyleFlash : ThemeProvider.wordlistWordMeanStyle,
-                            textAlign: TextAlign.center,
-                          ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          showMeaning ? (word['뜻'] ?? '') : ' ',
+                          style: isFlashcardMode ? ThemeProvider.wordlistWordMeanStyleFlash : ThemeProvider.wordlistWordMeanStyle,
+                          textAlign: TextAlign.center,
                         ),
+                      ),
                     ],
                   ),
                 ),
@@ -370,29 +368,27 @@ class WordListItem extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (showHiragana)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 4.0),
-                            child: Text(
-                              word['예문읽기'] ?? '',
-                              style: isFlashcardMode ? ThemeProvider.wordlistSentenceReadStyleFlash : ThemeProvider.wordlistSentenceReadStyle,
-                              textAlign: TextAlign.center,
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4.0),
+                          child: Text(
+                            showHiragana ? (word['예문읽기'] ?? '') : ' ',
+                            style: isFlashcardMode ? ThemeProvider.wordlistSentenceReadStyleFlash : ThemeProvider.wordlistSentenceReadStyle,
+                            textAlign: TextAlign.center,
                           ),
+                        ),
                         Text(
                           word['예문'] ?? '',
                           style: isFlashcardMode ? ThemeProvider.wordlistSentenceStyleFlash : ThemeProvider.wordlistSentenceStyle,
                           textAlign: TextAlign.center,
                         ),
-                        if (showMeaning)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0),
-                            child: Text(
-                              word['예문뜻'] ?? '',
-                              style: isFlashcardMode ? ThemeProvider.wordlistSentenceMeanStyleFlash : ThemeProvider.wordlistSentenceMeanStyle,
-                              textAlign: TextAlign.center,
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Text(
+                            showMeaning ? (word['예문뜻'] ?? '') : ' ',
+                            style: isFlashcardMode ? ThemeProvider.wordlistSentenceMeanStyleFlash : ThemeProvider.wordlistSentenceMeanStyle,
+                            textAlign: TextAlign.center,
                           ),
+                        ),
                       ],
                     ),
                   ),
