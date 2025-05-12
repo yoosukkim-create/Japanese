@@ -243,6 +243,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             actions: [
+              Consumer<StudyProvider>(
+                builder: (context, study, _) => IconButton(
+                  icon: Icon(
+                    study.showExamples
+                      ? Icons.visibility     // 예문 보이는 상태
+                      : Icons.visibility_off // 예문 숨긴 상태
+                  ),
+                  tooltip: study.showExamples ? '예문 숨기기' : '예문 보기',
+                  onPressed: study.toggleShowExamples,
+                ),
+              ),
               IconButton(
                 icon: const Icon(Icons.settings),
                 onPressed: () => Navigator.push(

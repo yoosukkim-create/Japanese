@@ -375,4 +375,13 @@ class StudyProvider extends ChangeNotifier {
   }
 
   WordMemoryState? getMemoryState(String wordId) => _memoryStates[wordId];
+
+  bool _showExamples = true;
+  bool get showExamples => _showExamples;
+
+  void toggleShowExamples() {
+    _showExamples = !_showExamples;
+    notifyListeners();
+  }
+  
 } 

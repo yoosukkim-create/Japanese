@@ -86,7 +86,8 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
     return Consumer<StudyProvider>(
       builder: (context, studyProvider, child) {
         final themeProvider = Provider.of<ThemeProvider>(context);
-        
+        final showExamples = studyProvider.showExamples;
+
         return Scaffold(
           appBar: AppBar(
             titleSpacing: 0,
@@ -117,6 +118,7 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                   showHiragana: showHiragana,
                   showMeaning: showMeaning,
                   showTimeAgo: themeProvider.showLastViewedTime,
+                  showExamples: showExamples,
                 )
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -136,6 +138,7 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                           word: word,
                           showHiragana: _hiraganaShown[wordId] ?? false,
                           showMeaning: _meaningShown[wordId] ?? false,
+                          showExamples: showExamples,
                           isFlashcardMode: false,
                           timeAgo: themeProvider.showLastViewedTime
                               ? _getTimeAgoText(studyProvider, wordId)
@@ -292,12 +295,14 @@ class WordListItem extends StatelessWidget {
   final bool showMeaning;
   final bool isFlashcardMode;
   final String? timeAgo;
+  final bool showExamples;
 
   const WordListItem({
     Key? key,
     required this.word,
     required this.showHiragana,
     required this.showMeaning,
+    required this.showExamples,
     this.isFlashcardMode = false,
     this.timeAgo,
   }) : super(key: key);
@@ -356,40 +361,46 @@ class WordListItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 // 하단 예문 영역
-                SizedBox(
-                  height: sectionHeight,
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor.withOpacity(0.06),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 4.0),
-                          child: Text(
-                            showHiragana ? (word['예문읽기'] ?? '') : ' ',
-                            style: isFlashcardMode ? ThemeProvider.wordlistSentenceReadStyleFlash : ThemeProvider.wordlistSentenceReadStyle,
+                Visibility(
+                  visible: showExamples,
+                  maintainSize: true,
+                  maintainState: true,
+                  maintainAnimation: true,
+                  child: SizedBox(
+                    height: sectionHeight,
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).cardColor.withOpacity(0.06),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4.0),
+                            child: Text(
+                              showHiragana ? (word['예문읽기'] ?? '') : ' ',
+                              style: isFlashcardMode ? ThemeProvider.wordlistSentenceReadStyleFlash : ThemeProvider.wordlistSentenceReadStyle,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          Text(
+                            word['예문'] ?? '',
+                            style: isFlashcardMode ? ThemeProvider.wordlistSentenceStyleFlash : ThemeProvider.wordlistSentenceStyle,
                             textAlign: TextAlign.center,
                           ),
-                        ),
-                        Text(
-                          word['예문'] ?? '',
-                          style: isFlashcardMode ? ThemeProvider.wordlistSentenceStyleFlash : ThemeProvider.wordlistSentenceStyle,
-                          textAlign: TextAlign.center,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4.0),
-                          child: Text(
-                            showMeaning ? (word['예문뜻'] ?? '') : ' ',
-                            style: isFlashcardMode ? ThemeProvider.wordlistSentenceMeanStyleFlash : ThemeProvider.wordlistSentenceMeanStyle,
-                            textAlign: TextAlign.center,
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Text(
+                              showMeaning ? (word['예문뜻'] ?? '') : ' ',
+                              style: isFlashcardMode ? ThemeProvider.wordlistSentenceMeanStyleFlash : ThemeProvider.wordlistSentenceMeanStyle,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -417,6 +428,7 @@ class FlashcardView extends StatefulWidget {
   final bool showHiragana;
   final bool showMeaning;
   final bool showTimeAgo;
+  final bool showExamples;
 
   const FlashcardView({
     Key? key,
@@ -424,6 +436,7 @@ class FlashcardView extends StatefulWidget {
     required this.showHiragana,
     required this.showMeaning,
     required this.showTimeAgo,
+    required this.showExamples,
   }) : super(key: key);
 
   @override
@@ -517,6 +530,7 @@ class _FlashcardViewState extends State<FlashcardView> {
                 word: word,
                 showHiragana: _hiraganaShown[wordId] ?? false,
                 showMeaning: _meaningShown[wordId] ?? false,
+                showExamples: widget.showExamples,
                 isFlashcardMode: true,
                 timeAgo: widget.showTimeAgo ? wordState?.timeAgoText : null,
               ),
