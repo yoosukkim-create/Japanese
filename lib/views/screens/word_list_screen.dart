@@ -300,13 +300,14 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
   }
 }
 
+
 class WordListItem extends StatelessWidget {
   final Map<String, dynamic> word;
   final bool showHiragana;
   final bool showMeaning;
+  final bool showExamples;
   final bool isFlashcardMode;
   final String? timeAgo;
-  final bool showExamples;
 
   const WordListItem({
     Key? key,
@@ -320,119 +321,142 @@ class WordListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double containerHeight = isFlashcardMode
+    // padding 상하 합 32, 섹션 사이 간격 12
+    const double verticalPadding = 32.0;
+    const double midSpacing = 12.0;
+
+    // 전체 높이와 반절 높이 계산
+    final double fullHeight = isFlashcardMode
         ? MediaQuery.of(context).size.height * 0.7
-        : 320;
-    final double sectionHeight = (containerHeight - 32 - 12) / 2;
+        : 320.0;
+    final double halfHeight = (fullHeight - verticalPadding - midSpacing) / 2;
+
+    // 예문 숨김 시 축소된 높이
+    final double collapsedHeight = fullHeight - halfHeight - midSpacing;
+
+    // 예문영역 유무에 따른 실제 높이
+    final bool hasExample = showExamples;
+    final double containerHeight = hasExample ? fullHeight : collapsedHeight;
+
+    // 각 섹션 높이
+    final double sectionHeight = hasExample
+        ? halfHeight
+        : (containerHeight - verticalPadding);
 
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(ThemeProvider.wordlistCornerRadius),
       ),
-      child: Stack(
-        children: [
-          // 콘텐츠
-          Container(
-            width: double.infinity,
-            height: containerHeight,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // 상단 단어 영역
-                SizedBox(
-                  height: sectionHeight,
+      child: Container(
+        width: double.infinity,
+        height: containerHeight,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16.0,
+          vertical: 16.0,
+        ),
+        child: Column(
+          children: [
+            // 상단 단어 영역
+            SizedBox(
+              height: sectionHeight,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // 히라가나
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4.0),
+                    child: Text(
+                      showHiragana ? (word['읽기'] ?? '') : ' ',
+                      style: isFlashcardMode
+                          ? ThemeProvider.wordlistWordReadStyleFlash
+                          : ThemeProvider.wordlistWordReadStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  // 단어 (한자)
+                  Text(
+                    word['단어'] ?? '',
+                    style: isFlashcardMode
+                        ? ThemeProvider.wordlistWordStyleFlash
+                        : ThemeProvider.wordlistWordStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                  // 뜻
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: Text(
+                      showMeaning ? (word['뜻'] ?? '') : ' ',
+                      style: isFlashcardMode
+                          ? ThemeProvider.wordlistWordMeanStyleFlash
+                          : ThemeProvider.wordlistWordMeanStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // 예문 영역 (보일 때만)
+            if (hasExample) ...[
+              const SizedBox(height: midSpacing),
+              SizedBox(
+                height: sectionHeight,
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor.withOpacity(0.06),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 8.0,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      // 예문 읽기(히라가나)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 4.0),
                         child: Text(
-                          showHiragana ? (word['읽기'] ?? '') : ' ',
-                          style: isFlashcardMode ? ThemeProvider.wordlistWordReadStyleFlash : ThemeProvider.wordlistWordReadStyle,
+                          showHiragana ? (word['예문읽기'] ?? '') : ' ',
+                          style: isFlashcardMode
+                              ? ThemeProvider.wordlistSentenceReadStyleFlash
+                              : ThemeProvider.wordlistSentenceReadStyle,
                           textAlign: TextAlign.center,
                         ),
                       ),
+                      // 예문
                       Text(
-                        word['단어'],
-                        style: isFlashcardMode ? ThemeProvider.wordlistWordStyleFlash : ThemeProvider.wordlistWordStyle,
+                        word['예문'] ?? '',
+                        style: isFlashcardMode
+                            ? ThemeProvider.wordlistSentenceStyleFlash
+                            : ThemeProvider.wordlistSentenceStyle,
                         textAlign: TextAlign.center,
                       ),
+                      // 예문 뜻
                       Padding(
                         padding: const EdgeInsets.only(top: 4.0),
                         child: Text(
-                          showMeaning ? (word['뜻'] ?? '') : ' ',
-                          style: isFlashcardMode ? ThemeProvider.wordlistWordMeanStyleFlash : ThemeProvider.wordlistWordMeanStyle,
+                          showMeaning ? (word['예문뜻'] ?? '') : ' ',
+                          style: isFlashcardMode
+                              ? ThemeProvider.wordlistSentenceMeanStyleFlash
+                              : ThemeProvider.wordlistSentenceMeanStyle,
                           textAlign: TextAlign.center,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
-                // 하단 예문 영역
-                Visibility(
-                  visible: showExamples,
-                  maintainSize: true,
-                  maintainState: true,
-                  maintainAnimation: true,
-                  child: SizedBox(
-                    height: sectionHeight,
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor.withOpacity(0.06),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 4.0),
-                            child: Text(
-                              showHiragana ? (word['예문읽기'] ?? '') : ' ',
-                              style: isFlashcardMode ? ThemeProvider.wordlistSentenceReadStyleFlash : ThemeProvider.wordlistSentenceReadStyle,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Text(
-                            word['예문'] ?? '',
-                            style: isFlashcardMode ? ThemeProvider.wordlistSentenceStyleFlash : ThemeProvider.wordlistSentenceStyle,
-                            textAlign: TextAlign.center,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0),
-                            child: Text(
-                              showMeaning ? (word['예문뜻'] ?? '') : ' ',
-                              style: isFlashcardMode ? ThemeProvider.wordlistSentenceMeanStyleFlash : ThemeProvider.wordlistSentenceMeanStyle,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // timeAgo 우측 끝에 고정
-          if (timeAgo != null)
-            Positioned(
-              top: 24,
-              right: 20,
-              child: Text(
-                timeAgo!,
-                style: ThemeProvider.wordlistTimeAgoStyle,
               ),
-            ),
-        ],
+            ],
+          ],
+        ),
       ),
     );
   }
 }
+
 
 class FlashcardView extends StatefulWidget {
   final List<Map<String, dynamic>> words;
