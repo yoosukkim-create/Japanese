@@ -300,7 +300,6 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
   }
 }
 
-
 class WordListItem extends StatelessWidget {
   final Map<String, dynamic> word;
   final bool showHiragana;
@@ -325,23 +324,28 @@ class WordListItem extends StatelessWidget {
     const double verticalPadding = 32.0;
     const double midSpacing = 12.0;
 
-    // 전체 높이와 반절 높이 계산
+    // 1) 전체 높이(fullHeight)와 반절 높이(halfHeight) 계산
     final double fullHeight = isFlashcardMode
         ? MediaQuery.of(context).size.height * 0.7
         : 320.0;
     final double halfHeight = (fullHeight - verticalPadding - midSpacing) / 2;
 
-    // 예문 숨김 시 축소된 높이
+    // 2) collapsedHeight: 예문 숨김 시 카드 전체 높이
     final double collapsedHeight = fullHeight - halfHeight - midSpacing;
 
-    // 예문영역 유무에 따른 실제 높이
-    final bool hasExample = showExamples;
-    final double containerHeight = hasExample ? fullHeight : collapsedHeight;
+    // 3) 카드 높이 결정 (flashcard 모드면 무조건 fullHeight)
+    final bool hasExampleForHeight = isFlashcardMode || showExamples;
+    final double containerHeight = hasExampleForHeight
+        ? fullHeight
+        : collapsedHeight;
 
-    // 각 섹션 높이
-    final double sectionHeight = hasExample
+    // 4) 섹션 높이 계산
+    final double sectionHeight = hasExampleForHeight
         ? halfHeight
         : (containerHeight - verticalPadding);
+
+    // 5) 예문 섹션 렌더링 여부 (오직 showExamples 만 체크)
+    final bool hasExampleForContent = showExamples;
 
     return Card(
       elevation: 2,
@@ -397,8 +401,8 @@ class WordListItem extends StatelessWidget {
               ),
             ),
 
-            // 예문 영역 (보일 때만)
-            if (hasExample) ...[
+            // 예문 영역 (오직 showExamples가 true일 때만)
+            if (hasExampleForContent) ...[
               const SizedBox(height: midSpacing),
               SizedBox(
                 height: sectionHeight,
