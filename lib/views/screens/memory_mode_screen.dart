@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:signature/signature.dart';
+
 
 import 'package:japanese/models/word_book.dart';
 import 'package:japanese/providers/theme_provider.dart';
@@ -24,14 +26,26 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
   List<Map<String, dynamic>> _allWords = [];
   bool _showAnswer = false;
   int _currentIndex = 0;
+  late SignatureController _sigController;
 
   @override
   void initState() {
     super.initState();
+    _sigController = SignatureController(
+      penStrokeWidth: 3,
+      penColor: Colors.white,
+      exportBackgroundColor: Colors.transparent,
+    );
     final rawWords = _getAllWordsFromWordbook(widget.wordbook);
     _allWords = _shuffleWithoutConsecutiveDuplicates(rawWords);
   }
 
+  @override
+  void dispose() {
+    _sigController.dispose();
+    super.dispose();
+  }
+  
   List<Map<String, dynamic>> _getAllWordsFromWordbook(Wordbook wordbook) {
     List<Map<String, dynamic>> words = [];
     wordbook.wordgroups.values.forEach((wordgroup) {
@@ -77,6 +91,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
   void _moveToNextWord() {
     setState(() {
+      _sigController.clear();
       _showAnswer = false;
       if (_currentIndex < _allWords.length - 1) {
         _currentIndex++;
@@ -150,13 +165,30 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      !showCanvas
-                      ? word['단어'] ?? ''
-                      : _showAnswer ? (word['단어'] ?? '') : ' ',
-                      style: ThemeProvider.wordlistWordStyleMemory,
-                      textAlign: TextAlign.center,
+                    SizedBox(
+                      height: 120,
+                      width: double.infinity,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // showCanvas == true 일 때만 빈 캔버스 띄우기
+                          if (showCanvas)
+                            Signature(
+                              controller: _sigController,
+                              backgroundColor: Colors.transparent,
+                            ),
+
+                          Text(
+                            !showCanvas
+                            ? word['단어'] ?? ''
+                            : _showAnswer ? word['단어'] ?? '' : ' ' ,
+                            style: ThemeProvider.wordlistWordStyleMemory.copyWith(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
+
                     // 2) 히라가나 / 뜻 (빈 글자 출력으로 자리 고정)
                     const SizedBox(height: 4),
                     Text(
