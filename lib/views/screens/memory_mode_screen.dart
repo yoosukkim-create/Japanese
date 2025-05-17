@@ -145,21 +145,24 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
                     // 1) 단어 (항상 흰색)
                     Text(
-                      word['단어'] ?? '',
-                      style: ThemeProvider.wordlistWordStyleMemory,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 4),
-
-                    // 2) 히라가나 / 뜻 (빈 글자 출력으로 자리 고정)
-                    Text(
                       _showAnswer ? (word['읽기'] ?? '') : ' ',
                       style: ThemeProvider.wordlistWordReadStyleMemory,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      _showAnswer ? (word['뜻'] ?? '') : ' ',
+                      !showCanvas
+                      ? word['단어'] ?? ''
+                      : _showAnswer ? (word['단어'] ?? '') : ' ',
+                      style: ThemeProvider.wordlistWordStyleMemory,
+                      textAlign: TextAlign.center,
+                    ),
+                    // 2) 히라가나 / 뜻 (빈 글자 출력으로 자리 고정)
+                    const SizedBox(height: 4),
+                    Text(
+                      !showCanvas
+                      ? _showAnswer ? (word['뜻'] ?? '') : ' '
+                      : word['뜻'] ?? '',
                       style: ThemeProvider.wordlistWordMeanStyleMemory,
                       textAlign: TextAlign.center,
                     ),
@@ -167,19 +170,23 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
                     // 3) 예문 (빈 글자 출력으로 자리 고정, 단어 아래에 고정 위치)
                     Text(
-                      showExamples ? (word['예문'] ?? '') : ' ',
-                      style: ThemeProvider.wordlistSentenceStyleMemory,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
                       showExamples && _showAnswer ? (word['예문읽기'] ?? '') : ' ',
                       style: ThemeProvider.wordlistSentenceReadStyleMemory,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      showExamples && _showAnswer ? (word['예문뜻'] ?? '') : ' ',
+                      !showCanvas
+                      ? showExamples ? (word['예문'] ?? '') : ' '
+                      : showExamples && _showAnswer ? (word['예문'] ?? '') : ' ',
+                      style: ThemeProvider.wordlistSentenceStyleMemory,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      !showCanvas
+                      ? showExamples && _showAnswer ? (word['예문뜻'] ?? '') : ' '
+                      : showExamples ? (word['예문뜻'] ?? '') : ' ',
                       style: ThemeProvider.wordlistSentenceMeanStyleMemory,
                       textAlign: TextAlign.center,
                     ),
