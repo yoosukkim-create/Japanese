@@ -185,7 +185,7 @@ class ThemeProvider extends ChangeNotifier {
   );
   static final TextStyle wordlistSentenceStyleMemory = GoogleFonts.getFont(
     'Roboto',
-    fontSize:  36.0,
+    fontSize:  50.0,
     fontWeight: FontWeight.w700,
   );
   static final TextStyle wordlistSentenceReadStyleMemory = GoogleFonts.getFont(

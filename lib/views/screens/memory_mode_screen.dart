@@ -26,12 +26,18 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
   List<Map<String, dynamic>> _allWords = [];
   bool _showAnswer = false;
   int _currentIndex = 0;
-  late SignatureController _sigController;
+  late SignatureController _sigControllerWord;
+  late SignatureController _sigControllerExample;
 
   @override
   void initState() {
     super.initState();
-    _sigController = SignatureController(
+    _sigControllerWord = SignatureController(
+      penStrokeWidth: 3,
+      penColor: Colors.white,
+      exportBackgroundColor: Colors.transparent,
+    );
+    _sigControllerExample = SignatureController(
       penStrokeWidth: 3,
       penColor: Colors.white,
       exportBackgroundColor: Colors.transparent,
@@ -42,7 +48,8 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
   @override
   void dispose() {
-    _sigController.dispose();
+    _sigControllerWord.dispose();
+    _sigControllerExample.dispose();
     super.dispose();
   }
   
@@ -91,7 +98,8 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
   void _moveToNextWord() {
     setState(() {
-      _sigController.clear();
+      _sigControllerWord.clear();
+      _sigControllerExample.clear();
       _showAnswer = false;
       if (_currentIndex < _allWords.length - 1) {
         _currentIndex++;
@@ -168,27 +176,39 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                     SizedBox(
                       height: 120,
                       width: double.infinity,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          // showCanvas == true 일 때만 빈 캔버스 띄우기
-                          if (showCanvas)
-                            Signature(
-                              controller: _sigController,
-                              backgroundColor: Colors.transparent,
-                            ),
+                      child: Container(
+                        // showCanvas일 때만 배경과 테두리로 강조
+                        decoration: BoxDecoration(
+                          color: showCanvas
+                            ? Colors.white.withOpacity(0.1)  // 연한 배경색
+                            : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                         //border: showCanvas
+                         //   ? Border.all(color: Colors.white30)  // 살짝 테두리
+                         //   : null,
+                        ),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            if (showCanvas)
+                              Signature(
+                                controller: _sigControllerWord,
+                                backgroundColor: Colors.transparent,
+                              ),
 
-                          Text(
-                            !showCanvas
-                            ? word['단어'] ?? ''
-                            : _showAnswer ? word['단어'] ?? '' : ' ' ,
-                            style: ThemeProvider.wordlistWordStyleMemory.copyWith(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                            Text(
+                              !showCanvas
+                                ? (word['단어'] ?? '')
+                                : (_showAnswer ? (word['단어'] ?? '') : ' '),
+                              style: ThemeProvider
+                                .wordlistWordStyleMemory
+                                .copyWith(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-
                     // 2) 히라가나 / 뜻 (빈 글자 출력으로 자리 고정)
                     const SizedBox(height: 4),
                     Text(
@@ -207,12 +227,40 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      !showCanvas
-                      ? showExamples ? (word['예문'] ?? '') : ' '
-                      : showExamples && _showAnswer ? (word['예문'] ?? '') : ' ',
-                      style: ThemeProvider.wordlistSentenceStyleMemory,
-                      textAlign: TextAlign.center,
+
+                    SizedBox(
+                      height: 80,
+                      width: double.infinity,
+                      child: Container(
+                        // showCanvas일 때만 배경과 테두리로 강조
+                        decoration: BoxDecoration(
+                          color: showCanvas && showExamples
+                            ? Colors.white.withOpacity(0.1)  // 연한 배경색
+                            : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                          //border: showCanvas && showExamples
+                          //  ? Border.all(color: Colors.white30)  // 살짝 테두리
+                          //  : null,
+                        ),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // showCanvas == true 일 때만 빈 캔버스 띄우기
+                            if (showCanvas && showExamples)
+                              Signature(
+                                controller: _sigControllerExample,
+                                backgroundColor: Colors.transparent,
+                              ),
+                            Text(
+                              !showCanvas
+                              ? showExamples ? (word['예문'] ?? '') : ' '
+                              : showExamples && _showAnswer ? (word['예문'] ?? '') : ' ',
+                              style: ThemeProvider.wordlistSentenceStyleMemory,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
