@@ -166,8 +166,38 @@ class ThemeProvider extends ChangeNotifier {
     fontSize:  24.0,
     color: Colors.grey[700],
   );
+  
   // 5. word list Screen - memory card
-
+  static final TextStyle wordlistWordStyleMemory = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  70.0,
+    fontWeight: FontWeight.w700,
+  );
+  static final TextStyle wordlistWordReadStyleMemory = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  24.0,
+    color: Colors.grey[700],
+  );
+  static final TextStyle wordlistWordMeanStyleMemory = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  24.0,
+    color: Colors.grey[700],
+  );
+  static final TextStyle wordlistSentenceStyleMemory = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  36.0,
+    fontWeight: FontWeight.w700,
+  );
+  static final TextStyle wordlistSentenceReadStyleMemory = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  24.0,
+    color: Colors.grey[700],
+  );
+  static final TextStyle wordlistSentenceMeanStyleMemory = GoogleFonts.getFont(
+    'Roboto',
+    fontSize:  24.0,
+    color: Colors.grey[700],
+  );
 
   // 6. settings Screen 
   static final TextStyle settingsBarStyle = GoogleFonts.getFont(

@@ -6,6 +6,8 @@ import 'package:japanese/models/word_book.dart';
 import 'package:japanese/providers/theme_provider.dart';
 import 'package:japanese/providers/study_provider.dart';
 
+import 'package:japanese/views/screens/settings_screen.dart';
+
 class MemoryModeScreen extends StatefulWidget {
   final Wordbook wordbook;
 
@@ -38,6 +40,9 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
         '단어': word.word,
         '읽기': word.reading,
         '뜻': word.meaning,
+        '예문': word.example,
+        '예문읽기': word.exampleReading,
+        '예문뜻': word.exampleMeaning,
       }));
     });
     return words;
@@ -81,18 +86,16 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     });
   }
 
-  Widget _buildMemoryCard(Map<String, dynamic> word) {
+  Widget _buildMemoryCard(Map<String, dynamic> word, bool showExamples) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(ThemeProvider.wordlistCornerRadius),
       ),
       child: InkWell(
-        onTap: () {
-          setState(() {
-            _showAnswer = !_showAnswer;
-          });
-        },
+        onTap: () => setState(() => _showAnswer = !_showAnswer),
         child: Container(
           width: double.infinity,
           constraints: BoxConstraints(
@@ -101,27 +104,25 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Stack(
             children: [
+              // 좌측 상단 메모리 파라미터
               Positioned(
                 top: 16,
                 right: 16,
                 child: Consumer<StudyProvider>(
-                  builder: (context, provider, child) {
-                    final memoryState = provider.getMemoryState(word['id']);
-                    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-
-                    if (!themeProvider.showMemoryParams) return const SizedBox.shrink();
-
-                    final ef = memoryState?.ef.toStringAsFixed(1) ?? '2.5';
-                    final interval = memoryState?.interval.toString() ?? '0';
-                    final repetition = memoryState?.repetition.toString() ?? '0';
-                    final lastReviewedText = (memoryState != null && memoryState.lastReviewedAt != null)
-                        ? _formatDate(memoryState.lastReviewedAt!)
+                  builder: (ctx, prov, _) {
+                    final mem = prov.getMemoryState(word['id']);
+                    if (!Provider.of<ThemeProvider>(ctx, listen: false).showMemoryParams)
+                      return const SizedBox.shrink();
+                    final ef = mem?.ef.toStringAsFixed(1) ?? '2.5';
+                    final interval = mem?.interval.toString() ?? '0';
+                    final rep = mem?.repetition.toString() ?? '0';
+                    final last = (mem != null && mem.lastReviewedAt != null)
+                        ? _formatDate(mem.lastReviewedAt!)
                         : '미학습';
-
                     return Container(
                       padding: const EdgeInsets.all(8),
                       child: Text(
-                        '아는정도: $ef\n복습간격: ${interval}일\n연속정답: ${repetition}회\n최근학습: $lastReviewedText',
+                        '아는정도: $ef\n복습간격: ${interval}일\n연속정답: ${rep}회\n최근학습: $last',
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.grey,
@@ -134,55 +135,59 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                   },
                 ),
               ),
-              Positioned(
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
+
+              // 메인 컨텐츠: 단어 → 리딩/뜻 → 예문 → (스페이서) → 평가
+              Positioned.fill(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 60),
-                    Expanded(
-                      flex: 5,
-                      child: Center(
-                        child: Text(
-                          word['단어'],
-                          style: const TextStyle(
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                    const SizedBox(height: 120),
+
+                    // 1) 단어 (항상 흰색)
+                    Text(
+                      word['단어'] ?? '',
+                      style: ThemeProvider.wordlistWordStyleMemory,
+                      textAlign: TextAlign.center,
                     ),
-                    Expanded(
-                      flex: 4,
-                      child: AnimatedOpacity(
-                        duration: Duration(milliseconds: _showAnswer ? 300 : 0),
-                        opacity: _showAnswer ? 1.0 : 0.0,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              word['읽기'],
-                              style: const TextStyle(
-                                fontSize: 32,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              word['뜻'],
-                              style: const TextStyle(
-                                fontSize: 32,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    const SizedBox(height: 4),
+
+                    // 2) 히라가나 / 뜻 (빈 글자 출력으로 자리 고정)
+                    Text(
+                      _showAnswer ? (word['읽기'] ?? '') : ' ',
+                      style: ThemeProvider.wordlistWordReadStyleMemory,
+                      textAlign: TextAlign.center,
                     ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _showAnswer ? (word['뜻'] ?? '') : ' ',
+                      style: ThemeProvider.wordlistWordMeanStyleMemory,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 30),
+
+                    // 3) 예문 (빈 글자 출력으로 자리 고정, 단어 아래에 고정 위치)
+                    Text(
+                      showExamples ? (word['예문'] ?? '') : ' ',
+                      style: ThemeProvider.wordlistSentenceStyleMemory,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      showExamples && _showAnswer ? (word['예문읽기'] ?? '') : ' ',
+                      style: ThemeProvider.wordlistSentenceReadStyleMemory,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      showExamples && _showAnswer ? (word['예문뜻'] ?? '') : ' ',
+                      style: ThemeProvider.wordlistSentenceMeanStyleMemory,
+                      textAlign: TextAlign.center,
+                    ),
+
+                    // 4) 평가 영역을 항상 아래에 고정시키기 위한 Spacer
+                    const Spacer(),
+
+                    // 평가 영역 (절대 침범 금지)
                     AnimatedOpacity(
                       duration: Duration(milliseconds: _showAnswer ? 300 : 0),
                       opacity: _showAnswer ? 1.0 : 0.0,
@@ -238,10 +243,10 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                               ),
                             ],
                           ),
+                          const SizedBox(height: 20),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -251,6 +256,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
       ),
     );
   }
+
 
   Widget _buildMemoryButton({
     required BuildContext context,
@@ -299,8 +305,10 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ThemeProvider, StudyProvider>(
-      builder: (context, themeProvider, studyProvider, child) {
+    return Consumer<StudyProvider>(
+      builder: (context, studyProvider, child) {
+        final themeProvider = Provider.of<ThemeProvider>(context);
+        final showExamples = studyProvider.showExamples;
         final sortedWords = studyProvider.getSortedWordsForMemoryMode(_allWords);
         
         return Scaffold(
@@ -315,12 +323,34 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                 ),
               ),
             ),
+            actions: [
+              Consumer<StudyProvider>(
+                builder: (context, study, _) => IconButton(
+                  icon: Icon(
+                    study.showExamples
+                      ? Icons.visibility     // 예문 보이는 상태
+                      : Icons.visibility_off // 예문 숨긴 상태
+                  ),
+                  tooltip: study.showExamples ? '예문 숨기기' : '예문 보기',
+                  onPressed: study.toggleShowExamples,
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                  );
+                },
+              ),
+            ],
           ),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: sortedWords.isEmpty
                 ? const Center(child: Text('학습할 단어가 없습니다.'))
-                : _buildMemoryCard(sortedWords[_currentIndex]),
+                : _buildMemoryCard(sortedWords[_currentIndex],showExamples),
           ),
         );
       },
