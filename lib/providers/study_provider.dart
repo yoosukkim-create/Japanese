@@ -379,9 +379,17 @@ class StudyProvider extends ChangeNotifier {
   bool _showExamples = true;
   bool get showExamples => _showExamples;
 
+  bool _showCanvas = false;
+  bool get showCanvas => _showCanvas;
+
   void toggleShowExamples() {
     _showExamples = !_showExamples;
     notifyListeners();
   }
   
+  void toggleShowCanvas() {
+    _showCanvas = !_showCanvas;
+    notifyListeners();
+  }
+
 } 

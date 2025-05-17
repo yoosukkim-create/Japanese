@@ -86,7 +86,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     });
   }
 
-  Widget _buildMemoryCard(Map<String, dynamic> word, bool showExamples) {
+  Widget _buildMemoryCard(Map<String, dynamic> word, bool showExamples, bool showCanvas) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
 
     return Card(
@@ -163,7 +163,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                       style: ThemeProvider.wordlistWordMeanStyleMemory,
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 40),
 
                     // 3) 예문 (빈 글자 출력으로 자리 고정, 단어 아래에 고정 위치)
                     Text(
@@ -309,6 +309,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
       builder: (context, studyProvider, child) {
         final themeProvider = Provider.of<ThemeProvider>(context);
         final showExamples = studyProvider.showExamples;
+        final showCanvas = studyProvider.showCanvas;
         final sortedWords = studyProvider.getSortedWordsForMemoryMode(_allWords);
         
         return Scaffold(
@@ -324,6 +325,17 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
               ),
             ),
             actions: [
+              Consumer<StudyProvider>(
+                builder: (context, study, _) => IconButton(
+                  icon: Icon(
+                    study.showCanvas
+                      ? Icons.draw    
+                      : Icons.draw_outlined
+                  ),
+                  tooltip: study.showCanvas ? '캔버스 숨기기' : '캔버 보기',
+                  onPressed: study.toggleShowCanvas,
+                ),
+              ),
               Consumer<StudyProvider>(
                 builder: (context, study, _) => IconButton(
                   icon: Icon(
@@ -350,7 +362,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
             padding: const EdgeInsets.all(16.0),
             child: sortedWords.isEmpty
                 ? const Center(child: Text('학습할 단어가 없습니다.'))
-                : _buildMemoryCard(sortedWords[_currentIndex],showExamples),
+                : _buildMemoryCard(sortedWords[_currentIndex],showExamples,showCanvas),
           ),
         );
       },
