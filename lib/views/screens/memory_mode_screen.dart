@@ -123,6 +123,8 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
       ),
       child: InkWell(
         onTap: () => setState(() => _showAnswer = !_showAnswer),
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
         child: Container(
           width: double.infinity,
           constraints: BoxConstraints(
@@ -196,9 +198,13 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
-                              Signature(
-                                controller: _sigControllerWord,
-                                backgroundColor: Colors.transparent,
+                              GestureDetector(
+                                behavior: HitTestBehavior.translucent,
+                                onTapDown: (_) {},       // 탭 제스처만 소비
+                                child: Signature(
+                                  controller: _sigControllerWord,
+                                  backgroundColor: Colors.transparent,
+                                ),
                               ),
                               Text(
                                 _showAnswer ? (word['단어'] ?? '') : ' ',
@@ -255,10 +261,17 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
-                              Signature(
-                                controller: _sigControllerExample,
-                                backgroundColor: Colors.transparent,
+                              // 이 GestureDetector가 탭만 막습니다.
+                              GestureDetector(
+                                behavior: HitTestBehavior.translucent,
+                                onTapDown: (_) {},       // 탭 제스처만 소비
+                                child: Signature(
+                                  controller: _sigControllerExample,
+                                  backgroundColor: Colors.transparent,
+                                ),
                               ),
+
+                              // 그 위에 정답 텍스트
                               Text(
                                 _showAnswer ? (word['예문'] ?? '') : ' ',
                                 style: ThemeProvider.wordlistSentenceStyleMemory,
