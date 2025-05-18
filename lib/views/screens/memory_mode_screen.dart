@@ -34,16 +34,48 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     super.initState();
     _sigControllerWord = SignatureController(
       penStrokeWidth: 3,
-      penColor: Colors.white,
+      penColor: Provider.of<ThemeProvider>(context, listen: false).mainColor,
       exportBackgroundColor: Colors.transparent,
     );
     _sigControllerExample = SignatureController(
       penStrokeWidth: 3,
-      penColor: Colors.white,
+      penColor:  Provider.of<ThemeProvider>(context, listen: false).mainColor,
       exportBackgroundColor: Colors.transparent,
     );
     final rawWords = _getAllWordsFromWordbook(widget.wordbook);
     _allWords = _shuffleWithoutConsecutiveDuplicates(rawWords);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final newColor = Provider.of<ThemeProvider>(context).mainColor;
+
+    // 단어용 컨트롤러 색상이 달라졌으면
+    if (_sigControllerWord.penColor != newColor) {
+      // 기존에 그린 포인트들 보관
+      final oldPoints = List.of(_sigControllerWord.points);
+      _sigControllerWord.dispose();
+      _sigControllerWord = SignatureController(
+        points: oldPoints,
+        penStrokeWidth: 3,
+        penColor: newColor,
+        exportBackgroundColor: Colors.transparent,
+      );
+    }
+
+    // 예문용 컨트롤러 색상이 달라졌으면
+    if (_sigControllerExample.penColor != newColor) {
+      final oldPoints = List.of(_sigControllerExample.points);
+      _sigControllerExample.dispose();
+      _sigControllerExample = SignatureController(
+        points: oldPoints,
+        penStrokeWidth: 3,
+        penColor: newColor,
+        exportBackgroundColor: Colors.transparent,
+      );
+    }
   }
 
   @override
@@ -208,9 +240,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                               ),
                               Text(
                                 _showAnswer ? (word['단어'] ?? '') : ' ',
-                                style: ThemeProvider
-                                    .wordlistWordStyleMemory
-                                    .copyWith(color: Colors.white),
+                                style: ThemeProvider.wordlistWordStyleMemory,
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -221,9 +251,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                     ] else ...[
                       Text(
                         word['단어'] ?? '',
-                        style: ThemeProvider
-                            .wordlistWordStyleMemory
-                            .copyWith(color: Colors.white),
+                        style: ThemeProvider.wordlistWordStyleMemory,
                         textAlign: TextAlign.center,
                       ),
                     ],
