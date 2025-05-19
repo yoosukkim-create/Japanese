@@ -128,13 +128,20 @@ class WordGroupScreen extends StatelessWidget {
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.psychology, size: 32),
-                SizedBox(height: 4),
+              children: [
+                Icon(
+                  Icons.psychology, 
+                  size: 32,
+                  color: textColor(context),
+                ),
+                const SizedBox(height: 4),
                 Text(
                   '메모리 모드',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(
+                    fontSize: 16, 
+                    color: textColor(context),
+                  ),
                 ),
               ],
             ),
