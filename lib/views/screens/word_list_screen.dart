@@ -10,8 +10,7 @@ class WordListScreen extends StatefulWidget {
   final List<Map<String, dynamic>> words;
   final String title;
 
-  const WordListScreen({Key? key, required this.words, required this.title})
-    : super(key: key);
+  const WordListScreen({super.key, required this.words, required this.title});
 
   @override
   State<WordListScreen> createState() => _WordListScreenState();
@@ -316,14 +315,14 @@ class WordListItem extends StatelessWidget {
   final String? timeAgo;
 
   const WordListItem({
-    Key? key,
+    super.key,
     required this.word,
     required this.showHiragana,
     required this.showMeaning,
     required this.showExamples,
     this.isFlashcardMode = false,
     this.timeAgo,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -476,13 +475,13 @@ class FlashcardView extends StatefulWidget {
   final bool showExamples;
 
   const FlashcardView({
-    Key? key,
+    super.key,
     required this.words,
     required this.showHiragana,
     required this.showMeaning,
     required this.showTimeAgo,
     required this.showExamples,
-  }) : super(key: key);
+  });
 
   @override
   State<FlashcardView> createState() => _FlashcardViewState();

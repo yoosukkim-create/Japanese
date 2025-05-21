@@ -12,7 +12,7 @@ import 'package:japanese/views/screens/settings_screen.dart';
 class MemoryModeScreen extends StatefulWidget {
   final Wordbook wordbook;
 
-  const MemoryModeScreen({Key? key, required this.wordbook}) : super(key: key);
+  const MemoryModeScreen({super.key, required this.wordbook});
 
   @override
   State<MemoryModeScreen> createState() => _MemoryModeScreenState();
@@ -83,7 +83,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
   List<Map<String, dynamic>> _getAllWordsFromWordbook(Wordbook wordbook) {
     List<Map<String, dynamic>> words = [];
-    wordbook.wordgroups.values.forEach((wordgroup) {
+    for (var wordgroup in wordbook.wordgroups.values) {
       words.addAll(
         wordgroup.words.map(
           (word) => {
@@ -97,7 +97,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
           },
         ),
       );
-    });
+    }
     return words;
   }
 
@@ -191,8 +191,8 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                       padding: const EdgeInsets.all(8),
                       child: Text(
                         '아는정도: $ef\n'
-                        '복습간격: ${interval}일\n'
-                        '연속정답: ${rep}회\n'
+                        '복습간격: $interval일\n'
+                        '연속정답: $rep회\n'
                         '최근학습: $last',
                         style: const TextStyle(
                           fontSize: 12,
@@ -478,7 +478,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
             title: Align(
               alignment: ThemeProvider.appBarAlignment,
               child: Text(
-                '${widget.wordbook.title}',
+                widget.wordbook.title,
                 style: ThemeProvider.wordgroupBarStyle.copyWith(
                   color: themeProvider.mainColor,
                 ),

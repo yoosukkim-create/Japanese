@@ -5,7 +5,7 @@ import 'package:japanese/providers/theme_provider.dart';
 import 'package:japanese/providers/study_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();

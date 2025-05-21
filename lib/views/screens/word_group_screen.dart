@@ -12,7 +12,7 @@ import 'package:japanese/views/screens/settings_screen.dart';
 class WordGroupScreen extends StatelessWidget {
   final Wordbook wordbook;
 
-  const WordGroupScreen({Key? key, required this.wordbook}) : super(key: key);
+  const WordGroupScreen({super.key, required this.wordbook});
 
   @override
   bool isDarkMode(BuildContext context) =>
@@ -24,6 +24,7 @@ class WordGroupScreen extends StatelessWidget {
   double cardElevation(BuildContext context) => isDarkMode(context) ? 0.0 : 2.0;
   Color textColor(BuildContext context) =>
       isDarkMode(context) ? Colors.white : Colors.black87;
+  @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final studyProvider = Provider.of<StudyProvider>(context);
