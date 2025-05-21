@@ -1,9 +1,9 @@
 class WordMemoryState {
   final String wordId;
-  double ef;  // Easiness Factor
-  int interval;  // 다음 복습까지 남은 날짜
-  int repetition;  // 연속 정답 횟수
-  DateTime? lastReviewedAt;  // 마지막 복습 시간
+  double ef; // Easiness Factor
+  int interval; // 다음 복습까지 남은 날짜
+  int repetition; // 연속 정답 횟수
+  DateTime? lastReviewedAt; // 마지막 복습 시간
 
   WordMemoryState({
     required this.wordId,
@@ -29,9 +29,10 @@ class WordMemoryState {
       ef: json['ef'] ?? 2.5,
       interval: json['interval'] ?? 1,
       repetition: json['repetition'] ?? 0,
-      lastReviewedAt: json['lastReviewedAt'] != null 
-        ? DateTime.parse(json['lastReviewedAt'])
-        : null,
+      lastReviewedAt:
+          json['lastReviewedAt'] != null
+              ? DateTime.parse(json['lastReviewedAt'])
+              : null,
     );
   }
 
@@ -59,7 +60,8 @@ class WordMemoryState {
 
   bool needsReview() {
     if (lastReviewedAt == null) return true;
-    final daysSinceLastReview = DateTime.now().difference(lastReviewedAt!).inDays;
+    final daysSinceLastReview =
+        DateTime.now().difference(lastReviewedAt!).inDays;
     return daysSinceLastReview >= interval;
   }
-} 
+}

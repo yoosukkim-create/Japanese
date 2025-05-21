@@ -34,7 +34,11 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void searchWords(String query, Function(List<Map<String, dynamic>>) onResult, Function(String) onError) {
+  void searchWords(
+    String query,
+    Function(List<Map<String, dynamic>>) onResult,
+    Function(String) onError,
+  ) {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () async {
       if (query.isEmpty) return;

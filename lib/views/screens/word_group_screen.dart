@@ -10,16 +10,20 @@ import 'package:japanese/views/screens/memory_mode_screen.dart';
 import 'package:japanese/views/screens/settings_screen.dart';
 
 class WordGroupScreen extends StatelessWidget {
-
   final Wordbook wordbook;
 
   const WordGroupScreen({Key? key, required this.wordbook}) : super(key: key);
 
   @override
-  bool isDarkMode(BuildContext context) => Theme.of(context).brightness == Brightness.dark;
-  Color cardColor(BuildContext context) => isDarkMode(context) ? const Color(0xFF1C1B1F) : Theme.of(context).scaffoldBackgroundColor;
+  bool isDarkMode(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark;
+  Color cardColor(BuildContext context) =>
+      isDarkMode(context)
+          ? const Color(0xFF1C1B1F)
+          : Theme.of(context).scaffoldBackgroundColor;
   double cardElevation(BuildContext context) => isDarkMode(context) ? 0.0 : 2.0;
-  Color textColor(BuildContext context) => isDarkMode(context) ? Colors.white : Colors.black87;
+  Color textColor(BuildContext context) =>
+      isDarkMode(context) ? Colors.white : Colors.black87;
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final studyProvider = Provider.of<StudyProvider>(context);
@@ -57,34 +61,47 @@ class WordGroupScreen extends StatelessWidget {
 
           return Card(
             color: cardColor(context),
-            elevation:cardElevation(context),
+            elevation: cardElevation(context),
             margin: const EdgeInsets.only(bottom: 12.0),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(ThemeProvider.wordgroupCornerRadius),
+              borderRadius: BorderRadius.circular(
+                ThemeProvider.wordgroupCornerRadius,
+              ),
             ),
             child: InkWell(
-              borderRadius: BorderRadius.circular(ThemeProvider.wordgroupCornerRadius),
+              borderRadius: BorderRadius.circular(
+                ThemeProvider.wordgroupCornerRadius,
+              ),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => WordListScreen(
-                      title: key,
-                      words: wordgroup.words.map((word) => {
-                        'id': word.id,
-                        '단어': word.word,
-                        '읽기': word.reading,
-                        '뜻': word.meaning,
-                        '예문': word.example,
-                        '예문읽기': word.exampleReading,
-                        '예문뜻': word.exampleMeaning,
-                      }).toList(),
-                    ),
+                    builder:
+                        (context) => WordListScreen(
+                          title: key,
+                          words:
+                              wordgroup.words
+                                  .map(
+                                    (word) => {
+                                      'id': word.id,
+                                      '단어': word.word,
+                                      '읽기': word.reading,
+                                      '뜻': word.meaning,
+                                      '예문': word.example,
+                                      '예문읽기': word.exampleReading,
+                                      '예문뜻': word.exampleMeaning,
+                                    },
+                                  )
+                                  .toList(),
+                        ),
                   ),
                 );
               },
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 16.0,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -94,7 +111,7 @@ class WordGroupScreen extends StatelessWidget {
                           key,
                           style: ThemeProvider.wordgroupNameStyle.copyWith(
                             color: textColor(context),
-                          ), 
+                          ),
                         ),
                       ],
                     ),
@@ -129,27 +146,18 @@ class WordGroupScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.psychology, 
-                  size: 32,
-                  color: textColor(context),
-                ),
+                Icon(Icons.psychology, size: 32, color: textColor(context)),
                 const SizedBox(height: 4),
                 Text(
                   '메모리 모드',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16, 
-                    color: textColor(context),
-                  ),
+                  style: TextStyle(fontSize: 16, color: textColor(context)),
                 ),
               ],
             ),
           ),
         ),
       ),
-        
-
     );
   }
 }

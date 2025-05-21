@@ -52,7 +52,9 @@ class StudyProvider extends ChangeNotifier {
 
     final memoryStatesJson = prefs.getString('memory_states');
     if (memoryStatesJson != null) {
-      final Map<String, dynamic> memoryStatesMap = json.decode(memoryStatesJson);
+      final Map<String, dynamic> memoryStatesMap = json.decode(
+        memoryStatesJson,
+      );
       _memoryStates.clear();
       memoryStatesMap.forEach((key, value) {
         _memoryStates[key] = WordMemoryState.fromJson(value);
@@ -64,7 +66,9 @@ class StudyProvider extends ChangeNotifier {
 
   Future<void> _saveStates() async {
     final prefs = await SharedPreferences.getInstance();
-    final statesMap = _wordStates.map((key, value) => MapEntry(key, value.toJson()));
+    final statesMap = _wordStates.map(
+      (key, value) => MapEntry(key, value.toJson()),
+    );
     await prefs.setString('word_states', json.encode(statesMap));
   }
 
@@ -107,8 +111,10 @@ class StudyProvider extends ChangeNotifier {
     _wordStates[wordId] = WordStudyState(
       wordId: wordId,
       lastViewedAt: now,
-      wasHiraganaViewed: _showHiragana || (currentState?.wasHiraganaViewed ?? false),
-      wasMeaningViewed: _showMeaning || (currentState?.wasMeaningViewed ?? false),
+      wasHiraganaViewed:
+          _showHiragana || (currentState?.wasHiraganaViewed ?? false),
+      wasMeaningViewed:
+          _showMeaning || (currentState?.wasMeaningViewed ?? false),
     );
 
     _saveStates();
@@ -127,8 +133,10 @@ class StudyProvider extends ChangeNotifier {
       _wordStates[wordId] = WordStudyState(
         wordId: wordId,
         lastViewedAt: lastViewedAt,
-        wasHiraganaViewed: _showHiragana || (currentState?.wasHiraganaViewed ?? false),
-        wasMeaningViewed: _showMeaning || (currentState?.wasMeaningViewed ?? false),
+        wasHiraganaViewed:
+            _showHiragana || (currentState?.wasHiraganaViewed ?? false),
+        wasMeaningViewed:
+            _showMeaning || (currentState?.wasMeaningViewed ?? false),
       );
     });
 
@@ -147,8 +155,10 @@ class StudyProvider extends ChangeNotifier {
       return WordStudyState(
         wordId: wordId,
         lastViewedAt: _tempWordStates[wordId]!,
-        wasHiraganaViewed: _showHiragana || (currentState?.wasHiraganaViewed ?? false),
-        wasMeaningViewed: _showMeaning || (currentState?.wasMeaningViewed ?? false),
+        wasHiraganaViewed:
+            _showHiragana || (currentState?.wasHiraganaViewed ?? false),
+        wasMeaningViewed:
+            _showMeaning || (currentState?.wasMeaningViewed ?? false),
       );
     }
     return _wordStates[wordId];
@@ -223,11 +233,12 @@ class StudyProvider extends ChangeNotifier {
   String getProgressText(List<dynamic> words) {
     try {
       int totalWords = words.length;
-      int studiedWords = words.where((word) {
-        final wordMap = Map<String, dynamic>.from(word);
-        final id = '${wordMap['단어']}_${wordMap['읽기']}';
-        return getWordState(id) != null;
-      }).length;
+      int studiedWords =
+          words.where((word) {
+            final wordMap = Map<String, dynamic>.from(word);
+            final id = '${wordMap['단어']}_${wordMap['읽기']}';
+            return getWordState(id) != null;
+          }).length;
 
       return '$studiedWords/$totalWords';
     } catch (e) {
@@ -242,10 +253,11 @@ class StudyProvider extends ChangeNotifier {
 
     wordgroups.forEach((_, wordgroup) {
       totalWords += wordgroup.words.length;
-      studiedWords += wordgroup.words.where((word) {
-        final state = getWordState('${word.word}_${word.reading}');
-        return state != null;
-      }).length;
+      studiedWords +=
+          wordgroup.words.where((word) {
+            final state = getWordState('${word.word}_${word.reading}');
+            return state != null;
+          }).length;
     });
 
     return '$studiedWords/$totalWords';
@@ -253,16 +265,20 @@ class StudyProvider extends ChangeNotifier {
 
   String getWordgroupProgressText(List<WordCard> words) {
     int totalWords = words.length;
-    int studiedWords = words.where((word) {
-      final state = getWordState('${word.word}_${word.reading}');
-      return state != null;
-    }).length;
+    int studiedWords =
+        words.where((word) {
+          final state = getWordState('${word.word}_${word.reading}');
+          return state != null;
+        }).length;
 
     return '$studiedWords/$totalWords';
   }
 
   // 최근 단어장 관리
-  Future<void> addToRecentLists(String title, List<Map<String, dynamic>> words) async {
+  Future<void> addToRecentLists(
+    String title,
+    List<Map<String, dynamic>> words,
+  ) async {
     try {
       final newItem = {
         'title': title,
@@ -343,7 +359,9 @@ class StudyProvider extends ChangeNotifier {
 
   Future<void> _saveMemoryStates() async {
     final prefs = await SharedPreferences.getInstance();
-    final statesMap = _memoryStates.map((key, value) => MapEntry(key, value.toJson()));
+    final statesMap = _memoryStates.map(
+      (key, value) => MapEntry(key, value.toJson()),
+    );
     await prefs.setString('memory_states', json.encode(statesMap));
   }
 
@@ -355,7 +373,9 @@ class StudyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Map<String, dynamic>> getSortedWordsForMemoryMode(List<Map<String, dynamic>> words) {
+  List<Map<String, dynamic>> getSortedWordsForMemoryMode(
+    List<Map<String, dynamic>> words,
+  ) {
     return List<Map<String, dynamic>>.from(words)..sort((a, b) {
       final stateA = _memoryStates[a['id']];
       final stateB = _memoryStates[b['id']];
@@ -386,10 +406,9 @@ class StudyProvider extends ChangeNotifier {
     _showExamples = !_showExamples;
     notifyListeners();
   }
-  
+
   void toggleShowCanvas() {
     _showCanvas = !_showCanvas;
     notifyListeners();
   }
-
-} 
+}

@@ -12,7 +12,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-    Future<void> _showMemoryResetConfirmDialog(BuildContext context) async {
+  Future<void> _showMemoryResetConfirmDialog(BuildContext context) async {
     final studyProvider = Provider.of<StudyProvider>(context, listen: false);
 
     return showDialog<void>(
@@ -53,7 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // 초기화 확인 다이얼로그를 보여주는 메서드
   Future<void> _showResetConfirmDialog(BuildContext context) async {
     final studyProvider = Provider.of<StudyProvider>(context, listen: false);
-    
+
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -73,7 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             TextButton(
               child: const Text(
                 '예',
-                style: TextStyle(color: Colors.red),  // 위험 동작임을 표시
+                style: TextStyle(color: Colors.red), // 위험 동작임을 표시
               ),
               onPressed: () async {
                 await studyProvider.resetAllStudyStates();
@@ -108,10 +108,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(
-                '설정',
-              style: ThemeProvider.settingsBarStyle,
-            ),
+            title: Text('설정', style: ThemeProvider.settingsBarStyle),
           ),
           body: ListView(
             children: [
@@ -138,7 +135,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   height: 24,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: themeProvider.isDarkMode ? Colors.grey[800] : Colors.white,
+                    color:
+                        themeProvider.isDarkMode
+                            ? Colors.grey[800]
+                            : Colors.white,
                     border: Border.all(color: Colors.grey),
                   ),
                 ),
@@ -154,43 +154,68 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     _ColorOption(
                       color: ThemeProvider.gray,
                       isSelected: themeProvider.mainColor == ThemeProvider.gray,
-                      onTap: () => themeProvider.setMainColor(ThemeProvider.gray),
+                      onTap:
+                          () => themeProvider.setMainColor(ThemeProvider.gray),
                     ),
                     const SizedBox(width: 8),
                     _ColorOption(
                       color: ThemeProvider.pastelRed,
-                      isSelected: themeProvider.mainColor == ThemeProvider.pastelRed,
-                      onTap: () => themeProvider.setMainColor(ThemeProvider.pastelRed),
+                      isSelected:
+                          themeProvider.mainColor == ThemeProvider.pastelRed,
+                      onTap:
+                          () => themeProvider.setMainColor(
+                            ThemeProvider.pastelRed,
+                          ),
                     ),
                     const SizedBox(width: 8),
                     _ColorOption(
                       color: ThemeProvider.pastelOrange,
-                      isSelected: themeProvider.mainColor == ThemeProvider.pastelOrange,
-                      onTap: () => themeProvider.setMainColor(ThemeProvider.pastelOrange),
+                      isSelected:
+                          themeProvider.mainColor == ThemeProvider.pastelOrange,
+                      onTap:
+                          () => themeProvider.setMainColor(
+                            ThemeProvider.pastelOrange,
+                          ),
                     ),
                     const SizedBox(width: 8),
                     _ColorOption(
                       color: ThemeProvider.pastelYellow,
-                      isSelected: themeProvider.mainColor == ThemeProvider.pastelYellow,
-                      onTap: () => themeProvider.setMainColor(ThemeProvider.pastelYellow),
+                      isSelected:
+                          themeProvider.mainColor == ThemeProvider.pastelYellow,
+                      onTap:
+                          () => themeProvider.setMainColor(
+                            ThemeProvider.pastelYellow,
+                          ),
                     ),
                     const SizedBox(width: 8),
                     _ColorOption(
                       color: ThemeProvider.pastelGreen,
-                      isSelected: themeProvider.mainColor == ThemeProvider.pastelGreen,
-                      onTap: () => themeProvider.setMainColor(ThemeProvider.pastelGreen),
+                      isSelected:
+                          themeProvider.mainColor == ThemeProvider.pastelGreen,
+                      onTap:
+                          () => themeProvider.setMainColor(
+                            ThemeProvider.pastelGreen,
+                          ),
                     ),
                     const SizedBox(width: 8),
                     _ColorOption(
                       color: ThemeProvider.pastelBlue,
-                      isSelected: themeProvider.mainColor == ThemeProvider.pastelBlue,
-                      onTap: () => themeProvider.setMainColor(ThemeProvider.pastelBlue),
+                      isSelected:
+                          themeProvider.mainColor == ThemeProvider.pastelBlue,
+                      onTap:
+                          () => themeProvider.setMainColor(
+                            ThemeProvider.pastelBlue,
+                          ),
                     ),
                     const SizedBox(width: 8),
                     _ColorOption(
                       color: ThemeProvider.pastelIndigo,
-                      isSelected: themeProvider.mainColor == ThemeProvider.pastelIndigo,
-                      onTap: () => themeProvider.setMainColor(ThemeProvider.pastelIndigo),
+                      isSelected:
+                          themeProvider.mainColor == ThemeProvider.pastelIndigo,
+                      onTap:
+                          () => themeProvider.setMainColor(
+                            ThemeProvider.pastelIndigo,
+                          ),
                     ),
                   ],
                 ),
@@ -209,15 +234,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 activeTrackColor: trackColor,
                 inactiveTrackColor: Colors.grey.withOpacity(0.3),
               ),
-              
+
               // 학습 기록 초기화 옵션
               ListTile(
                 title: const Text('단어장 학습 시간 초기화'),
                 subtitle: const Text('단어장에서 마지막으로 학습한 시간을 초기화합니다'),
-                trailing: Icon(
-                  Icons.restore,
-                  color: themeProvider.mainColor,
-                ),
+                trailing: Icon(Icons.restore, color: themeProvider.mainColor),
                 onTap: () => _showResetConfirmDialog(context),
               ),
               const Divider(),
@@ -277,4 +299,4 @@ class _ColorOption extends StatelessWidget {
       ),
     );
   }
-} 
+}

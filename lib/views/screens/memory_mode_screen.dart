@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:signature/signature.dart';
 
-
 import 'package:japanese/models/word_book.dart';
 import 'package:japanese/providers/theme_provider.dart';
 import 'package:japanese/providers/study_provider.dart';
@@ -13,10 +12,7 @@ import 'package:japanese/views/screens/settings_screen.dart';
 class MemoryModeScreen extends StatefulWidget {
   final Wordbook wordbook;
 
-  const MemoryModeScreen({
-    Key? key,
-    required this.wordbook,
-  }) : super(key: key);
+  const MemoryModeScreen({Key? key, required this.wordbook}) : super(key: key);
 
   @override
   State<MemoryModeScreen> createState() => _MemoryModeScreenState();
@@ -39,7 +35,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     );
     _sigControllerExample = SignatureController(
       penStrokeWidth: 3,
-      penColor:  Provider.of<ThemeProvider>(context, listen: false).mainColor,
+      penColor: Provider.of<ThemeProvider>(context, listen: false).mainColor,
       exportBackgroundColor: Colors.transparent,
     );
     final rawWords = _getAllWordsFromWordbook(widget.wordbook);
@@ -84,24 +80,30 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     _sigControllerExample.dispose();
     super.dispose();
   }
-  
+
   List<Map<String, dynamic>> _getAllWordsFromWordbook(Wordbook wordbook) {
     List<Map<String, dynamic>> words = [];
     wordbook.wordgroups.values.forEach((wordgroup) {
-      words.addAll(wordgroup.words.map((word) => {
-        'id': '${word.word}_${word.reading}',
-        '단어': word.word,
-        '읽기': word.reading,
-        '뜻': word.meaning,
-        '예문': word.example,
-        '예문읽기': word.exampleReading,
-        '예문뜻': word.exampleMeaning,
-      }));
+      words.addAll(
+        wordgroup.words.map(
+          (word) => {
+            'id': '${word.word}_${word.reading}',
+            '단어': word.word,
+            '읽기': word.reading,
+            '뜻': word.meaning,
+            '예문': word.example,
+            '예문읽기': word.exampleReading,
+            '예문뜻': word.exampleMeaning,
+          },
+        ),
+      );
     });
     return words;
   }
 
-  List<Map<String, dynamic>> _shuffleWithoutConsecutiveDuplicates(List<Map<String, dynamic>> words) {
+  List<Map<String, dynamic>> _shuffleWithoutConsecutiveDuplicates(
+    List<Map<String, dynamic>> words,
+  ) {
     if (words.isEmpty) return [];
 
     final random = Random();
@@ -126,7 +128,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     }
 
     return words; // fallback
-  }    
+  }
 
   void _moveToNextWord() {
     setState(() {
@@ -172,16 +174,19 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                 child: Consumer<StudyProvider>(
                   builder: (ctx, prov, _) {
                     final mem = prov.getMemoryState(word['id']);
-                    if (!Provider.of<ThemeProvider>(ctx, listen: false)
-                        .showMemoryParams) {
+                    if (!Provider.of<ThemeProvider>(
+                      ctx,
+                      listen: false,
+                    ).showMemoryParams) {
                       return const SizedBox.shrink();
                     }
                     final ef = mem?.ef.toStringAsFixed(1) ?? '2.5';
                     final interval = mem?.interval.toString() ?? '0';
                     final rep = mem?.repetition.toString() ?? '0';
-                    final last = (mem != null && mem.lastReviewedAt != null)
-                        ? _formatDate(mem.lastReviewedAt!)
-                        : '미학습';
+                    final last =
+                        (mem != null && mem.lastReviewedAt != null)
+                            ? _formatDate(mem.lastReviewedAt!)
+                            : '미학습';
                     return Container(
                       padding: const EdgeInsets.all(8),
                       child: Text(
@@ -232,7 +237,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                             children: [
                               GestureDetector(
                                 behavior: HitTestBehavior.translucent,
-                                onTapDown: (_) {},       // 탭 제스처만 소비
+                                onTapDown: (_) {}, // 탭 제스처만 소비
                                 child: Signature(
                                   controller: _sigControllerWord,
                                   backgroundColor: Colors.transparent,
@@ -259,8 +264,8 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                     // 3) 뜻
                     Text(
                       !showCanvas
-                       ? (_showAnswer ? (word['뜻'] ?? '') : ' ')
-                       : (word['뜻'] ?? ''),
+                          ? (_showAnswer ? (word['뜻'] ?? '') : ' ')
+                          : (word['뜻'] ?? ''),
                       style: ThemeProvider.wordlistWordMeanStyleMemory,
                       textAlign: TextAlign.center,
                     ),
@@ -268,9 +273,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
                     // 4) 예문읽기 (항상 빈칸/표시 고정)
                     Text(
-                      showExamples && _showAnswer
-                          ? (word['예문읽기'] ?? '')
-                          : ' ',
+                      showExamples && _showAnswer ? (word['예문읽기'] ?? '') : ' ',
                       style: ThemeProvider.wordlistSentenceReadStyleMemory,
                       textAlign: TextAlign.center,
                     ),
@@ -292,7 +295,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                               // 이 GestureDetector가 탭만 막습니다.
                               GestureDetector(
                                 behavior: HitTestBehavior.translucent,
-                                onTapDown: (_) {},       // 탭 제스처만 소비
+                                onTapDown: (_) {}, // 탭 제스처만 소비
                                 child: Signature(
                                   controller: _sigControllerExample,
                                   backgroundColor: Colors.transparent,
@@ -302,7 +305,8 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                               // 그 위에 정답 텍스트
                               Text(
                                 _showAnswer ? (word['예문'] ?? '') : ' ',
-                                style: ThemeProvider.wordlistSentenceStyleMemory,
+                                style:
+                                    ThemeProvider.wordlistSentenceStyleMemory,
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -321,8 +325,10 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                     // 6) 예문뜻
                     Text(
                       !showCanvas
-                      ? (showExamples && _showAnswer ? (word['예문뜻'] ?? '') : ' ')
-                      : (showExamples ? (word['예문뜻'] ?? '') : ' '),
+                          ? (showExamples && _showAnswer
+                              ? (word['예문뜻'] ?? '')
+                              : ' ')
+                          : (showExamples ? (word['예문뜻'] ?? '') : ' '),
                       style: ThemeProvider.wordlistSentenceMeanStyleMemory,
                       textAlign: TextAlign.center,
                     ),
@@ -331,8 +337,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                     const Spacer(),
 
                     AnimatedOpacity(
-                      duration:
-                          Duration(milliseconds: _showAnswer ? 300 : 0),
+                      duration: Duration(milliseconds: _showAnswer ? 300 : 0),
                       opacity: _showAnswer ? 1.0 : 0.0,
                       child: Column(
                         children: [
@@ -346,53 +351,52 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                           ),
                           const SizedBox(height: 24),
                           Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               _buildMemoryButton(
                                 context: context,
                                 text: '모름',
                                 color: Colors.redAccent,
-                                onPressed: _showAnswer
-                                    ? () {
-                                        Provider.of<StudyProvider>(
-                                                context,
-                                                listen: false)
-                                            .updateMemoryState(
-                                                word['id'], 1);
-                                        _moveToNextWord();
-                                      }
-                                    : null,
+                                onPressed:
+                                    _showAnswer
+                                        ? () {
+                                          Provider.of<StudyProvider>(
+                                            context,
+                                            listen: false,
+                                          ).updateMemoryState(word['id'], 1);
+                                          _moveToNextWord();
+                                        }
+                                        : null,
                               ),
                               _buildMemoryButton(
                                 context: context,
                                 text: '애매함',
                                 color: Colors.orangeAccent,
-                                onPressed: _showAnswer
-                                    ? () {
-                                        Provider.of<StudyProvider>(
-                                                context,
-                                                listen: false)
-                                            .updateMemoryState(
-                                                word['id'], 3);
-                                        _moveToNextWord();
-                                      }
-                                    : null,
+                                onPressed:
+                                    _showAnswer
+                                        ? () {
+                                          Provider.of<StudyProvider>(
+                                            context,
+                                            listen: false,
+                                          ).updateMemoryState(word['id'], 3);
+                                          _moveToNextWord();
+                                        }
+                                        : null,
                               ),
                               _buildMemoryButton(
                                 context: context,
                                 text: '잘 암',
                                 color: Colors.green,
-                                onPressed: _showAnswer
-                                    ? () {
-                                        Provider.of<StudyProvider>(
-                                                context,
-                                                listen: false)
-                                            .updateMemoryState(
-                                                word['id'], 5);
-                                        _moveToNextWord();
-                                      }
-                                    : null,
+                                onPressed:
+                                    _showAnswer
+                                        ? () {
+                                          Provider.of<StudyProvider>(
+                                            context,
+                                            listen: false,
+                                          ).updateMemoryState(word['id'], 5);
+                                          _moveToNextWord();
+                                        }
+                                        : null,
                               ),
                             ],
                           ),
@@ -410,7 +414,6 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     );
   }
 
-
   Widget _buildMemoryButton({
     required BuildContext context,
     required String text,
@@ -425,7 +428,9 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(ThemeProvider.wordlistCornerRadius),
+            borderRadius: BorderRadius.circular(
+              ThemeProvider.wordlistCornerRadius,
+            ),
           ),
           elevation: 4,
         ),
@@ -444,7 +449,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
-    
+
     if (difference.inSeconds < 60) {
       return '방금 전';
     } else if (difference.inMinutes < 60) {
@@ -463,8 +468,10 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
         final themeProvider = Provider.of<ThemeProvider>(context);
         final showExamples = studyProvider.showExamples;
         final showCanvas = studyProvider.showCanvas;
-        final sortedWords = studyProvider.getSortedWordsForMemoryMode(_allWords);
-        
+        final sortedWords = studyProvider.getSortedWordsForMemoryMode(
+          _allWords,
+        );
+
         return Scaffold(
           appBar: AppBar(
             titleSpacing: 0,
@@ -479,33 +486,36 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
             ),
             actions: [
               Consumer<StudyProvider>(
-                builder: (context, study, _) => IconButton(
-                  icon: Icon(
-                    study.showCanvas
-                      ? Icons.draw    
-                      : Icons.draw_outlined
-                  ),
-                  tooltip: study.showCanvas ? '캔버스 숨기기' : '캔버 보기',
-                  onPressed: study.toggleShowCanvas,
-                ),
+                builder:
+                    (context, study, _) => IconButton(
+                      icon: Icon(
+                        study.showCanvas ? Icons.draw : Icons.draw_outlined,
+                      ),
+                      tooltip: study.showCanvas ? '캔버스 숨기기' : '캔버 보기',
+                      onPressed: study.toggleShowCanvas,
+                    ),
               ),
               Consumer<StudyProvider>(
-                builder: (context, study, _) => IconButton(
-                  icon: Icon(
-                    study.showExamples
-                      ? Icons.visibility     // 예문 보이는 상태
-                      : Icons.visibility_off // 예문 숨긴 상태
-                  ),
-                  tooltip: study.showExamples ? '예문 숨기기' : '예문 보기',
-                  onPressed: study.toggleShowExamples,
-                ),
+                builder:
+                    (context, study, _) => IconButton(
+                      icon: Icon(
+                        study.showExamples
+                            ? Icons
+                                .visibility // 예문 보이는 상태
+                            : Icons.visibility_off, // 예문 숨긴 상태
+                      ),
+                      tooltip: study.showExamples ? '예문 숨기기' : '예문 보기',
+                      onPressed: study.toggleShowExamples,
+                    ),
               ),
               IconButton(
                 icon: const Icon(Icons.settings),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsScreen(),
+                    ),
                   );
                 },
               ),
@@ -513,12 +523,17 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
           ),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: sortedWords.isEmpty
-                ? const Center(child: Text('학습할 단어가 없습니다.'))
-                : _buildMemoryCard(sortedWords[_currentIndex],showExamples,showCanvas),
+            child:
+                sortedWords.isEmpty
+                    ? const Center(child: Text('학습할 단어가 없습니다.'))
+                    : _buildMemoryCard(
+                      sortedWords[_currentIndex],
+                      showExamples,
+                      showCanvas,
+                    ),
           ),
         );
       },
     );
   }
-} 
+}

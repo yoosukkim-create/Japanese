@@ -10,24 +10,21 @@ class WordListScreen extends StatefulWidget {
   final List<Map<String, dynamic>> words;
   final String title;
 
-  const WordListScreen({
-    Key? key,
-    required this.words,
-    required this.title,
-  }) : super(key: key);
+  const WordListScreen({Key? key, required this.words, required this.title})
+    : super(key: key);
 
   @override
   State<WordListScreen> createState() => _WordListScreenState();
 }
 
-class _WordListScreenState extends State<WordListScreen> with SingleTickerProviderStateMixin {
+class _WordListScreenState extends State<WordListScreen>
+    with SingleTickerProviderStateMixin {
   bool showHiragana = false;
   bool showMeaning = false;
   late List<Map<String, dynamic>> currentWords;
   late StudyProvider _studyProvider;
   final Map<String, bool> _hiraganaShown = {};
   final Map<String, bool> _meaningShown = {};
-
 
   @override
   void initState() {
@@ -59,7 +56,6 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
       // showMeaning = _meaningShown[wordId]!;
     });
   }
-
 
   @override
   void dispose() {
@@ -102,66 +98,78 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
             ),
             actions: [
               Consumer<StudyProvider>(
-                builder: (context, study, _) => IconButton(
-                  icon: Icon(
-                    study.showExamples
-                      ? Icons.visibility     // 예문 보이는 상태
-                      : Icons.visibility_off // 예문 숨긴 상태
-                  ),
-                  tooltip: study.showExamples ? '예문 숨기기' : '예문 보기',
-                  onPressed: study.toggleShowExamples,
-                ),
+                builder:
+                    (context, study, _) => IconButton(
+                      icon: Icon(
+                        study.showExamples
+                            ? Icons
+                                .visibility // 예문 보이는 상태
+                            : Icons.visibility_off, // 예문 숨긴 상태
+                      ),
+                      tooltip: study.showExamples ? '예문 숨기기' : '예문 보기',
+                      onPressed: study.toggleShowExamples,
+                    ),
               ),
               IconButton(
                 icon: const Icon(Icons.settings),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsScreen(),
+                    ),
                   );
                 },
               ),
             ],
           ),
-          body: studyProvider.isFlashcardMode
-              ? FlashcardView(
-                  words: currentWords,
-                  showHiragana: showHiragana,
-                  showMeaning: showMeaning,
-                  showTimeAgo: themeProvider.showLastViewedTime,
-                  showExamples: showExamples,
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  itemCount: currentWords.length,
-                  itemBuilder: (context, index) {
-                    final word = currentWords[index];
-                    final wordId = word['id'].toString();
-                    
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          _toggleWordState(wordId);
-                          studyProvider.updateTempWordState(wordId);
-                        },
-                        child: WordListItem(
-                          word: word,
-                          showHiragana: _hiraganaShown[wordId] ?? false,
-                          showMeaning: _meaningShown[wordId] ?? false,
-                          showExamples: showExamples,
-                          isFlashcardMode: false,
-                          timeAgo: themeProvider.showLastViewedTime
-                              ? _getTimeAgoText(studyProvider, wordId)
-                              : null,
+          body:
+              studyProvider.isFlashcardMode
+                  ? FlashcardView(
+                    words: currentWords,
+                    showHiragana: showHiragana,
+                    showMeaning: showMeaning,
+                    showTimeAgo: themeProvider.showLastViewedTime,
+                    showExamples: showExamples,
+                  )
+                  : ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
+                    itemCount: currentWords.length,
+                    itemBuilder: (context, index) {
+                      final word = currentWords[index];
+                      final wordId = word['id'].toString();
+
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            _toggleWordState(wordId);
+                            studyProvider.updateTempWordState(wordId);
+                          },
+                          child: WordListItem(
+                            word: word,
+                            showHiragana: _hiraganaShown[wordId] ?? false,
+                            showMeaning: _meaningShown[wordId] ?? false,
+                            showExamples: showExamples,
+                            isFlashcardMode: false,
+                            timeAgo:
+                                themeProvider.showLastViewedTime
+                                    ? _getTimeAgoText(studyProvider, wordId)
+                                    : null,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  ),
           bottomNavigationBar: SafeArea(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
               decoration: BoxDecoration(
                 color: Theme.of(context).scaffoldBackgroundColor,
                 boxShadow: [
@@ -177,7 +185,7 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
                   for (int i = 0; i < 4; i++) ...[
                     Expanded(child: _buildButtonByIndex(context, i)),
                     if (i < 3) const SizedBox(width: 8), // 마지막엔 간격 안 넣음
-                  ]
+                  ],
                 ],
               ),
             ),
@@ -244,7 +252,6 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
     }
   }
 
-
   void _toggleBoth() {
     setState(() {
       if (showHiragana && showMeaning) {
@@ -264,15 +271,18 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
     required VoidCallback onPressed,
     bool alwaysActive = false,
   }) {
-    final color = alwaysActive || isSelected
-        ? Theme.of(context).primaryColor
-        : Colors.grey;
+    final color =
+        alwaysActive || isSelected
+            ? Theme.of(context).primaryColor
+            : Colors.grey;
 
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(ThemeProvider.wordlistCornerRadius),
+          borderRadius: BorderRadius.circular(
+            ThemeProvider.wordlistCornerRadius,
+          ),
         ),
         side: BorderSide(color: color),
         backgroundColor:
@@ -285,10 +295,7 @@ class _WordListScreenState extends State<WordListScreen> with SingleTickerProvid
         overflow: TextOverflow.ellipsis,
         softWrap: false,
         textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 13,
-          color: color,
-        ),
+        style: TextStyle(fontSize: 13, color: color),
       ),
     );
   }
@@ -325,9 +332,8 @@ class WordListItem extends StatelessWidget {
     const double midSpacing = 12.0;
 
     // 1) 전체 높이(fullHeight)와 반절 높이(halfHeight) 계산
-    final double fullHeight = isFlashcardMode
-        ? MediaQuery.of(context).size.height * 0.7
-        : 320.0;
+    final double fullHeight =
+        isFlashcardMode ? MediaQuery.of(context).size.height * 0.7 : 320.0;
     final double halfHeight = (fullHeight - verticalPadding - midSpacing) / 2;
 
     // 2) collapsedHeight: 예문 숨김 시 카드 전체 높이
@@ -335,14 +341,12 @@ class WordListItem extends StatelessWidget {
 
     // 3) 카드 높이 결정 (flashcard 모드면 무조건 fullHeight)
     final bool hasExampleForHeight = isFlashcardMode || showExamples;
-    final double containerHeight = hasExampleForHeight
-        ? fullHeight
-        : collapsedHeight;
+    final double containerHeight =
+        hasExampleForHeight ? fullHeight : collapsedHeight;
 
     // 4) 섹션 높이 계산
-    final double sectionHeight = hasExampleForHeight
-        ? halfHeight
-        : (containerHeight - verticalPadding);
+    final double sectionHeight =
+        hasExampleForHeight ? halfHeight : (containerHeight - verticalPadding);
 
     // 5) 예문 섹션 렌더링 여부 (오직 showExamples 만 체크)
     final bool hasExampleForContent = showExamples;
@@ -355,10 +359,7 @@ class WordListItem extends StatelessWidget {
       child: Container(
         width: double.infinity,
         height: containerHeight,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 16.0,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
         child: Column(
           children: [
             // 상단 단어 영역
@@ -372,18 +373,20 @@ class WordListItem extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 4.0),
                     child: Text(
                       showHiragana ? (word['읽기'] ?? '') : ' ',
-                      style: isFlashcardMode
-                          ? ThemeProvider.wordlistWordReadStyleFlash
-                          : ThemeProvider.wordlistWordReadStyle,
+                      style:
+                          isFlashcardMode
+                              ? ThemeProvider.wordlistWordReadStyleFlash
+                              : ThemeProvider.wordlistWordReadStyle,
                       textAlign: TextAlign.center,
                     ),
                   ),
                   // 단어 (한자)
                   Text(
                     word['단어'] ?? '',
-                    style: isFlashcardMode
-                        ? ThemeProvider.wordlistWordStyleFlash
-                        : ThemeProvider.wordlistWordStyle,
+                    style:
+                        isFlashcardMode
+                            ? ThemeProvider.wordlistWordStyleFlash
+                            : ThemeProvider.wordlistWordStyle,
                     textAlign: TextAlign.center,
                   ),
                   // 뜻
@@ -391,9 +394,10 @@ class WordListItem extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 4.0),
                     child: Text(
                       showMeaning ? (word['뜻'] ?? '') : ' ',
-                      style: isFlashcardMode
-                          ? ThemeProvider.wordlistWordMeanStyleFlash
-                          : ThemeProvider.wordlistWordMeanStyle,
+                      style:
+                          isFlashcardMode
+                              ? ThemeProvider.wordlistWordMeanStyleFlash
+                              : ThemeProvider.wordlistWordMeanStyle,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -424,18 +428,20 @@ class WordListItem extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 4.0),
                         child: Text(
                           showHiragana ? (word['예문읽기'] ?? '') : ' ',
-                          style: isFlashcardMode
-                              ? ThemeProvider.wordlistSentenceReadStyleFlash
-                              : ThemeProvider.wordlistSentenceReadStyle,
+                          style:
+                              isFlashcardMode
+                                  ? ThemeProvider.wordlistSentenceReadStyleFlash
+                                  : ThemeProvider.wordlistSentenceReadStyle,
                           textAlign: TextAlign.center,
                         ),
                       ),
                       // 예문
                       Text(
                         word['예문'] ?? '',
-                        style: isFlashcardMode
-                            ? ThemeProvider.wordlistSentenceStyleFlash
-                            : ThemeProvider.wordlistSentenceStyle,
+                        style:
+                            isFlashcardMode
+                                ? ThemeProvider.wordlistSentenceStyleFlash
+                                : ThemeProvider.wordlistSentenceStyle,
                         textAlign: TextAlign.center,
                       ),
                       // 예문 뜻
@@ -443,9 +449,10 @@ class WordListItem extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 4.0),
                         child: Text(
                           showMeaning ? (word['예문뜻'] ?? '') : ' ',
-                          style: isFlashcardMode
-                              ? ThemeProvider.wordlistSentenceMeanStyleFlash
-                              : ThemeProvider.wordlistSentenceMeanStyle,
+                          style:
+                              isFlashcardMode
+                                  ? ThemeProvider.wordlistSentenceMeanStyleFlash
+                                  : ThemeProvider.wordlistSentenceMeanStyle,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -460,7 +467,6 @@ class WordListItem extends StatelessWidget {
     );
   }
 }
-
 
 class FlashcardView extends StatefulWidget {
   final List<Map<String, dynamic>> words;
@@ -525,6 +531,7 @@ class _FlashcardViewState extends State<FlashcardView> {
       });
     }
   }
+
   void _toggleCardState(String wordId) {
     final currentHira = _hiraganaShown[wordId] ?? false;
     final currentMean = _meaningShown[wordId] ?? false;

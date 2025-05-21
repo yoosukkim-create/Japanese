@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,12 +29,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, _) => MaterialApp(
-        title: '메모리 メモリ',
-        theme: themeProvider.themeData,
-        home: const HomeScreen(),
-        debugShowCheckedModeBanner: false,
-      ),
+      builder:
+          (context, themeProvider, _) => MaterialApp(
+            title: '메모리 メモリ',
+            theme: themeProvider.themeData,
+            home: const HomeScreen(),
+            debugShowCheckedModeBanner: false,
+          ),
     );
   }
 }
@@ -48,8 +48,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-  bool isDarkMode(BuildContext context) => Theme.of(context).brightness == Brightness.dark;
+  bool isDarkMode(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark;
 
   @override
   void initState() {
@@ -58,9 +58,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   Widget _buildCardTitle(String title, ThemeProvider themeProvider) {
@@ -80,89 +80,110 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildRecentLists(StudyProvider studyProvider, ThemeProvider themeProvider) {
+  Widget _buildRecentLists(
+    StudyProvider studyProvider,
+    ThemeProvider themeProvider,
+  ) {
     return _buildCardContainer(
       children: [
         _buildCardTitle('최근 본 단어장', themeProvider),
         studyProvider.recentWordLists.isEmpty
             ? const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                child: Text(
-                  '아직 확인한 단어장이 없습니다',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                ),
-              )
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              child: Text(
+                '아직 확인한 단어장이 없습니다',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+            )
             : InkWell(
-                onTap: () => _navigateToWordList(studyProvider.recentWordLists[0]),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        studyProvider.recentWordLists[0]['title'].toString(),
-                        style: ThemeProvider.wordgroupNameStyle
-                      ),
-                      Text(
-                        studyProvider.getProgressText(
-                          List<Map<String, dynamic>>.from(
-                            studyProvider.recentWordLists[0]['words'] as List,
-                          ),
+              onTap:
+                  () => _navigateToWordList(studyProvider.recentWordLists[0]),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      studyProvider.recentWordLists[0]['title'].toString(),
+                      style: ThemeProvider.wordgroupNameStyle,
+                    ),
+                    Text(
+                      studyProvider.getProgressText(
+                        List<Map<String, dynamic>>.from(
+                          studyProvider.recentWordLists[0]['words'] as List,
                         ),
-                        style: ThemeProvider.wordgroupCountStyle.copyWith(
-                          color: Colors.grey,
-                        ),
                       ),
-                    ],
-                  ),
+                      style: ThemeProvider.wordgroupCountStyle.copyWith(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
                 ),
               ),
+            ),
         const SizedBox(height: 8),
       ],
     );
   }
 
-  Widget _buildBasicWordList(List<Wordbook> wordbooks, ThemeProvider themeProvider) {
+  Widget _buildBasicWordList(
+    List<Wordbook> wordbooks,
+    ThemeProvider themeProvider,
+  ) {
     return _buildCardContainer(
       children: [
         _buildCardTitle('기본 단어장', themeProvider),
-        ...wordbooks.map((wordbook) => InkWell(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => WordGroupScreen(wordbook: wordbook),
+        ...wordbooks.map(
+          (wordbook) => InkWell(
+            onTap:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WordGroupScreen(wordbook: wordbook),
+                  ),
                 ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12.0,
               ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      wordbook.title,
-                      style: ThemeProvider.wordbookNameStyle.copyWith(
-                        color: isDarkMode(context) ? Colors.white : Colors.black87,
-                      ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    wordbook.title,
+                    style: ThemeProvider.wordbookNameStyle.copyWith(
+                      color:
+                          isDarkMode(context) ? Colors.white : Colors.black87,
                     ),
-                    Consumer<StudyProvider>(
-                      builder: (context, studyProvider, _) {
-                        final totalWords = wordbook.wordgroups.values.fold(0, (sum, s) => sum + s.words.length);
-                        final studiedWords = wordbook.wordgroups.values.fold(
-                          0,
-                          (sum, s) => sum + studyProvider.getStudiedWordsCount(s.words),
-                        );
-                        return Text(
-                          '$studiedWords/$totalWords',
-                          style: ThemeProvider.wordbookCountStyle.copyWith(
-                            color: Colors.grey,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                  ),
+                  Consumer<StudyProvider>(
+                    builder: (context, studyProvider, _) {
+                      final totalWords = wordbook.wordgroups.values.fold(
+                        0,
+                        (sum, s) => sum + s.words.length,
+                      );
+                      final studiedWords = wordbook.wordgroups.values.fold(
+                        0,
+                        (sum, s) =>
+                            sum + studyProvider.getStudiedWordsCount(s.words),
+                      );
+                      return Text(
+                        '$studiedWords/$totalWords',
+                        style: ThemeProvider.wordbookCountStyle.copyWith(
+                          color: Colors.grey,
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
-            )),
+            ),
+          ),
+        ),
         const SizedBox(height: 8),
       ],
     );
@@ -190,10 +211,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildCardContainer({required List<Widget> children}) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: isDarkMode(context) ? const Color(0xFF1C1B1F) : Theme.of(context).scaffoldBackgroundColor,
+      color:
+          isDarkMode(context)
+              ? const Color(0xFF1C1B1F)
+              : Theme.of(context).scaffoldBackgroundColor,
       elevation: isDarkMode(context) ? 0 : 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(ThemeProvider.wordbookCornerRadius)),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(ThemeProvider.wordbookCornerRadius),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
     );
   }
 
@@ -201,10 +230,11 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => WordListScreen(
-          title: wordList['title'].toString(),
-          words: List<Map<String, dynamic>>.from(wordList['words'] as List),
-        ),
+        builder:
+            (context) => WordListScreen(
+              title: wordList['title'].toString(),
+              words: List<Map<String, dynamic>>.from(wordList['words'] as List),
+            ),
       ),
     );
   }
@@ -214,7 +244,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Consumer3<HomeViewModel, ThemeProvider, StudyProvider>(
       builder: (context, homeVM, themeProvider, studyProvider, _) {
         if (homeVM.isLoading) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
 
         if (homeVM.error.isNotEmpty) {
@@ -224,7 +256,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('오류: ${homeVM.error}'),
-                  ElevatedButton(onPressed: homeVM.loadData, child: const Text('다시 시도')),
+                  ElevatedButton(
+                    onPressed: homeVM.loadData,
+                    child: const Text('다시 시도'),
+                  ),
                 ],
               ),
             ),
@@ -245,10 +280,13 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.settings),
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SettingsScreen()),
-                ),
+                onPressed:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SettingsScreen(),
+                      ),
+                    ),
               ),
             ],
           ),
@@ -260,32 +298,43 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: TextField(
                   controller: homeVM.searchController,
-                  onChanged: (query) => homeVM.searchWords(
-                    query,
-                    (results) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => WordListScreen(
-                            title: '"$query" 검색 결과',
-                            words: results,
-                          ),
-                        ),
-                      );
-                    },
-                    (error) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
-                    },
-                  ),
+                  onChanged:
+                      (query) => homeVM.searchWords(
+                        query,
+                        (results) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (_) => WordListScreen(
+                                    title: '"$query" 검색 결과',
+                                    words: results,
+                                  ),
+                            ),
+                          );
+                        },
+                        (error) {
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(SnackBar(content: Text(error)));
+                        },
+                      ),
                   decoration: InputDecoration(
                     hintText: '단어 검색...',
                     prefixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ThemeProvider.wordbookCornerRadius),
+                      borderRadius: BorderRadius.circular(
+                        ThemeProvider.wordbookCornerRadius,
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ThemeProvider.wordbookCornerRadius),
-                      borderSide: BorderSide(color: themeProvider.mainColor, width: 2),
+                      borderRadius: BorderRadius.circular(
+                        ThemeProvider.wordbookCornerRadius,
+                      ),
+                      borderSide: BorderSide(
+                        color: themeProvider.mainColor,
+                        width: 2,
+                      ),
                     ),
                   ),
                 ),

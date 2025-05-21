@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 
 class WordStudyState {
-  final String wordId;  // 단어의 고유 식별자
-  final DateTime lastViewedAt;  // 마지막으로 본 시간
-  final bool wasHiraganaViewed;  // 히라가나를 본 적이 있는지
-  final bool wasMeaningViewed;   // 뜻을 본 적이 있는지
+  final String wordId; // 단어의 고유 식별자
+  final DateTime lastViewedAt; // 마지막으로 본 시간
+  final bool wasHiraganaViewed; // 히라가나를 본 적이 있는지
+  final bool wasMeaningViewed; // 뜻을 본 적이 있는지
 
   WordStudyState({
     required this.wordId,
@@ -47,9 +47,9 @@ class WordStudyState {
 
   int get nextReviewDays {
     if (!wasHiraganaViewed && !wasMeaningViewed) return 0;
-    
+
     final daysSinceLastView = DateTime.now().difference(lastViewedAt).inDays;
-    
+
     if (daysSinceLastView < 1) return 1;
     if (daysSinceLastView < 3) return 3;
     if (daysSinceLastView < 7) return 7;
@@ -60,7 +60,7 @@ class WordStudyState {
 
   String get timeAgoText {
     final difference = DateTime.now().difference(lastViewedAt);
-    
+
     if (difference.inSeconds < 60) {
       return '방금 전';
     } else if (difference.inMinutes < 60) {
@@ -71,4 +71,4 @@ class WordStudyState {
       return '${difference.inDays}일 전';
     }
   }
-} 
+}
