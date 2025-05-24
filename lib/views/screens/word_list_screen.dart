@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:japanese/providers/study_provider.dart';
 import 'package:japanese/providers/theme_provider.dart';
+import 'package:japanese/widgets/resolution_guard.dart';
 
 import 'package:japanese/views/screens/settings_screen.dart';
 
@@ -78,119 +79,120 @@ class _WordListScreenState extends State<WordListScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<StudyProvider>(
-      builder: (context, studyProvider, child) {
-        final themeProvider = Provider.of<ThemeProvider>(context);
-        final showExamples = studyProvider.showExamples;
+    return ResolutionGuard(
+      child: Consumer<StudyProvider>(
+        builder: (context, studyProvider, child) {
+          final themeProvider = Provider.of<ThemeProvider>(context);
+          final showExamples = studyProvider.showExamples;
 
-        return Scaffold(
-          appBar: AppBar(
-            titleSpacing: 0,
-            title: Align(
-              alignment: ThemeProvider.appBarAlignment,
-              child: Text(
-                widget.title,
-                style: ThemeProvider.wordgroupBarStyle.copyWith(
-                  color: themeProvider.mainColor,
+          return Scaffold(
+            appBar: AppBar(
+              titleSpacing: 0,
+              title: Align(
+                alignment: ThemeProvider.appBarAlignment,
+                child: Text(
+                  widget.title,
+                  style: ThemeProvider.wordgroupBarStyle.copyWith(
+                    color: themeProvider.mainColor,
+                  ),
+                ),
+              ),
+              actions: [
+                Consumer<StudyProvider>(
+                  builder:
+                      (context, study, _) => IconButton(
+                        icon: Icon(
+                          study.showExamples
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        tooltip: study.showExamples ? '예문 숨기기' : '예문 보기',
+                        onPressed: study.toggleShowExamples,
+                      ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SettingsScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+            body:
+                studyProvider.isFlashcardMode
+                    ? FlashcardView(
+                      words: currentWords,
+                      showHiragana: showHiragana,
+                      showMeaning: showMeaning,
+                      showTimeAgo: themeProvider.showLastViewedTime,
+                      showExamples: showExamples,
+                    )
+                    : ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
+                      ),
+                      itemCount: currentWords.length,
+                      itemBuilder: (context, index) {
+                        final word = currentWords[index];
+                        final wordId = word['id'].toString();
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              _toggleWordState(wordId);
+                              studyProvider.updateTempWordState(wordId);
+                            },
+                            child: WordListItem(
+                              word: word,
+                              showHiragana: _hiraganaShown[wordId] ?? false,
+                              showMeaning: _meaningShown[wordId] ?? false,
+                              showExamples: showExamples,
+                              isFlashcardMode: false,
+                              timeAgo:
+                                  themeProvider.showLastViewedTime
+                                      ? _getTimeAgoText(studyProvider, wordId)
+                                      : null,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+            bottomNavigationBar: SafeArea(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, -2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    for (int i = 0; i < 4; i++) ...[
+                      Expanded(child: _buildButtonByIndex(context, i)),
+                      if (i < 3) const SizedBox(width: 8),
+                    ],
+                  ],
                 ),
               ),
             ),
-            actions: [
-              Consumer<StudyProvider>(
-                builder:
-                    (context, study, _) => IconButton(
-                      icon: Icon(
-                        study.showExamples
-                            ? Icons
-                                .visibility // 예문 보이는 상태
-                            : Icons.visibility_off, // 예문 숨긴 상태
-                      ),
-                      tooltip: study.showExamples ? '예문 숨기기' : '예문 보기',
-                      onPressed: study.toggleShowExamples,
-                    ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsScreen(),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-          body:
-              studyProvider.isFlashcardMode
-                  ? FlashcardView(
-                    words: currentWords,
-                    showHiragana: showHiragana,
-                    showMeaning: showMeaning,
-                    showTimeAgo: themeProvider.showLastViewedTime,
-                    showExamples: showExamples,
-                  )
-                  : ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 8.0,
-                    ),
-                    itemCount: currentWords.length,
-                    itemBuilder: (context, index) {
-                      final word = currentWords[index];
-                      final wordId = word['id'].toString();
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            _toggleWordState(wordId);
-                            studyProvider.updateTempWordState(wordId);
-                          },
-                          child: WordListItem(
-                            word: word,
-                            showHiragana: _hiraganaShown[wordId] ?? false,
-                            showMeaning: _meaningShown[wordId] ?? false,
-                            showExamples: showExamples,
-                            isFlashcardMode: false,
-                            timeAgo:
-                                themeProvider.showLastViewedTime
-                                    ? _getTimeAgoText(studyProvider, wordId)
-                                    : null,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-          bottomNavigationBar: SafeArea(
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 8.0,
-              ),
-              decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, -2),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  for (int i = 0; i < 4; i++) ...[
-                    Expanded(child: _buildButtonByIndex(context, i)),
-                    if (i < 3) const SizedBox(width: 8), // 마지막엔 간격 안 넣음
-                  ],
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

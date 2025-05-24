@@ -6,6 +6,7 @@ import 'package:signature/signature.dart';
 import 'package:japanese/models/word_book.dart';
 import 'package:japanese/providers/theme_provider.dart';
 import 'package:japanese/providers/study_provider.dart';
+import 'package:japanese/widgets/resolution_guard.dart';
 
 import 'package:japanese/views/screens/settings_screen.dart';
 
@@ -463,77 +464,78 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<StudyProvider>(
-      builder: (context, studyProvider, child) {
-        final themeProvider = Provider.of<ThemeProvider>(context);
-        final showExamples = studyProvider.showExamples;
-        final showCanvas = studyProvider.showCanvas;
-        final sortedWords = studyProvider.getSortedWordsForMemoryMode(
-          _allWords,
-        );
+    return ResolutionGuard(
+      child: Consumer<StudyProvider>(
+        builder: (context, studyProvider, child) {
+          final themeProvider = Provider.of<ThemeProvider>(context);
+          final showExamples = studyProvider.showExamples;
+          final showCanvas = studyProvider.showCanvas;
+          final sortedWords = studyProvider.getSortedWordsForMemoryMode(
+            _allWords,
+          );
 
-        return Scaffold(
-          appBar: AppBar(
-            titleSpacing: 0,
-            title: Align(
-              alignment: ThemeProvider.appBarAlignment,
-              child: Text(
-                widget.wordbook.title,
-                style: ThemeProvider.wordgroupBarStyle.copyWith(
-                  color: themeProvider.mainColor,
+          return Scaffold(
+            appBar: AppBar(
+              titleSpacing: 0,
+              title: Align(
+                alignment: ThemeProvider.appBarAlignment,
+                child: Text(
+                  widget.wordbook.title,
+                  style: ThemeProvider.wordgroupBarStyle.copyWith(
+                    color: themeProvider.mainColor,
+                  ),
                 ),
               ),
+              actions: [
+                Consumer<StudyProvider>(
+                  builder:
+                      (context, study, _) => IconButton(
+                        icon: Icon(
+                          study.showCanvas ? Icons.draw : Icons.draw_outlined,
+                        ),
+                        tooltip: study.showCanvas ? '캔버스 숨기기' : '캔버 보기',
+                        onPressed: study.toggleShowCanvas,
+                      ),
+                ),
+                Consumer<StudyProvider>(
+                  builder:
+                      (context, study, _) => IconButton(
+                        icon: Icon(
+                          study.showExamples
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        tooltip: study.showExamples ? '예문 숨기기' : '예문 보기',
+                        onPressed: study.toggleShowExamples,
+                      ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SettingsScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-            actions: [
-              Consumer<StudyProvider>(
-                builder:
-                    (context, study, _) => IconButton(
-                      icon: Icon(
-                        study.showCanvas ? Icons.draw : Icons.draw_outlined,
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child:
+                  sortedWords.isEmpty
+                      ? const Center(child: Text('학습할 단어가 없습니다.'))
+                      : _buildMemoryCard(
+                        sortedWords[_currentIndex],
+                        showExamples,
+                        showCanvas,
                       ),
-                      tooltip: study.showCanvas ? '캔버스 숨기기' : '캔버 보기',
-                      onPressed: study.toggleShowCanvas,
-                    ),
-              ),
-              Consumer<StudyProvider>(
-                builder:
-                    (context, study, _) => IconButton(
-                      icon: Icon(
-                        study.showExamples
-                            ? Icons
-                                .visibility // 예문 보이는 상태
-                            : Icons.visibility_off, // 예문 숨긴 상태
-                      ),
-                      tooltip: study.showExamples ? '예문 숨기기' : '예문 보기',
-                      onPressed: study.toggleShowExamples,
-                    ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsScreen(),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child:
-                sortedWords.isEmpty
-                    ? const Center(child: Text('학습할 단어가 없습니다.'))
-                    : _buildMemoryCard(
-                      sortedWords[_currentIndex],
-                      showExamples,
-                      showCanvas,
-                    ),
-          ),
-        );
-      },
+            ),
+          );
+        },
+      ),
     );
   }
 }

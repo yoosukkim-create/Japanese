@@ -5,6 +5,7 @@ import 'package:japanese/models/word_book.dart';
 import 'package:japanese/viewmodels/home_viewmodel.dart';
 import 'package:japanese/providers/theme_provider.dart';
 import 'package:japanese/providers/study_provider.dart';
+import 'package:japanese/widgets/resolution_guard.dart';
 
 import 'package:japanese/views/screens/word_list_screen.dart';
 import 'package:japanese/views/screens/word_group_screen.dart';
@@ -33,8 +34,8 @@ class MyApp extends StatelessWidget {
           (context, themeProvider, _) => MaterialApp(
             title: '메모리 メモリ',
             theme: themeProvider.themeData,
-            home: const HomeScreen(),
             debugShowCheckedModeBanner: false,
+            home: const ResolutionGuard(child: HomeScreen()),
           ),
     );
   }
