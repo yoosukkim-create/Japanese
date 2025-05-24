@@ -152,17 +152,17 @@ class ThemeProvider extends ChangeNotifier {
   );
   static final TextStyle wordlistSentenceStyleFlash = GoogleFonts.getFont(
     'Roboto',
-    fontSize: 36.0,
+    fontSize: 24.0,
     fontWeight: FontWeight.w700,
   );
   static final TextStyle wordlistSentenceReadStyleFlash = GoogleFonts.getFont(
     'Roboto',
-    fontSize: 24.0,
+    fontSize: 16.0,
     color: Colors.grey[700],
   );
   static final TextStyle wordlistSentenceMeanStyleFlash = GoogleFonts.getFont(
     'Roboto',
-    fontSize: 24.0,
+    fontSize: 16.0,
     color: Colors.grey[700],
   );
 
@@ -184,17 +184,17 @@ class ThemeProvider extends ChangeNotifier {
   );
   static final TextStyle wordlistSentenceStyleMemory = GoogleFonts.getFont(
     'Roboto',
-    fontSize: 50.0,
+    fontSize: 24.0,
     fontWeight: FontWeight.w700,
   );
   static final TextStyle wordlistSentenceReadStyleMemory = GoogleFonts.getFont(
     'Roboto',
-    fontSize: 24.0,
+    fontSize: 16.0,
     color: Colors.grey[700],
   );
   static final TextStyle wordlistSentenceMeanStyleMemory = GoogleFonts.getFont(
     'Roboto',
-    fontSize: 24.0,
+    fontSize: 16.0,
     color: Colors.grey[700],
   );
 
