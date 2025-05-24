@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:math';
 
 class ThemeProvider extends ChangeNotifier {
   bool _isDarkMode = true;
@@ -25,7 +26,6 @@ class ThemeProvider extends ChangeNotifier {
     primaryColor: _mainColor,
   );
 
-  // Setter 및 토글 함수들
   void toggleTheme() {
     _isDarkMode = !_isDarkMode;
     notifyListeners();
@@ -50,158 +50,130 @@ class ThemeProvider extends ChangeNotifier {
   static const double wordgroupCornerRadius = 15.0;
   static const double wordlistCornerRadius = 30.0;
 
-  //// Manage Every Text Here
-
-  //'Moirai One', 'Bagel Fat One', 'Jua', 'Do Hyeon',
-
-  // 1. wordbook list Screen (Main)
   static const Alignment appBarAlignment = Alignment.centerLeft;
   static const String wordbookBarTitle = '메모리 メモリ';
-  static final TextStyle wordbookBarStyle = GoogleFonts.getFont(
-    'Jua',
-    fontSize: 30.0,
+
+  static const String fontAppBar = 'Jua';
+  static const String fontWord = 'Roboto';
+  static const String fontMeta = 'Jua';
+
+  static TextStyle adaptiveFontSize(
+    BuildContext context,
+    double ratio,
+    double maxSize, {
+    FontWeight fontWeight = FontWeight.normal,
+    Color? color,
+    String fontFamily = 'Roboto',
+  }) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double size = min(screenHeight * ratio, maxSize);
+    return GoogleFonts.getFont(
+      fontFamily,
+      fontSize: size,
+      fontWeight: fontWeight,
+      color: color,
+    );
+  }
+
+  // 텍스트 스타일 묶음 구간
+
+  // Word 관련
+  static TextStyle wordText(BuildContext context) => adaptiveFontSize(
+    context,
+    0.08,
+    60,
+    fontWeight: FontWeight.w700,
+    fontFamily: fontWord,
+  );
+  static TextStyle wordReadMean(BuildContext context) => adaptiveFontSize(
+    context,
+    0.03,
+    24,
+    fontFamily: fontWord,
+    color: Colors.grey[700],
+  );
+
+  static TextStyle wordTextSmall(BuildContext context) => adaptiveFontSize(
+    context,
+    0.06,
+    48,
+    fontWeight: FontWeight.w700,
+    fontFamily: fontWord,
+  );
+  static TextStyle wordReadMeanSmall(BuildContext context) => adaptiveFontSize(
+    context,
+    0.02,
+    16,
+    fontFamily: fontWord,
+    color: Colors.grey[700],
+  );
+
+  // 예문 관련
+  static TextStyle exampleText(BuildContext context) => adaptiveFontSize(
+    context,
+    0.05,
+    24,
+    fontWeight: FontWeight.w700,
+    fontFamily: fontWord,
+  );
+  static TextStyle exampleReadMean(BuildContext context) => adaptiveFontSize(
+    context,
+    0.03,
+    16,
+    fontFamily: fontWord,
+    color: Colors.grey[700],
+  );
+
+  // 상단바 및 제목
+  static TextStyle mainBarStyle(BuildContext context) => adaptiveFontSize(
+    context,
+    0.05,
+    30,
     fontWeight: FontWeight.w900,
-    letterSpacing: 1.2,
+    fontFamily: fontAppBar,
   );
-  static final TextStyle wordbookListStyle = GoogleFonts.getFont(
-    'Jua',
-    fontSize: 16.0,
-    fontWeight: FontWeight.w700,
-  );
-  static final TextStyle wordbookNameStyle = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 18.0,
+  static TextStyle subBarStyle(BuildContext context) => adaptiveFontSize(
+    context,
+    0.045,
+    26,
     fontWeight: FontWeight.w400,
+    fontFamily: fontAppBar,
   );
-  static final TextStyle wordbookCountStyle = GoogleFonts.getFont(
-    'Jua',
-    fontSize: 16.0,
+  static TextStyle mainListStyle(BuildContext context) => adaptiveFontSize(
+    context,
+    0.03,
+    16,
+    fontWeight: FontWeight.w700,
+    fontFamily: fontAppBar,
+  );
+  static TextStyle mainListNameStyle(BuildContext context) => adaptiveFontSize(
+    context,
+    0.045,
+    18,
     fontWeight: FontWeight.w400,
+    fontFamily: fontWord,
   );
-
-  // 2. wordgroup list Screen (Sub)
-  static final TextStyle wordgroupBarStyle = GoogleFonts.getFont(
-    'Jua',
-    fontSize: 26.0,
-    fontWeight: FontWeight.w400,
-  );
-  static final TextStyle wordgroupNameStyle = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 18.0,
-    fontWeight: FontWeight.w400,
-  );
-  static final TextStyle wordgroupCountStyle = GoogleFonts.getFont(
-    'Jua',
-    fontSize: 16.0,
-    fontWeight: FontWeight.w400,
-  );
-
-  // 3. word list Screen - list card
-  static final TextStyle wordlistWordStyle = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 48.0,
-    fontWeight: FontWeight.w700,
-  );
-  static final TextStyle wordlistWordReadStyle = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 16.0,
-    color: Colors.grey[700],
-  );
-  static final TextStyle wordlistWordMeanStyle = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 16.0,
-    color: Colors.grey[700],
-  );
-  static final TextStyle wordlistSentenceStyle = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 24.0,
-    fontWeight: FontWeight.w700,
-  );
-  static final TextStyle wordlistSentenceReadStyle = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 16.0,
-    color: Colors.grey[700],
-  );
-  static final TextStyle wordlistSentenceMeanStyle = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 16.0,
-    color: Colors.grey[700],
-  );
-
-  static final TextStyle wordlistTimeAgoStyle = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 14.0,
-    color: Colors.grey,
-  );
-
-  // 4. word list Screen - flash card
-  static final TextStyle wordlistWordStyleFlash = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 70.0,
-    fontWeight: FontWeight.w700,
-  );
-  static final TextStyle wordlistWordReadStyleFlash = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 24.0,
-    color: Colors.grey[700],
-  );
-  static final TextStyle wordlistWordMeanStyleFlash = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 24.0,
-    color: Colors.grey[700],
-  );
-  static final TextStyle wordlistSentenceStyleFlash = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 24.0,
-    fontWeight: FontWeight.w700,
-  );
-  static final TextStyle wordlistSentenceReadStyleFlash = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 16.0,
-    color: Colors.grey[700],
-  );
-  static final TextStyle wordlistSentenceMeanStyleFlash = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 16.0,
-    color: Colors.grey[700],
-  );
-
-  // 5. word list Screen - memory card
-  static final TextStyle wordlistWordStyleMemory = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 70.0,
-    fontWeight: FontWeight.w700,
-  );
-  static final TextStyle wordlistWordReadStyleMemory = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 24.0,
-    color: Colors.grey[700],
-  );
-  static final TextStyle wordlistWordMeanStyleMemory = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 24.0,
-    color: Colors.grey[700],
-  );
-  static final TextStyle wordlistSentenceStyleMemory = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 24.0,
-    fontWeight: FontWeight.w700,
-  );
-  static final TextStyle wordlistSentenceReadStyleMemory = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 16.0,
-    color: Colors.grey[700],
-  );
-  static final TextStyle wordlistSentenceMeanStyleMemory = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 16.0,
-    color: Colors.grey[700],
-  );
-
-  // 6. settings Screen
-  static final TextStyle settingsBarStyle = GoogleFonts.getFont(
-    'Roboto',
-    fontSize: 20.0,
+  static TextStyle settingsBarStyle(BuildContext context) => adaptiveFontSize(
+    context,
+    0.03,
+    20,
     fontWeight: FontWeight.w600,
+    fontFamily: fontWord,
+  );
+
+  // 부가 정보
+  static TextStyle metaCountStyle(BuildContext context) => adaptiveFontSize(
+    context,
+    0.03,
+    16,
+    fontWeight: FontWeight.w400,
+    fontFamily: fontMeta,
+  );
+  static TextStyle timeAgoStyle(BuildContext context) => adaptiveFontSize(
+    context,
+    0.025,
+    14,
+    fontFamily: fontMeta,
+    color: Colors.grey,
   );
 }

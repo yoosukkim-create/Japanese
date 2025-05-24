@@ -72,9 +72,9 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(width: 8),
           Text(
             title,
-            style: ThemeProvider.wordbookListStyle.copyWith(
-              color: themeProvider.mainColor,
-            ),
+            style: ThemeProvider.mainListStyle(
+              context,
+            ).copyWith(color: themeProvider.mainColor),
           ),
         ],
       ),
@@ -109,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       studyProvider.recentWordLists[0]['title'].toString(),
-                      style: ThemeProvider.wordgroupNameStyle,
+                      style: ThemeProvider.mainListNameStyle(context),
                     ),
                     Text(
                       studyProvider.getProgressText(
@@ -117,9 +117,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           studyProvider.recentWordLists[0]['words'] as List,
                         ),
                       ),
-                      style: ThemeProvider.wordgroupCountStyle.copyWith(
-                        color: Colors.grey,
-                      ),
+                      style: ThemeProvider.metaCountStyle(
+                        context,
+                      ).copyWith(color: Colors.grey),
                     ),
                   ],
                 ),
@@ -156,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     wordbook.title,
-                    style: ThemeProvider.wordbookNameStyle.copyWith(
+                    style: ThemeProvider.mainListNameStyle(context).copyWith(
                       color:
                           isDarkMode(context) ? Colors.white : Colors.black87,
                     ),
@@ -174,9 +174,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                       return Text(
                         '$studiedWords/$totalWords',
-                        style: ThemeProvider.wordbookCountStyle.copyWith(
-                          color: Colors.grey,
-                        ),
+                        style: ThemeProvider.metaCountStyle(
+                          context,
+                        ).copyWith(color: Colors.grey),
                       );
                     },
                   ),
@@ -273,9 +273,9 @@ class _HomeScreenState extends State<HomeScreen> {
               alignment: ThemeProvider.appBarAlignment,
               child: Text(
                 ThemeProvider.wordbookBarTitle,
-                style: ThemeProvider.wordbookBarStyle.copyWith(
-                  color: themeProvider.mainColor,
-                ),
+                style: ThemeProvider.mainBarStyle(
+                  context,
+                ).copyWith(color: themeProvider.mainColor),
               ),
             ),
             actions: [

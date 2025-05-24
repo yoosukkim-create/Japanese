@@ -144,6 +144,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     });
   }
 
+  // ✅ 오버플로우 없이 레이아웃을 자동으로 줄이도록 수정한 buildMemoryCard 버전
   Widget _buildMemoryCard(
     Map<String, dynamic> word,
     bool showExamples,
@@ -162,16 +163,14 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
         highlightColor: Colors.transparent,
         child: Container(
           width: double.infinity,
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height * 0.6,
-          ),
           padding: const EdgeInsets.all(16.0),
-          child: Stack(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // 좌측 상단 메모리 파라미터
-              Positioned(
-                top: 16,
-                right: 16,
+              // 상단 정보
+              Align(
+                alignment: Alignment.topRight,
                 child: Consumer<StudyProvider>(
                   builder: (ctx, prov, _) {
                     final mem = prov.getMemoryState(word['id']);
@@ -188,42 +187,34 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                         (mem != null && mem.lastReviewedAt != null)
                             ? _formatDate(mem.lastReviewedAt!)
                             : '미학습';
-                    return Container(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        '아는정도: $ef\n'
-                        '복습간격: $interval일\n'
-                        '연속정답: $rep회\n'
-                        '최근학습: $last',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                          height: 1.5,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.left,
+                    return Text(
+                      '아는정도: $ef\n복습간격: $interval일\n연속정답: $rep회\n최근학습: $last',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                        height: 1.5,
                       ),
+                      textAlign: TextAlign.right,
                     );
                   },
                 ),
               ),
 
-              // 메인 컨텐츠
-              Positioned.fill(
+              // 중앙 컨텐츠
+              Flexible(
+                flex: 6,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 120),
-
-                    // 1) 히라가나 (항상 빈칸/표시 고정)
+                    // 히라가나
                     Text(
                       _showAnswer ? (word['읽기'] ?? '') : ' ',
-                      style: ThemeProvider.wordlistWordReadStyleMemory,
+                      style: ThemeProvider.wordReadMean(context),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 4),
 
-                    // 2) 단어 or 캔버스
+                    // ✅ 캔버스 모드일 때
                     if (showCanvas) ...[
                       SizedBox(
                         height: 120,
@@ -238,7 +229,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                             children: [
                               GestureDetector(
                                 behavior: HitTestBehavior.translucent,
-                                onTapDown: (_) {}, // 탭 제스처만 소비
+                                onTapDown: (_) {}, // 탭만 소비
                                 child: Signature(
                                   controller: _sigControllerWord,
                                   backgroundColor: Colors.transparent,
@@ -246,7 +237,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                               ),
                               Text(
                                 _showAnswer ? (word['단어'] ?? '') : ' ',
-                                style: ThemeProvider.wordlistWordStyleMemory,
+                                style: ThemeProvider.wordText(context),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -255,157 +246,161 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                       ),
                       const SizedBox(height: 4),
                     ] else ...[
-                      Text(
-                        word['단어'] ?? '',
-                        style: ThemeProvider.wordlistWordStyleMemory,
-                        textAlign: TextAlign.center,
+                      // 일반 모드일 때
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          word['단어'] ?? '',
+                          style: ThemeProvider.wordText(context),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ],
 
-                    // 3) 뜻
+                    // 뜻
                     Text(
                       !showCanvas
                           ? (_showAnswer ? (word['뜻'] ?? '') : ' ')
                           : (word['뜻'] ?? ''),
-                      style: ThemeProvider.wordlistWordMeanStyleMemory,
+                      style: ThemeProvider.wordReadMean(context),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 40),
 
-                    // 4) 예문읽기 (항상 빈칸/표시 고정)
-                    Text(
-                      showExamples && _showAnswer ? (word['예문읽기'] ?? '') : ' ',
-                      style: ThemeProvider.wordlistSentenceReadStyleMemory,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 16),
 
-                    // 5) 예문 or 캔버스
-                    if (showCanvas && showExamples) ...[
-                      SizedBox(
-                        height: 80,
-                        width: double.infinity,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              // 이 GestureDetector가 탭만 막습니다.
-                              GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                onTapDown: (_) {}, // 탭 제스처만 소비
-                                child: Signature(
-                                  controller: _sigControllerExample,
-                                  backgroundColor: Colors.transparent,
-                                ),
-                              ),
-
-                              // 그 위에 정답 텍스트
-                              Text(
-                                _showAnswer ? (word['예문'] ?? '') : ' ',
-                                style:
-                                    ThemeProvider.wordlistSentenceStyleMemory,
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
+                    // 예문 영역
+                    if (showExamples) ...[
+                      Text(
+                        _showAnswer ? (word['예문읽기'] ?? '') : ' ',
+                        style: ThemeProvider.wordReadMean(context),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 4),
-                    ] else ...[
+
+                      if (showCanvas) ...[
+                        SizedBox(
+                          height: 80,
+                          width: double.infinity,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTapDown: (_) {},
+                                  child: Signature(
+                                    controller: _sigControllerExample,
+                                    backgroundColor: Colors.transparent,
+                                  ),
+                                ),
+                                Text(
+                                  _showAnswer ? (word['예문'] ?? '') : ' ',
+                                  style: ThemeProvider.exampleText(context),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ] else ...[
+                        Text(
+                          word['예문'] ?? '',
+                          style: ThemeProvider.exampleText(context),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                       Text(
-                        showExamples ? (word['예문'] ?? '') : ' ',
-                        style: ThemeProvider.wordlistSentenceStyleMemory,
+                        _showAnswer ? (word['예문뜻'] ?? '') : ' ',
+                        style: ThemeProvider.exampleReadMean(context),
                         textAlign: TextAlign.center,
                       ),
                     ],
-
-                    // 6) 예문뜻
-                    Text(
-                      !showCanvas
-                          ? (showExamples && _showAnswer
-                              ? (word['예문뜻'] ?? '')
-                              : ' ')
-                          : (showExamples ? (word['예문뜻'] ?? '') : ' '),
-                      style: ThemeProvider.wordlistSentenceMeanStyleMemory,
-                      textAlign: TextAlign.center,
-                    ),
-
-                    // 7) 평가 영역 고정
-                    const Spacer(),
-
-                    AnimatedOpacity(
-                      duration: Duration(milliseconds: _showAnswer ? 300 : 0),
-                      opacity: _showAnswer ? 1.0 : 0.0,
-                      child: Column(
-                        children: [
-                          const Text(
-                            '이 단어를 얼마나 잘 기억하시나요?',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              _buildMemoryButton(
-                                context: context,
-                                text: '모름',
-                                color: Colors.redAccent,
-                                onPressed:
-                                    _showAnswer
-                                        ? () {
-                                          Provider.of<StudyProvider>(
-                                            context,
-                                            listen: false,
-                                          ).updateMemoryState(word['id'], 1);
-                                          _moveToNextWord();
-                                        }
-                                        : null,
-                              ),
-                              _buildMemoryButton(
-                                context: context,
-                                text: '애매함',
-                                color: Colors.orangeAccent,
-                                onPressed:
-                                    _showAnswer
-                                        ? () {
-                                          Provider.of<StudyProvider>(
-                                            context,
-                                            listen: false,
-                                          ).updateMemoryState(word['id'], 3);
-                                          _moveToNextWord();
-                                        }
-                                        : null,
-                              ),
-                              _buildMemoryButton(
-                                context: context,
-                                text: '잘 암',
-                                color: Colors.green,
-                                onPressed:
-                                    _showAnswer
-                                        ? () {
-                                          Provider.of<StudyProvider>(
-                                            context,
-                                            listen: false,
-                                          ).updateMemoryState(word['id'], 5);
-                                          _moveToNextWord();
-                                        }
-                                        : null,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                        ],
-                      ),
-                    ),
                   ],
+                ),
+              ),
+
+              // 하단 평가 영역
+              Flexible(
+                flex: 3,
+                child: AnimatedOpacity(
+                  duration: Duration(milliseconds: _showAnswer ? 300 : 0),
+                  opacity: _showAnswer ? 1.0 : 0.0,
+                  child: Column(
+                    children: [
+                      const Text(
+                        '이 단어를 얼마나 잘 기억하시나요?',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      // ✅ FittedBox 적용: 버튼 3개를 줄바꿈 없이 축소해서 보여줌
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _buildMemoryButton(
+                              context: context,
+                              text: '모름',
+                              color: Colors.redAccent,
+                              onPressed:
+                                  _showAnswer
+                                      ? () {
+                                        Provider.of<StudyProvider>(
+                                          context,
+                                          listen: false,
+                                        ).updateMemoryState(word['id'], 1);
+                                        _moveToNextWord();
+                                      }
+                                      : null,
+                            ),
+                            const SizedBox(width: 8),
+                            _buildMemoryButton(
+                              context: context,
+                              text: '애매함',
+                              color: Colors.orangeAccent,
+                              onPressed:
+                                  _showAnswer
+                                      ? () {
+                                        Provider.of<StudyProvider>(
+                                          context,
+                                          listen: false,
+                                        ).updateMemoryState(word['id'], 3);
+                                        _moveToNextWord();
+                                      }
+                                      : null,
+                            ),
+                            const SizedBox(width: 8),
+                            _buildMemoryButton(
+                              context: context,
+                              text: '잘 암',
+                              color: Colors.green,
+                              onPressed:
+                                  _showAnswer
+                                      ? () {
+                                        Provider.of<StudyProvider>(
+                                          context,
+                                          listen: false,
+                                        ).updateMemoryState(word['id'], 5);
+                                        _moveToNextWord();
+                                      }
+                                      : null,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -481,9 +476,9 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                 alignment: ThemeProvider.appBarAlignment,
                 child: Text(
                   widget.wordbook.title,
-                  style: ThemeProvider.wordgroupBarStyle.copyWith(
-                    color: themeProvider.mainColor,
-                  ),
+                  style: ThemeProvider.subBarStyle(
+                    context,
+                  ).copyWith(color: themeProvider.mainColor),
                 ),
               ),
               actions: [

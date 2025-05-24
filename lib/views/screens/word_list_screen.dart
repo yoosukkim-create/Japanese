@@ -92,9 +92,9 @@ class _WordListScreenState extends State<WordListScreen>
                 alignment: ThemeProvider.appBarAlignment,
                 child: Text(
                   widget.title,
-                  style: ThemeProvider.wordgroupBarStyle.copyWith(
-                    color: themeProvider.mainColor,
-                  ),
+                  style: ThemeProvider.subBarStyle(
+                    context,
+                  ).copyWith(color: themeProvider.mainColor),
                 ),
               ),
               actions: [
@@ -376,8 +376,8 @@ class WordListItem extends StatelessWidget {
                       showHiragana ? (word['읽기'] ?? '') : ' ',
                       style:
                           isFlashcardMode
-                              ? ThemeProvider.wordlistWordReadStyleFlash
-                              : ThemeProvider.wordlistWordReadStyle,
+                              ? ThemeProvider.wordReadMean(context)
+                              : ThemeProvider.wordReadMeanSmall(context),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -386,8 +386,8 @@ class WordListItem extends StatelessWidget {
                     word['단어'] ?? '',
                     style:
                         isFlashcardMode
-                            ? ThemeProvider.wordlistWordStyleFlash
-                            : ThemeProvider.wordlistWordStyle,
+                            ? ThemeProvider.wordText(context)
+                            : ThemeProvider.wordTextSmall(context),
                     textAlign: TextAlign.center,
                   ),
                   // 뜻
@@ -397,8 +397,8 @@ class WordListItem extends StatelessWidget {
                       showMeaning ? (word['뜻'] ?? '') : ' ',
                       style:
                           isFlashcardMode
-                              ? ThemeProvider.wordlistWordMeanStyleFlash
-                              : ThemeProvider.wordlistWordMeanStyle,
+                              ? ThemeProvider.wordReadMean(context)
+                              : ThemeProvider.wordReadMeanSmall(context),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -429,10 +429,7 @@ class WordListItem extends StatelessWidget {
                       Flexible(
                         child: Text(
                           showHiragana ? (word['예문읽기'] ?? '') : ' ',
-                          style:
-                              isFlashcardMode
-                                  ? ThemeProvider.wordlistSentenceReadStyleFlash
-                                  : ThemeProvider.wordlistSentenceReadStyle,
+                          style: ThemeProvider.exampleReadMean(context),
                           textAlign: TextAlign.center,
                           softWrap: true,
                           overflow: TextOverflow.visible,
@@ -442,10 +439,7 @@ class WordListItem extends StatelessWidget {
                       Flexible(
                         child: Text(
                           word['예문'] ?? '',
-                          style:
-                              isFlashcardMode
-                                  ? ThemeProvider.wordlistSentenceStyleFlash
-                                  : ThemeProvider.wordlistSentenceStyle,
+                          style: ThemeProvider.exampleText(context),
                           textAlign: TextAlign.center,
                           softWrap: true,
                         ),
@@ -454,10 +448,7 @@ class WordListItem extends StatelessWidget {
                       Flexible(
                         child: Text(
                           showMeaning ? (word['예문뜻'] ?? '') : ' ',
-                          style:
-                              isFlashcardMode
-                                  ? ThemeProvider.wordlistSentenceMeanStyleFlash
-                                  : ThemeProvider.wordlistSentenceMeanStyle,
+                          style: ThemeProvider.exampleReadMean(context),
                           textAlign: TextAlign.center,
                           softWrap: true,
                         ),

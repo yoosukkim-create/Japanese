@@ -108,7 +108,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text('설정', style: ThemeProvider.settingsBarStyle),
+            title: Text('설정', style: ThemeProvider.settingsBarStyle(context)),
           ),
           body: ListView(
             children: [

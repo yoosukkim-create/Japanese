@@ -36,9 +36,9 @@ class WordGroupScreen extends StatelessWidget {
           alignment: ThemeProvider.appBarAlignment,
           child: Text(
             wordbook.title,
-            style: ThemeProvider.wordgroupBarStyle.copyWith(
-              color: themeProvider.mainColor,
-            ),
+            style: ThemeProvider.subBarStyle(
+              context,
+            ).copyWith(color: themeProvider.mainColor),
           ),
         ),
         actions: [
@@ -110,17 +110,17 @@ class WordGroupScreen extends StatelessWidget {
                       children: [
                         Text(
                           key,
-                          style: ThemeProvider.wordgroupNameStyle.copyWith(
-                            color: textColor(context),
-                          ),
+                          style: ThemeProvider.mainListNameStyle(
+                            context,
+                          ).copyWith(color: textColor(context)),
                         ),
                       ],
                     ),
                     Text(
                       studyProvider.getWordgroupProgressText(wordgroup.words),
-                      style: ThemeProvider.wordgroupCountStyle.copyWith(
-                        color: Colors.grey,
-                      ),
+                      style: ThemeProvider.metaCountStyle(
+                        context,
+                      ).copyWith(color: Colors.grey),
                     ),
                   ],
                 ),
