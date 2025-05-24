@@ -81,14 +81,14 @@ class ThemeProvider extends ChangeNotifier {
   static TextStyle wordText(BuildContext context) => adaptiveFontSize(
     context,
     0.08,
-    60,
+    120,
     fontWeight: FontWeight.w700,
     fontFamily: fontWord,
   );
   static TextStyle wordReadMean(BuildContext context) => adaptiveFontSize(
     context,
     0.03,
-    24,
+    48,
     fontFamily: fontWord,
     color: Colors.grey[700],
   );
@@ -96,14 +96,14 @@ class ThemeProvider extends ChangeNotifier {
   static TextStyle wordTextSmall(BuildContext context) => adaptiveFontSize(
     context,
     0.06,
-    48,
+    96,
     fontWeight: FontWeight.w700,
     fontFamily: fontWord,
   );
   static TextStyle wordReadMeanSmall(BuildContext context) => adaptiveFontSize(
     context,
     0.02,
-    16,
+    32,
     fontFamily: fontWord,
     color: Colors.grey[700],
   );
@@ -111,15 +111,15 @@ class ThemeProvider extends ChangeNotifier {
   // 예문 관련
   static TextStyle exampleText(BuildContext context) => adaptiveFontSize(
     context,
-    0.05,
-    24,
+    0.035,
+    48,
     fontWeight: FontWeight.w700,
     fontFamily: fontWord,
   );
   static TextStyle exampleReadMean(BuildContext context) => adaptiveFontSize(
     context,
-    0.03,
-    16,
+    0.02,
+    32,
     fontFamily: fontWord,
     color: Colors.grey[700],
   );
@@ -128,35 +128,35 @@ class ThemeProvider extends ChangeNotifier {
   static TextStyle mainBarStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.05,
-    30,
+    60,
     fontWeight: FontWeight.w900,
     fontFamily: fontAppBar,
   );
   static TextStyle subBarStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.045,
-    26,
+    52,
     fontWeight: FontWeight.w400,
     fontFamily: fontAppBar,
   );
   static TextStyle mainListStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.03,
-    16,
+    32,
     fontWeight: FontWeight.w700,
     fontFamily: fontAppBar,
   );
   static TextStyle mainListNameStyle(BuildContext context) => adaptiveFontSize(
     context,
-    0.045,
-    18,
+    0.035,
+    36,
     fontWeight: FontWeight.w400,
     fontFamily: fontWord,
   );
   static TextStyle settingsBarStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.03,
-    20,
+    40,
     fontWeight: FontWeight.w600,
     fontFamily: fontWord,
   );
@@ -165,14 +165,14 @@ class ThemeProvider extends ChangeNotifier {
   static TextStyle metaCountStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.03,
-    16,
+    32,
     fontWeight: FontWeight.w400,
     fontFamily: fontMeta,
   );
   static TextStyle timeAgoStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.025,
-    14,
+    28,
     fontFamily: fontMeta,
     color: Colors.grey,
   );
