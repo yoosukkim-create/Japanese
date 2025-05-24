@@ -421,10 +421,10 @@ class WordListItem extends StatelessWidget {
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       // 예문 읽기(히라가나)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 4.0),
+                      Flexible(
                         child: Text(
                           showHiragana ? (word['예문읽기'] ?? '') : ' ',
                           style:
@@ -432,20 +432,24 @@ class WordListItem extends StatelessWidget {
                                   ? ThemeProvider.wordlistSentenceReadStyleFlash
                                   : ThemeProvider.wordlistSentenceReadStyle,
                           textAlign: TextAlign.center,
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
                         ),
                       ),
                       // 예문
-                      Text(
-                        word['예문'] ?? '',
-                        style:
-                            isFlashcardMode
-                                ? ThemeProvider.wordlistSentenceStyleFlash
-                                : ThemeProvider.wordlistSentenceStyle,
-                        textAlign: TextAlign.center,
+                      Flexible(
+                        child: Text(
+                          word['예문'] ?? '',
+                          style:
+                              isFlashcardMode
+                                  ? ThemeProvider.wordlistSentenceStyleFlash
+                                  : ThemeProvider.wordlistSentenceStyle,
+                          textAlign: TextAlign.center,
+                          softWrap: true,
+                        ),
                       ),
                       // 예문 뜻
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4.0),
+                      Flexible(
                         child: Text(
                           showMeaning ? (word['예문뜻'] ?? '') : ' ',
                           style:
@@ -453,6 +457,7 @@ class WordListItem extends StatelessWidget {
                                   ? ThemeProvider.wordlistSentenceMeanStyleFlash
                                   : ThemeProvider.wordlistSentenceMeanStyle,
                           textAlign: TextAlign.center,
+                          softWrap: true,
                         ),
                       ),
                     ],
