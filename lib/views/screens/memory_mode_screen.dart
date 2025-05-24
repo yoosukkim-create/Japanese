@@ -189,11 +189,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                             : '미학습';
                     return Text(
                       '아는정도: $ef\n복습간격: $interval일\n연속정답: $rep회\n최근학습: $last',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                        height: 1.5,
-                      ),
+                      style: ThemeProvider.metaDataStyle(context),
                       textAlign: TextAlign.right,
                     );
                   },

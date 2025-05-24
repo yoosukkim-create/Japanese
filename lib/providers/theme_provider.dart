@@ -87,7 +87,7 @@ class ThemeProvider extends ChangeNotifier {
   );
   static TextStyle wordReadMean(BuildContext context) => adaptiveFontSize(
     context,
-    0.03,
+    0.035,
     48,
     fontFamily: fontWord,
     color: Colors.grey[700],
@@ -100,25 +100,18 @@ class ThemeProvider extends ChangeNotifier {
     fontWeight: FontWeight.w700,
     fontFamily: fontWord,
   );
-  static TextStyle wordReadMeanSmall(BuildContext context) => adaptiveFontSize(
-    context,
-    0.02,
-    32,
-    fontFamily: fontWord,
-    color: Colors.grey[700],
-  );
 
   // 예문 관련
   static TextStyle exampleText(BuildContext context) => adaptiveFontSize(
     context,
-    0.035,
+    0.045,
     48,
     fontWeight: FontWeight.w700,
     fontFamily: fontWord,
   );
   static TextStyle exampleReadMean(BuildContext context) => adaptiveFontSize(
     context,
-    0.02,
+    0.035,
     32,
     fontFamily: fontWord,
     color: Colors.grey[700],
@@ -169,11 +162,11 @@ class ThemeProvider extends ChangeNotifier {
     fontWeight: FontWeight.w400,
     fontFamily: fontMeta,
   );
-  static TextStyle timeAgoStyle(BuildContext context) => adaptiveFontSize(
+  static TextStyle metaDataStyle(BuildContext context) => adaptiveFontSize(
     context,
-    0.025,
-    28,
-    fontFamily: fontMeta,
+    0.01,
+    24,
+    fontFamily: fontWord,
     color: Colors.grey,
   );
 }

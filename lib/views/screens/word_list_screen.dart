@@ -374,10 +374,7 @@ class WordListItem extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 4.0),
                     child: Text(
                       showHiragana ? (word['읽기'] ?? '') : ' ',
-                      style:
-                          isFlashcardMode
-                              ? ThemeProvider.wordReadMean(context)
-                              : ThemeProvider.wordReadMeanSmall(context),
+                      style: ThemeProvider.wordReadMean(context),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -395,10 +392,7 @@ class WordListItem extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 4.0),
                     child: Text(
                       showMeaning ? (word['뜻'] ?? '') : ' ',
-                      style:
-                          isFlashcardMode
-                              ? ThemeProvider.wordReadMean(context)
-                              : ThemeProvider.wordReadMeanSmall(context),
+                      style: ThemeProvider.wordReadMean(context),
                       textAlign: TextAlign.center,
                     ),
                   ),
