@@ -41,8 +41,8 @@ class _AnimatedHaloButtonState extends State<AnimatedHaloButton>
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 80,
-      height: 80,
+      width: ThemeProvider.memoryIconImage(context),
+      height: ThemeProvider.memoryIconImage(context),
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -50,11 +50,18 @@ class _AnimatedHaloButtonState extends State<AnimatedHaloButton>
           AnimatedBuilder(
             animation: _controller,
             builder: (context, child) {
+              final haloColor =
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white.withOpacity(0.4)
+                      : Colors.black.withOpacity(0.4);
               return Transform.rotate(
                 angle: _controller.value * 2 * pi,
                 child: CustomPaint(
-                  size: const Size(80, 80),
-                  painter: HaloPainter(),
+                  size: Size(
+                    ThemeProvider.memoryIconImage(context),
+                    ThemeProvider.memoryIconImage(context),
+                  ),
+                  painter: HaloPainter(color: haloColor),
                 ),
               );
             },
@@ -64,7 +71,10 @@ class _AnimatedHaloButtonState extends State<AnimatedHaloButton>
             onPressed: widget.onPressed,
             shape: const CircleBorder(),
             fillColor: Colors.transparent,
-            constraints: const BoxConstraints.tightFor(width: 80, height: 80),
+            constraints: BoxConstraints.tightFor(
+              width: ThemeProvider.memoryIconImage(context),
+              height: ThemeProvider.memoryIconImage(context),
+            ),
             child: ClipOval(
               child: Image.asset(
                 'assets/images/memory_transparent.png',
@@ -79,21 +89,22 @@ class _AnimatedHaloButtonState extends State<AnimatedHaloButton>
 }
 
 class HaloPainter extends CustomPainter {
+  final Color color;
+
+  HaloPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = Colors.white.withOpacity(0.4)
+          ..color = color
           ..style = PaintingStyle.stroke
           ..strokeWidth = 4
           ..strokeCap = StrokeCap.round;
 
     final path =
-        Path()..addArc(
-          Rect.fromLTWH(0, 0, size.width, size.height),
-          0,
-          pi * 1.2, // 원 전체가 아니라 일부만, 붓글씨 느낌
-        );
+        Path()
+          ..addArc(Rect.fromLTWH(0, 0, size.width, size.height), 0, pi * 1.2);
 
     canvas.drawPath(path, paint);
   }
@@ -124,7 +135,7 @@ class WordGroupScreen extends StatelessWidget {
       appBar: AppBar(
         titleSpacing: 0,
         title: Align(
-          alignment: ThemeProvider.appBarAlignment,
+          alignment: ThemeProvider.globalBarAlignment,
           child: Text(
             wordbook.title,
             style: ThemeProvider.mainBarStyle(
@@ -153,7 +164,7 @@ class WordGroupScreen extends StatelessWidget {
             color: cardColor(context),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(
-                ThemeProvider.wordbookCornerRadius,
+                ThemeProvider.globalCornerRadius,
               ),
             ),
             child: Column(

@@ -12,7 +12,7 @@ class ThemeProvider extends ChangeNotifier {
   Color get mainColor => _mainColor;
 
   static const Color cardBlack = Color(0xFF1C1B1F);
-  static const Color cardWhite = Color(0xFFFFFFFF);
+  static const Color cardWhite = Color(0xFFFAFAFA);
 
   ThemeData get themeData {
     final isDark = _isDarkMode;
@@ -57,13 +57,24 @@ class ThemeProvider extends ChangeNotifier {
     vertical: 8.0,
   );
 
-  static const double wordbookCornerRadius = 30.0;
-  static const double wordgroupCornerRadius = 20.0;
-  static const double wordlistCornerRadius = 30.0;
+  static const String globalTitle = '메모리 メモリ';
+  static const String globalFont = 'Inter';
+  static const double globalCornerRadius = 30.0;
+  static const Alignment globalBarAlignment = Alignment.centerLeft;
 
-  static const Alignment appBarAlignment = Alignment.centerLeft;
-  static const String wordbookBarTitle = '메모리 メモリ';
-  static const String fontGlobal = 'Inter';
+  static double adaptiveImageSize(
+    BuildContext context,
+    double ratio, [
+    double max = 100,
+  ]) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth * ratio > max ? max : screenWidth * ratio;
+  }
+
+  static double mainIconImage(BuildContext context) =>
+      adaptiveImageSize(context, 0.2, 50);
+  static double memoryIconImage(BuildContext context) =>
+      adaptiveImageSize(context, 0.35, 80);
 
   static TextStyle adaptiveFontSize(
     BuildContext context,
@@ -91,13 +102,13 @@ class ThemeProvider extends ChangeNotifier {
     0.1,
     120,
     fontWeight: FontWeight.w700,
-    fontFamily: fontGlobal,
+    fontFamily: globalFont,
   );
   static TextStyle wordReadMean(BuildContext context) => adaptiveFontSize(
     context,
     0.03,
     48,
-    fontFamily: fontGlobal,
+    fontFamily: globalFont,
     color: Colors.grey[700],
   );
 
@@ -106,7 +117,7 @@ class ThemeProvider extends ChangeNotifier {
     0.06,
     96,
     fontWeight: FontWeight.w700,
-    fontFamily: fontGlobal,
+    fontFamily: globalFont,
   );
 
   // 예문 관련
@@ -115,13 +126,13 @@ class ThemeProvider extends ChangeNotifier {
     0.033,
     48,
     fontWeight: FontWeight.w700,
-    fontFamily: fontGlobal,
+    fontFamily: globalFont,
   );
   static TextStyle exampleReadMean(BuildContext context) => adaptiveFontSize(
     context,
     0.03,
     32,
-    fontFamily: fontGlobal,
+    fontFamily: globalFont,
     color: Colors.grey[700],
   );
 
@@ -131,28 +142,28 @@ class ThemeProvider extends ChangeNotifier {
     0.03,
     60,
     fontWeight: FontWeight.w600,
-    fontFamily: fontGlobal,
+    fontFamily: globalFont,
   );
   static TextStyle mainListStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.02,
     32,
     fontWeight: FontWeight.w900,
-    fontFamily: fontGlobal,
+    fontFamily: globalFont,
   );
   static TextStyle mainListNameStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.025,
     36,
     fontWeight: FontWeight.w600,
-    fontFamily: fontGlobal,
+    fontFamily: globalFont,
   );
   static TextStyle settingsBarStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.03,
     40,
     fontWeight: FontWeight.w600,
-    fontFamily: fontGlobal,
+    fontFamily: globalFont,
   );
 
   // 부가 정보
@@ -161,23 +172,23 @@ class ThemeProvider extends ChangeNotifier {
     0.02,
     24,
     fontWeight: FontWeight.w400,
-    fontFamily: fontGlobal,
+    fontFamily: globalFont,
   );
   static TextStyle metaDataStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.02,
     24,
-    fontFamily: fontGlobal,
+    fontFamily: globalFont,
     color: Colors.grey,
   );
   static TextStyle settingTitleStyle(BuildContext context) =>
-      adaptiveFontSize(context, 0.025, 24, fontFamily: fontGlobal);
+      adaptiveFontSize(context, 0.025, 24, fontFamily: globalFont);
   static TextStyle settingExplainStyle(BuildContext context) =>
       adaptiveFontSize(
         context,
         0.02,
         24,
-        fontFamily: fontGlobal,
+        fontFamily: globalFont,
         color: Colors.grey,
       );
 }

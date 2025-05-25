@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder:
           (context, themeProvider, _) => MaterialApp(
-            title: '메모리 メモリ',
+            title: '메모리',
             theme: themeProvider.themeData,
             debugShowCheckedModeBanner: false,
             home: const ResolutionGuard(child: HomeScreen()),
@@ -242,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ? ThemeProvider.cardBlack
               : ThemeProvider.cardWhite,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(ThemeProvider.wordbookCornerRadius),
+        borderRadius: BorderRadius.circular(ThemeProvider.globalCornerRadius),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -294,18 +294,18 @@ class _HomeScreenState extends State<HomeScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Align(
-              alignment: ThemeProvider.appBarAlignment,
+              alignment: ThemeProvider.globalBarAlignment,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset(
-                    'assets/images/memory_transparent.png', // 실제 경로에 맞게 수정!
-                    width: 50,
-                    height: 50,
+                    'assets/images/memory_transparent.png',
+                    width: ThemeProvider.mainIconImage(context),
+                    height: ThemeProvider.mainIconImage(context),
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    ThemeProvider.wordbookBarTitle,
+                    ThemeProvider.globalTitle,
                     style: ThemeProvider.mainBarStyle(
                       context,
                     ).copyWith(color: themeProvider.mainColor),
@@ -360,12 +360,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     prefixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(
-                        ThemeProvider.wordbookCornerRadius,
+                        ThemeProvider.globalCornerRadius,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(
-                        ThemeProvider.wordbookCornerRadius,
+                        ThemeProvider.globalCornerRadius,
                       ),
                       borderSide: BorderSide(
                         color: themeProvider.mainColor,

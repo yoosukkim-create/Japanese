@@ -160,7 +160,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
               : ThemeProvider.cardWhite,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(ThemeProvider.wordlistCornerRadius),
+        borderRadius: BorderRadius.circular(ThemeProvider.globalCornerRadius),
       ),
       child: InkWell(
         onTap: () => setState(() => _showAnswer = !_showAnswer),
@@ -280,7 +280,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
                       if (showCanvas) ...[
                         Text(
-                          _showAnswer ? (word['예문뜻'] ?? '') : ' ',
+                          _showAnswer ? (word['예문'] ?? '') : ' ',
                           style: ThemeProvider.exampleText(context),
                           textAlign: TextAlign.center,
                         ),
@@ -403,7 +403,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
           backgroundColor: color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
-              ThemeProvider.wordlistCornerRadius,
+              ThemeProvider.globalCornerRadius,
             ),
           ),
         ),
@@ -450,7 +450,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
             appBar: AppBar(
               titleSpacing: 0,
               title: Align(
-                alignment: ThemeProvider.appBarAlignment,
+                alignment: ThemeProvider.globalBarAlignment,
                 child: Text(
                   widget.wordbook.title,
                   style: ThemeProvider.mainBarStyle(

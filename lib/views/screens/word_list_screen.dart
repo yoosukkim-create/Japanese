@@ -89,7 +89,7 @@ class _WordListScreenState extends State<WordListScreen>
             appBar: AppBar(
               titleSpacing: 0,
               title: Align(
-                alignment: ThemeProvider.appBarAlignment,
+                alignment: ThemeProvider.globalBarAlignment,
                 child: Text(
                   widget.title,
                   style: ThemeProvider.mainBarStyle(
@@ -269,9 +269,7 @@ class _WordListScreenState extends State<WordListScreen>
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-            ThemeProvider.wordlistCornerRadius,
-          ),
+          borderRadius: BorderRadius.circular(ThemeProvider.globalCornerRadius),
         ),
         side: BorderSide(color: color),
         backgroundColor:
@@ -339,7 +337,7 @@ class WordListItem extends StatelessWidget {
               : ThemeProvider.cardWhite,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(ThemeProvider.wordlistCornerRadius),
+        borderRadius: BorderRadius.circular(ThemeProvider.globalCornerRadius),
       ),
       child: Container(
         width: double.infinity,
