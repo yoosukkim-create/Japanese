@@ -153,7 +153,11 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
 
     return Card(
-      elevation: 2,
+      color:
+          Theme.of(context).brightness == Brightness.dark
+              ? ThemeProvider.cardBlack
+              : ThemeProvider.cardWhite,
+      elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(ThemeProvider.wordlistCornerRadius),
       ),
@@ -217,7 +221,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                         width: double.infinity,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.1),
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Stack(
@@ -279,7 +283,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                           width: double.infinity,
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Stack(
@@ -424,7 +428,6 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
               ThemeProvider.wordlistCornerRadius,
             ),
           ),
-          elevation: 4,
         ),
         child: Text(
           text,

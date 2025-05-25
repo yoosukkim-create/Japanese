@@ -167,13 +167,6 @@ class _WordListScreenState extends State<WordListScreen>
                 ),
                 decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 4,
-                      offset: const Offset(0, -2),
-                    ),
-                  ],
                 ),
                 child: Row(
                   children: [
@@ -340,7 +333,11 @@ class WordListItem extends StatelessWidget {
     final bool hasExampleForContent = showExamples;
 
     return Card(
-      elevation: 2,
+      color:
+          Theme.of(context).brightness == Brightness.dark
+              ? ThemeProvider.cardBlack
+              : ThemeProvider.cardWhite,
+      elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(ThemeProvider.wordlistCornerRadius),
       ),
@@ -395,7 +392,10 @@ class WordListItem extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor.withOpacity(0.06),
+                    color:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? ThemeProvider.cardBlack
+                            : ThemeProvider.cardWhite,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   padding: const EdgeInsets.symmetric(

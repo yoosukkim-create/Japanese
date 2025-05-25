@@ -18,10 +18,7 @@ class WordGroupScreen extends StatelessWidget {
   bool isDarkMode(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark;
   Color cardColor(BuildContext context) =>
-      isDarkMode(context)
-          ? const Color(0xFF1C1B1F)
-          : Theme.of(context).scaffoldBackgroundColor;
-  double cardElevation(BuildContext context) => isDarkMode(context) ? 0.0 : 2.0;
+      isDarkMode(context) ? ThemeProvider.cardBlack : ThemeProvider.cardWhite;
   Color textColor(BuildContext context) =>
       isDarkMode(context) ? Colors.white : Colors.black87;
   @override
@@ -62,8 +59,8 @@ class WordGroupScreen extends StatelessWidget {
 
           return Card(
             color: cardColor(context),
-            elevation: cardElevation(context),
-            margin: const EdgeInsets.only(bottom: 12.0),
+            elevation: 0,
+            margin: ThemeProvider.cardMargin,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(
                 ThemeProvider.wordgroupCornerRadius,
@@ -99,10 +96,7 @@ class WordGroupScreen extends StatelessWidget {
                 );
               },
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 16.0,
-                ),
+                padding: ThemeProvider.cardPadding,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

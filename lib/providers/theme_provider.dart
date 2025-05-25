@@ -7,22 +7,30 @@ class ThemeProvider extends ChangeNotifier {
   bool _showMemoryParams = true;
   Color _mainColor = const Color(0xFF7F7F7F);
 
-  static const Color gray = Color(0xFF7F7F7F);
-  static const Color pastelRed = Color(0xFFFFC1CC);
-  static const Color pastelOrange = Color(0xFFFFD8A8);
-  static const Color pastelYellow = Color(0xFFFFF5A5);
-  static const Color pastelGreen = Color(0xFFB9FBC0);
-  static const Color pastelBlue = Color(0xFFA0C4FF);
-  static const Color pastelIndigo = Color(0xFFBDB2FF);
-
   bool get isDarkMode => _isDarkMode;
   bool get showMemoryParams => _showMemoryParams;
   Color get mainColor => _mainColor;
 
-  ThemeData get themeData => ThemeData(
-    brightness: _isDarkMode ? Brightness.dark : Brightness.light,
-    primaryColor: _mainColor,
-  );
+  static const Color cardBlack = Color(0xFF1C1B1F);
+  static const Color cardWhite = Color(0xFFF5F5F5);
+
+  ThemeData get themeData {
+    final isDark = _isDarkMode;
+
+    return ThemeData(
+      brightness: isDark ? Brightness.dark : Brightness.light,
+      primaryColor: _mainColor,
+
+      scaffoldBackgroundColor:
+          isDark ? const Color(0xFF121212) : const Color(0xFFF0F2F5),
+
+      appBarTheme: AppBarTheme(
+        backgroundColor:
+            isDark ? const Color(0xFF121212) : const Color(0xFFF0F2F5),
+        elevation: 0,
+      ),
+    );
+  }
 
   void toggleTheme() {
     _isDarkMode = !_isDarkMode;
@@ -39,8 +47,18 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  static const EdgeInsets cardPadding = EdgeInsets.symmetric(
+    horizontal: 16.0,
+    vertical: 12.0,
+  );
+
+  static const EdgeInsets cardMargin = EdgeInsets.symmetric(
+    horizontal: 16.0,
+    vertical: 8.0,
+  );
+
   static const double wordbookCornerRadius = 30.0;
-  static const double wordgroupCornerRadius = 15.0;
+  static const double wordgroupCornerRadius = 20.0;
   static const double wordlistCornerRadius = 30.0;
 
   static const Alignment appBarAlignment = Alignment.centerLeft;

@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _buildCardTitle('최근 본 단어장', themeProvider),
         studyProvider.recentWordLists.isEmpty
             ? const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              padding: ThemeProvider.cardPadding,
               child: Text(
                 '아직 확인한 단어장이 없습니다',
                 style: TextStyle(fontSize: 14, color: Colors.grey),
@@ -100,10 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap:
                   () => _navigateToWordList(studyProvider.recentWordLists[0]),
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 12.0,
-                ),
+                padding: ThemeProvider.cardPadding,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -149,10 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 12.0,
-              ),
+              padding: ThemeProvider.cardPadding,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -163,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: 28,
                         height: 28,
                         decoration: BoxDecoration(
-                          color: themeProvider.mainColor.withOpacity(0.9),
+                          color: themeProvider.mainColor,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         alignment: Alignment.center,
@@ -241,12 +235,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildCardContainer({required List<Widget> children}) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: ThemeProvider.cardMargin,
+      elevation: 0,
       color:
           isDarkMode(context)
-              ? const Color(0xFF1C1B1F)
-              : Theme.of(context).scaffoldBackgroundColor,
-      elevation: isDarkMode(context) ? 0 : 2,
+              ? ThemeProvider.cardBlack
+              : ThemeProvider.cardWhite,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(ThemeProvider.wordbookCornerRadius),
       ),
