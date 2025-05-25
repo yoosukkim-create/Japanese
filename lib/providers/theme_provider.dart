@@ -51,10 +51,13 @@ class ThemeProvider extends ChangeNotifier {
     horizontal: 16.0,
     vertical: 12.0,
   );
-
   static const EdgeInsets cardMargin = EdgeInsets.symmetric(
     horizontal: 16.0,
     vertical: 8.0,
+  );
+  static const EdgeInsets memoryButtonPadding = EdgeInsets.symmetric(
+    horizontal: 12.0,
+    vertical: 4.0,
   );
 
   static const String globalTitle = '메모리 メモリ';
@@ -165,6 +168,8 @@ class ThemeProvider extends ChangeNotifier {
     fontWeight: FontWeight.w600,
     fontFamily: globalFont,
   );
+  static TextStyle wordListBottomStyle(BuildContext context) =>
+      adaptiveFontSize(context, 0.018, 24, fontFamily: globalFont);
 
   // 부가 정보
   static TextStyle metaCountStyle(BuildContext context) => adaptiveFontSize(

@@ -132,10 +132,7 @@ class _WordListScreenState extends State<WordListScreen>
                       showExamples: showExamples,
                     )
                     : ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 8.0,
-                      ),
+                      padding: ThemeProvider.cardPadding,
                       itemCount: currentWords.length,
                       itemBuilder: (context, index) {
                         final word = currentWords[index];
@@ -161,10 +158,7 @@ class _WordListScreenState extends State<WordListScreen>
                     ),
             bottomNavigationBar: SafeArea(
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 8.0,
-                ),
+                padding: ThemeProvider.cardPadding,
                 decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
                 ),
@@ -274,7 +268,7 @@ class _WordListScreenState extends State<WordListScreen>
         side: BorderSide(color: color),
         backgroundColor:
             alwaysActive || isSelected ? color.withOpacity(0.1) : null,
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+        padding: ThemeProvider.memoryButtonPadding,
       ),
       child: Text(
         text,
@@ -282,7 +276,9 @@ class _WordListScreenState extends State<WordListScreen>
         overflow: TextOverflow.ellipsis,
         softWrap: false,
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 13, color: color),
+        style: ThemeProvider.wordListBottomStyle(
+          context,
+        ).copyWith(color: color),
       ),
     );
   }
