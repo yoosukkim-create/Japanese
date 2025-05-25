@@ -151,6 +151,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     bool showCanvas,
   ) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
 
     return Card(
       color:
@@ -221,7 +222,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                         width: double.infinity,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: backgroundColor,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Stack(
@@ -278,33 +279,10 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                       const SizedBox(height: 4),
 
                       if (showCanvas) ...[
-                        SizedBox(
-                          height: 80,
-                          width: double.infinity,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                GestureDetector(
-                                  behavior: HitTestBehavior.translucent,
-                                  onTapDown: (_) {},
-                                  child: Signature(
-                                    controller: _sigControllerExample,
-                                    backgroundColor: Colors.transparent,
-                                  ),
-                                ),
-                                Text(
-                                  _showAnswer ? (word['예문'] ?? '') : ' ',
-                                  style: ThemeProvider.exampleText(context),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          ),
+                        Text(
+                          _showAnswer ? (word['예문뜻'] ?? '') : ' ',
+                          style: ThemeProvider.exampleText(context),
+                          textAlign: TextAlign.center,
                         ),
                       ] else ...[
                         Text(
