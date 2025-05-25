@@ -12,7 +12,7 @@ class ThemeProvider extends ChangeNotifier {
   Color get mainColor => _mainColor;
 
   static const Color cardBlack = Color(0xFF1C1B1F);
-  static const Color cardWhite = Color(0xFFF5F5F5);
+  static const Color cardWhite = Color(0xFFFFFFFF);
 
   ThemeData get themeData {
     final isDark = _isDarkMode;
@@ -22,11 +22,11 @@ class ThemeProvider extends ChangeNotifier {
       primaryColor: _mainColor,
 
       scaffoldBackgroundColor:
-          isDark ? const Color(0xFF121212) : const Color(0xFFF0F2F5),
+          isDark ? const Color(0xFF121212) : const Color(0xFFF1F4F6),
 
       appBarTheme: AppBarTheme(
         backgroundColor:
-            isDark ? const Color(0xFF121212) : const Color(0xFFF0F2F5),
+            isDark ? const Color(0xFF121212) : const Color(0xFFF1F4F6),
         elevation: 0,
       ),
     );

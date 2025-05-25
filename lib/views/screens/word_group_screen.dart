@@ -21,6 +21,7 @@ class WordGroupScreen extends StatelessWidget {
       isDarkMode(context) ? ThemeProvider.cardBlack : ThemeProvider.cardWhite;
   Color textColor(BuildContext context) =>
       isDarkMode(context) ? Colors.white : Colors.black87;
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -50,86 +51,97 @@ class WordGroupScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(6.0),
-        itemCount: wordbook.wordgroups.length,
-        itemBuilder: (context, index) {
-          String key = wordbook.wordgroups.keys.elementAt(index);
-          final wordgroup = wordbook.wordgroups[key]!;
-
-          return Card(
-            color: cardColor(context),
-            elevation: 0,
+      body: ListView(
+        padding: const EdgeInsets.only(bottom: 24.0),
+        children: [
+          Card(
             margin: ThemeProvider.cardMargin,
+            elevation: 0,
+            color: cardColor(context),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(
-                ThemeProvider.wordgroupCornerRadius,
+                ThemeProvider.wordbookCornerRadius,
               ),
             ),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(
-                ThemeProvider.wordgroupCornerRadius,
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => WordListScreen(
-                          title: key,
-                          words:
-                              wordgroup.words
-                                  .map(
-                                    (word) => {
-                                      'id': word.id,
-                                      '단어': word.word,
-                                      '읽기': word.reading,
-                                      '뜻': word.meaning,
-                                      '예문': word.example,
-                                      '예문읽기': word.exampleReading,
-                                      '예문뜻': word.exampleMeaning,
-                                    },
-                                  )
-                                  .toList(),
-                        ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: ThemeProvider.cardPadding,
+                  child: Text(
+                    '단어 그룹 목록',
+                    style: ThemeProvider.mainListStyle(
+                      context,
+                    ).copyWith(color: themeProvider.mainColor),
                   ),
-                );
-              },
-              child: Padding(
-                padding: ThemeProvider.cardPadding,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          key,
-                          style: ThemeProvider.mainListNameStyle(
-                            context,
-                          ).copyWith(color: textColor(context)),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      studyProvider.getWordgroupProgressText(wordgroup.words),
-                      style: ThemeProvider.metaCountStyle(
-                        context,
-                      ).copyWith(color: Colors.grey),
-                    ),
-                  ],
                 ),
-              ),
+                ...wordbook.wordgroups.entries.map((entry) {
+                  final key = entry.key;
+                  final wordgroup = entry.value;
+
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => WordListScreen(
+                                title: key,
+                                words:
+                                    wordgroup.words
+                                        .map(
+                                          (word) => {
+                                            'id': word.id,
+                                            '단어': word.word,
+                                            '읽기': word.reading,
+                                            '뜻': word.meaning,
+                                            '예문': word.example,
+                                            '예문읽기': word.exampleReading,
+                                            '예문뜻': word.exampleMeaning,
+                                          },
+                                        )
+                                        .toList(),
+                              ),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: ThemeProvider.cardPadding,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            key,
+                            style: ThemeProvider.mainListNameStyle(
+                              context,
+                            ).copyWith(color: textColor(context)),
+                          ),
+                          Text(
+                            studyProvider.getWordgroupProgressText(
+                              wordgroup.words,
+                            ),
+                            style: ThemeProvider.metaCountStyle(
+                              context,
+                            ).copyWith(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+                const SizedBox(height: 8),
+              ],
             ),
-          );
-        },
+          ),
+        ],
       ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 12.0),
         child: SizedBox(
-          width: 100, // 원하는 너비
-          height: 100, // 원하는 높이
+          width: 100,
+          height: 100,
           child: FloatingActionButton(
-            backgroundColor: themeProvider.mainColor,
+            backgroundColor: themeProvider.mainColor.withOpacity(0.7),
             onPressed: () {
               Navigator.push(
                 context,
