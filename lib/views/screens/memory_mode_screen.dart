@@ -170,7 +170,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
             children: [
               // 상단 정보
               Align(
-                alignment: Alignment.topRight,
+                alignment: Alignment.topCenter,
                 child: Consumer<StudyProvider>(
                   builder: (ctx, prov, _) {
                     final mem = prov.getMemoryState(word['id']);
@@ -180,7 +180,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                     ).showMemoryParams) {
                       return const SizedBox.shrink();
                     }
-                    final ef = mem?.ef.toStringAsFixed(1) ?? '2.5';
+                    //final ef = mem?.ef.toStringAsFixed(1) ?? '2.5';
                     final interval = mem?.interval.toString() ?? '0';
                     final rep = mem?.repetition.toString() ?? '0';
                     final last =
@@ -188,9 +188,9 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                             ? _formatDate(mem.lastReviewedAt!)
                             : '미학습';
                     return Text(
-                      '아는정도: $ef\n복습간격: $interval일\n연속정답: $rep회\n최근학습: $last',
+                      '복습간격: $interval일 / 연속정답: $rep회 / 최근학습: $last',
                       style: ThemeProvider.metaDataStyle(context),
-                      textAlign: TextAlign.right,
+                      textAlign: TextAlign.center,
                     );
                   },
                 ),
@@ -472,7 +472,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                 alignment: ThemeProvider.appBarAlignment,
                 child: Text(
                   widget.wordbook.title,
-                  style: ThemeProvider.subBarStyle(
+                  style: ThemeProvider.mainBarStyle(
                     context,
                   ).copyWith(color: themeProvider.mainColor),
                 ),

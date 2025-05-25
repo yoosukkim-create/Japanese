@@ -137,8 +137,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return _buildCardContainer(
       children: [
         _buildCardTitle('기본 단어장', themeProvider),
-        ...wordbooks.map(
-          (wordbook) => InkWell(
+        ...wordbooks.asMap().entries.map((entry) {
+          final index = entry.key + 1; // 숫자 1부터 시작
+          final wordbook = entry.value;
+          return InkWell(
             onTap:
                 () => Navigator.push(
                   context,
@@ -154,12 +156,40 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    wordbook.title,
-                    style: ThemeProvider.mainListNameStyle(context).copyWith(
-                      color:
-                          isDarkMode(context) ? Colors.white : Colors.black87,
-                    ),
+                  Row(
+                    children: [
+                      // ✅ 둥근 숫자 아이콘
+                      Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: themeProvider.mainColor.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Lv$index',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      // 단어장 제목
+                      Text(
+                        wordbook.title,
+                        style: ThemeProvider.mainListNameStyle(
+                          context,
+                        ).copyWith(
+                          color:
+                              isDarkMode(context)
+                                  ? Colors.white
+                                  : Colors.black87,
+                        ),
+                      ),
+                    ],
                   ),
                   Consumer<StudyProvider>(
                     builder: (context, studyProvider, _) {
@@ -183,8 +213,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-          ),
-        ),
+          );
+        }),
         const SizedBox(height: 8),
       ],
     );

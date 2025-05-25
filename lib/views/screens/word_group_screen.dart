@@ -36,7 +36,7 @@ class WordGroupScreen extends StatelessWidget {
           alignment: ThemeProvider.appBarAlignment,
           child: Text(
             wordbook.title,
-            style: ThemeProvider.subBarStyle(
+            style: ThemeProvider.mainBarStyle(
               context,
             ).copyWith(color: themeProvider.mainColor),
           ),

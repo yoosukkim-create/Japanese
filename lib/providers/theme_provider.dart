@@ -4,7 +4,6 @@ import 'dart:math';
 
 class ThemeProvider extends ChangeNotifier {
   bool _isDarkMode = true;
-  bool _showLastViewedTime = true;
   bool _showMemoryParams = true;
   Color _mainColor = const Color(0xFF7F7F7F);
 
@@ -17,7 +16,6 @@ class ThemeProvider extends ChangeNotifier {
   static const Color pastelIndigo = Color(0xFFBDB2FF);
 
   bool get isDarkMode => _isDarkMode;
-  bool get showLastViewedTime => _showLastViewedTime;
   bool get showMemoryParams => _showMemoryParams;
   Color get mainColor => _mainColor;
 
@@ -36,11 +34,6 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleLastViewedTime() {
-    _showLastViewedTime = !_showLastViewedTime;
-    notifyListeners();
-  }
-
   void toggleMemoryParams() {
     _showMemoryParams = !_showMemoryParams;
     notifyListeners();
@@ -53,9 +46,12 @@ class ThemeProvider extends ChangeNotifier {
   static const Alignment appBarAlignment = Alignment.centerLeft;
   static const String wordbookBarTitle = '메모리 メモリ';
 
-  static const String fontAppBar = 'Jua';
-  static const String fontWord = 'Roboto';
-  static const String fontMeta = 'Jua';
+  // static const String fontAppBar = 'Jua';
+  // static const String fontWord = 'Roboto';
+  // static const String fontMeta = 'Jua';
+  static const String fontAppBar = 'Inter';
+  static const String fontWord = 'Inter';
+  static const String fontMeta = 'Inter';
 
   static TextStyle adaptiveFontSize(
     BuildContext context,
@@ -80,14 +76,14 @@ class ThemeProvider extends ChangeNotifier {
   // Word 관련
   static TextStyle wordText(BuildContext context) => adaptiveFontSize(
     context,
-    0.08,
+    0.1,
     120,
     fontWeight: FontWeight.w700,
     fontFamily: fontWord,
   );
   static TextStyle wordReadMean(BuildContext context) => adaptiveFontSize(
     context,
-    0.035,
+    0.03,
     48,
     fontFamily: fontWord,
     color: Colors.grey[700],
@@ -104,14 +100,14 @@ class ThemeProvider extends ChangeNotifier {
   // 예문 관련
   static TextStyle exampleText(BuildContext context) => adaptiveFontSize(
     context,
-    0.045,
+    0.033,
     48,
     fontWeight: FontWeight.w700,
     fontFamily: fontWord,
   );
   static TextStyle exampleReadMean(BuildContext context) => adaptiveFontSize(
     context,
-    0.035,
+    0.03,
     32,
     fontFamily: fontWord,
     color: Colors.grey[700],
@@ -120,30 +116,23 @@ class ThemeProvider extends ChangeNotifier {
   // 상단바 및 제목
   static TextStyle mainBarStyle(BuildContext context) => adaptiveFontSize(
     context,
-    0.05,
+    0.04,
     60,
-    fontWeight: FontWeight.w900,
-    fontFamily: fontAppBar,
-  );
-  static TextStyle subBarStyle(BuildContext context) => adaptiveFontSize(
-    context,
-    0.045,
-    52,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w600,
     fontFamily: fontAppBar,
   );
   static TextStyle mainListStyle(BuildContext context) => adaptiveFontSize(
     context,
-    0.03,
+    0.025,
     32,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w900,
     fontFamily: fontAppBar,
   );
   static TextStyle mainListNameStyle(BuildContext context) => adaptiveFontSize(
     context,
-    0.035,
+    0.03,
     36,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w600,
     fontFamily: fontWord,
   );
   static TextStyle settingsBarStyle(BuildContext context) => adaptiveFontSize(
@@ -157,14 +146,14 @@ class ThemeProvider extends ChangeNotifier {
   // 부가 정보
   static TextStyle metaCountStyle(BuildContext context) => adaptiveFontSize(
     context,
-    0.03,
-    32,
+    0.02,
+    24,
     fontWeight: FontWeight.w400,
     fontFamily: fontMeta,
   );
   static TextStyle metaDataStyle(BuildContext context) => adaptiveFontSize(
     context,
-    0.01,
+    0.02,
     24,
     fontFamily: fontWord,
     color: Colors.grey,

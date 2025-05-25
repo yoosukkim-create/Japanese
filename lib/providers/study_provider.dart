@@ -173,46 +173,6 @@ class StudyProvider extends ChangeNotifier {
     }).length;
   }
 
-  // 정렬 관련
-  List<String> getSortedWordIds(List<String> originalIds) {
-    if (_isMemoryMode) {
-      return List<String>.from(originalIds)..sort((a, b) {
-        final stateA = _memoryStates[a];
-        final stateB = _memoryStates[b];
-
-        if (stateA == null) return -1;
-        if (stateB == null) return 1;
-
-        final needsReviewA = stateA.needsReview();
-        final needsReviewB = stateB.needsReview();
-
-        if (needsReviewA != needsReviewB) {
-          return needsReviewA ? -1 : 1;
-        }
-
-        return stateA.ef.compareTo(stateB.ef);
-      });
-    }
-
-    if (!_isShuffleMode) return originalIds;
-
-    return List<String>.from(originalIds)..sort((a, b) {
-      final stateA = _wordStates[a];
-      final stateB = _wordStates[b];
-
-      if (stateA == null) return -1;
-      if (stateB == null) return 1;
-
-      final daysA = stateA.nextReviewDays;
-      final daysB = stateB.nextReviewDays;
-
-      if (daysA == daysB) {
-        return stateA.lastViewedAt.compareTo(stateB.lastViewedAt);
-      }
-      return daysA.compareTo(daysB);
-    });
-  }
-
   List<Map<String, dynamic>> getSortedWords(List<Map<String, dynamic>> words) {
     if (!_isShuffleMode) return List<Map<String, dynamic>>.from(words);
 

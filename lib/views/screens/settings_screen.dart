@@ -21,7 +21,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return AlertDialog(
           title: const Text('메모리 학습 기록 초기화'),
           content: const Text(
-            '메모리 단어장의 학습 기록이 초기화됩니다.\n정말 초기화하시겠습니까?',
+            '모든 단어장의 학습 기록이 초기화됩니다.\n정말 초기화하시겠습니까?',
             style: TextStyle(fontSize: 16),
           ),
           actions: <Widget>[
@@ -37,52 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('메모리 단어장 학습 기록이 초기화되었습니다.'),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // 초기화 확인 다이얼로그를 보여주는 메서드
-  Future<void> _showResetConfirmDialog(BuildContext context) async {
-    final studyProvider = Provider.of<StudyProvider>(context, listen: false);
-
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('학습 기록 초기화'),
-          content: const Text(
-            '모든 단어의 학습 기록이 삭제됩니다.\n정말 초기화하시겠습니까?',
-            style: TextStyle(fontSize: 16),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('아니오'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text(
-                '예',
-                style: TextStyle(color: Colors.red), // 위험 동작임을 표시
-              ),
-              onPressed: () async {
-                await studyProvider.resetAllStudyStates();
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-                  // 초기화 완료 메시지 표시
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('모든 학습 기록이 초기화되었습니다.'),
+                      content: Text('모든 단어장 학습 기록이 초기화되었습니다.'),
                       duration: Duration(seconds: 2),
                     ),
                   );
@@ -146,107 +101,85 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   themeProvider.toggleTheme();
                 },
               ),
-              ListTile(
-                title: const Text('메인 색상'),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _ColorOption(
-                      color: ThemeProvider.gray,
-                      isSelected: themeProvider.mainColor == ThemeProvider.gray,
-                      onTap:
-                          () => themeProvider.setMainColor(ThemeProvider.gray),
-                    ),
-                    const SizedBox(width: 8),
-                    _ColorOption(
-                      color: ThemeProvider.pastelRed,
-                      isSelected:
-                          themeProvider.mainColor == ThemeProvider.pastelRed,
-                      onTap:
-                          () => themeProvider.setMainColor(
-                            ThemeProvider.pastelRed,
-                          ),
-                    ),
-                    const SizedBox(width: 8),
-                    _ColorOption(
-                      color: ThemeProvider.pastelOrange,
-                      isSelected:
-                          themeProvider.mainColor == ThemeProvider.pastelOrange,
-                      onTap:
-                          () => themeProvider.setMainColor(
-                            ThemeProvider.pastelOrange,
-                          ),
-                    ),
-                    const SizedBox(width: 8),
-                    _ColorOption(
-                      color: ThemeProvider.pastelYellow,
-                      isSelected:
-                          themeProvider.mainColor == ThemeProvider.pastelYellow,
-                      onTap:
-                          () => themeProvider.setMainColor(
-                            ThemeProvider.pastelYellow,
-                          ),
-                    ),
-                    const SizedBox(width: 8),
-                    _ColorOption(
-                      color: ThemeProvider.pastelGreen,
-                      isSelected:
-                          themeProvider.mainColor == ThemeProvider.pastelGreen,
-                      onTap:
-                          () => themeProvider.setMainColor(
-                            ThemeProvider.pastelGreen,
-                          ),
-                    ),
-                    const SizedBox(width: 8),
-                    _ColorOption(
-                      color: ThemeProvider.pastelBlue,
-                      isSelected:
-                          themeProvider.mainColor == ThemeProvider.pastelBlue,
-                      onTap:
-                          () => themeProvider.setMainColor(
-                            ThemeProvider.pastelBlue,
-                          ),
-                    ),
-                    const SizedBox(width: 8),
-                    _ColorOption(
-                      color: ThemeProvider.pastelIndigo,
-                      isSelected:
-                          themeProvider.mainColor == ThemeProvider.pastelIndigo,
-                      onTap:
-                          () => themeProvider.setMainColor(
-                            ThemeProvider.pastelIndigo,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(),
-
-              // 마지막으로 본 시간 설정
-              SwitchListTile(
-                title: const Text('단어장 학습 시간 표시'),
-                subtitle: const Text('단어장에서 마지막으로 학습한 시간을 표시합니다'),
-                value: themeProvider.showLastViewedTime,
-                onChanged: (bool value) {
-                  themeProvider.toggleLastViewedTime();
-                },
-                activeColor: themeProvider.mainColor,
-                activeTrackColor: trackColor,
-                inactiveTrackColor: Colors.grey.withOpacity(0.3),
-              ),
-
-              // 학습 기록 초기화 옵션
-              ListTile(
-                title: const Text('단어장 학습 시간 초기화'),
-                subtitle: const Text('단어장에서 마지막으로 학습한 시간을 초기화합니다'),
-                trailing: Icon(Icons.restore, color: themeProvider.mainColor),
-                onTap: () => _showResetConfirmDialog(context),
-              ),
+              // ListTile(
+              //   title: const Text('메인 색상'),
+              //   trailing: Row(
+              //     mainAxisSize: MainAxisSize.min,
+              //     children: [
+              //       _ColorOption(
+              //         color: ThemeProvider.gray,
+              //         isSelected: themeProvider.mainColor == ThemeProvider.gray,
+              //         onTap:
+              //             () => themeProvider.setMainColor(ThemeProvider.gray),
+              //       ),
+              //       const SizedBox(width: 8),
+              //       _ColorOption(
+              //         color: ThemeProvider.pastelRed,
+              //         isSelected:
+              //             themeProvider.mainColor == ThemeProvider.pastelRed,
+              //         onTap:
+              //             () => themeProvider.setMainColor(
+              //               ThemeProvider.pastelRed,
+              //             ),
+              //       ),
+              //       const SizedBox(width: 8),
+              //       _ColorOption(
+              //         color: ThemeProvider.pastelOrange,
+              //         isSelected:
+              //             themeProvider.mainColor == ThemeProvider.pastelOrange,
+              //         onTap:
+              //             () => themeProvider.setMainColor(
+              //               ThemeProvider.pastelOrange,
+              //             ),
+              //       ),
+              //       const SizedBox(width: 8),
+              //       _ColorOption(
+              //         color: ThemeProvider.pastelYellow,
+              //         isSelected:
+              //             themeProvider.mainColor == ThemeProvider.pastelYellow,
+              //         onTap:
+              //             () => themeProvider.setMainColor(
+              //               ThemeProvider.pastelYellow,
+              //             ),
+              //       ),
+              //       const SizedBox(width: 8),
+              //       _ColorOption(
+              //         color: ThemeProvider.pastelGreen,
+              //         isSelected:
+              //             themeProvider.mainColor == ThemeProvider.pastelGreen,
+              //         onTap:
+              //             () => themeProvider.setMainColor(
+              //               ThemeProvider.pastelGreen,
+              //             ),
+              //       ),
+              //       const SizedBox(width: 8),
+              //       _ColorOption(
+              //         color: ThemeProvider.pastelBlue,
+              //         isSelected:
+              //             themeProvider.mainColor == ThemeProvider.pastelBlue,
+              //         onTap:
+              //             () => themeProvider.setMainColor(
+              //               ThemeProvider.pastelBlue,
+              //             ),
+              //       ),
+              //       const SizedBox(width: 8),
+              //       _ColorOption(
+              //         color: ThemeProvider.pastelIndigo,
+              //         isSelected:
+              //             themeProvider.mainColor == ThemeProvider.pastelIndigo,
+              //         onTap:
+              //             () => themeProvider.setMainColor(
+              //               ThemeProvider.pastelIndigo,
+              //             ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               const Divider(),
 
               SwitchListTile(
                 title: const Text('메모리 학습 정보 표시'),
-                subtitle: const Text('아는정도, 복습간격, 연속정답, 최근학습 정보를 표시합니다'),
+                subtitle: const Text('복습간격, 연속정답, 최근학습 정보를 표시합니다'),
                 value: themeProvider.showMemoryParams,
                 onChanged: (_) => themeProvider.toggleMemoryParams(),
                 activeColor: themeProvider.mainColor,

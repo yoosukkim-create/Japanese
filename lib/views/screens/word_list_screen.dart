@@ -92,7 +92,7 @@ class _WordListScreenState extends State<WordListScreen>
                 alignment: ThemeProvider.appBarAlignment,
                 child: Text(
                   widget.title,
-                  style: ThemeProvider.subBarStyle(
+                  style: ThemeProvider.mainBarStyle(
                     context,
                   ).copyWith(color: themeProvider.mainColor),
                 ),
@@ -129,7 +129,6 @@ class _WordListScreenState extends State<WordListScreen>
                       words: currentWords,
                       showHiragana: showHiragana,
                       showMeaning: showMeaning,
-                      showTimeAgo: themeProvider.showLastViewedTime,
                       showExamples: showExamples,
                     )
                     : ListView.builder(
@@ -155,10 +154,6 @@ class _WordListScreenState extends State<WordListScreen>
                               showMeaning: _meaningShown[wordId] ?? false,
                               showExamples: showExamples,
                               isFlashcardMode: false,
-                              timeAgo:
-                                  themeProvider.showLastViewedTime
-                                      ? _getTimeAgoText(studyProvider, wordId)
-                                      : null,
                             ),
                           ),
                         );
@@ -300,12 +295,6 @@ class _WordListScreenState extends State<WordListScreen>
       ),
     );
   }
-
-  String _getTimeAgoText(StudyProvider studyProvider, String wordId) {
-    // getWordState 대신 getEffectiveWordState 사용
-    final wordState = studyProvider.getEffectiveWordState(wordId);
-    return wordState?.timeAgoText ?? '아직 학습하지 않음';
-  }
 }
 
 class WordListItem extends StatelessWidget {
@@ -314,7 +303,6 @@ class WordListItem extends StatelessWidget {
   final bool showMeaning;
   final bool showExamples;
   final bool isFlashcardMode;
-  final String? timeAgo;
 
   const WordListItem({
     super.key,
@@ -323,7 +311,6 @@ class WordListItem extends StatelessWidget {
     required this.showMeaning,
     required this.showExamples,
     this.isFlashcardMode = false,
-    this.timeAgo,
   });
 
   @override
@@ -463,7 +450,6 @@ class FlashcardView extends StatefulWidget {
   final List<Map<String, dynamic>> words;
   final bool showHiragana;
   final bool showMeaning;
-  final bool showTimeAgo;
   final bool showExamples;
 
   const FlashcardView({
@@ -471,7 +457,6 @@ class FlashcardView extends StatefulWidget {
     required this.words,
     required this.showHiragana,
     required this.showMeaning,
-    required this.showTimeAgo,
     required this.showExamples,
   });
 
@@ -569,7 +554,6 @@ class _FlashcardViewState extends State<FlashcardView> {
                 showMeaning: _meaningShown[wordId] ?? false,
                 showExamples: widget.showExamples,
                 isFlashcardMode: true,
-                timeAgo: widget.showTimeAgo ? wordState?.timeAgoText : null,
               ),
             ),
           ),

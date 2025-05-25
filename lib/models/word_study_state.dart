@@ -57,18 +57,4 @@ class WordStudyState {
     if (daysSinceLastView < 30) return 30;
     return -1; // 학습 완료
   }
-
-  String get timeAgoText {
-    final difference = DateTime.now().difference(lastViewedAt);
-
-    if (difference.inSeconds < 60) {
-      return '방금 전';
-    } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}분 전';
-    } else if (difference.inHours < 24) {
-      return '${difference.inHours}시간 전';
-    } else {
-      return '${difference.inDays}일 전';
-    }
-  }
 }
