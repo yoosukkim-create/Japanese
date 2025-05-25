@@ -295,11 +295,22 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             title: Align(
               alignment: ThemeProvider.appBarAlignment,
-              child: Text(
-                ThemeProvider.wordbookBarTitle,
-                style: ThemeProvider.mainBarStyle(
-                  context,
-                ).copyWith(color: themeProvider.mainColor),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/images/memory_transparent.png', // 실제 경로에 맞게 수정!
+                    width: 50,
+                    height: 50,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    ThemeProvider.wordbookBarTitle,
+                    style: ThemeProvider.mainBarStyle(
+                      context,
+                    ).copyWith(color: themeProvider.mainColor),
+                  ),
+                ],
               ),
             ),
             actions: [

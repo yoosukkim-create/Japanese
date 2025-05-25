@@ -19,10 +19,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('메모리 학습 기록 초기화'),
-          content: const Text(
+          backgroundColor:
+              Theme.of(context).brightness == Brightness.dark
+                  ? ThemeProvider.cardBlack
+                  : ThemeProvider.cardWhite,
+          title: Text(
+            '메모리 학습 기록 초기화',
+            style: ThemeProvider.settingsBarStyle(context),
+          ),
+          content: Text(
             '모든 단어장의 학습 기록이 초기화됩니다.\n정말 초기화하시겠습니까?',
-            style: TextStyle(fontSize: 16),
+            style: ThemeProvider.settingExplainStyle(context),
           ),
           actions: <Widget>[
             TextButton(
@@ -70,8 +77,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               // 계정 섹션 추가
               ListTile(
                 leading: const Icon(Icons.account_circle, size: 32),
-                title: const Text('로그인'),
-                subtitle: const Text('Coming soon...'),
+                title: Text(
+                  '로그인',
+                  style: ThemeProvider.settingTitleStyle(context),
+                ),
+                subtitle: Text(
+                  'Coming soon...',
+                  style: ThemeProvider.settingExplainStyle(context),
+                ),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -84,7 +97,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const Divider(),
               ListTile(
-                title: const Text('테마'),
+                title: Text(
+                  '테마',
+                  style: ThemeProvider.settingTitleStyle(context),
+                ),
                 trailing: Container(
                   width: 24,
                   height: 24,
@@ -101,85 +117,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   themeProvider.toggleTheme();
                 },
               ),
-              // ListTile(
-              //   title: const Text('메인 색상'),
-              //   trailing: Row(
-              //     mainAxisSize: MainAxisSize.min,
-              //     children: [
-              //       _ColorOption(
-              //         color: ThemeProvider.gray,
-              //         isSelected: themeProvider.mainColor == ThemeProvider.gray,
-              //         onTap:
-              //             () => themeProvider.setMainColor(ThemeProvider.gray),
-              //       ),
-              //       const SizedBox(width: 8),
-              //       _ColorOption(
-              //         color: ThemeProvider.pastelRed,
-              //         isSelected:
-              //             themeProvider.mainColor == ThemeProvider.pastelRed,
-              //         onTap:
-              //             () => themeProvider.setMainColor(
-              //               ThemeProvider.pastelRed,
-              //             ),
-              //       ),
-              //       const SizedBox(width: 8),
-              //       _ColorOption(
-              //         color: ThemeProvider.pastelOrange,
-              //         isSelected:
-              //             themeProvider.mainColor == ThemeProvider.pastelOrange,
-              //         onTap:
-              //             () => themeProvider.setMainColor(
-              //               ThemeProvider.pastelOrange,
-              //             ),
-              //       ),
-              //       const SizedBox(width: 8),
-              //       _ColorOption(
-              //         color: ThemeProvider.pastelYellow,
-              //         isSelected:
-              //             themeProvider.mainColor == ThemeProvider.pastelYellow,
-              //         onTap:
-              //             () => themeProvider.setMainColor(
-              //               ThemeProvider.pastelYellow,
-              //             ),
-              //       ),
-              //       const SizedBox(width: 8),
-              //       _ColorOption(
-              //         color: ThemeProvider.pastelGreen,
-              //         isSelected:
-              //             themeProvider.mainColor == ThemeProvider.pastelGreen,
-              //         onTap:
-              //             () => themeProvider.setMainColor(
-              //               ThemeProvider.pastelGreen,
-              //             ),
-              //       ),
-              //       const SizedBox(width: 8),
-              //       _ColorOption(
-              //         color: ThemeProvider.pastelBlue,
-              //         isSelected:
-              //             themeProvider.mainColor == ThemeProvider.pastelBlue,
-              //         onTap:
-              //             () => themeProvider.setMainColor(
-              //               ThemeProvider.pastelBlue,
-              //             ),
-              //       ),
-              //       const SizedBox(width: 8),
-              //       _ColorOption(
-              //         color: ThemeProvider.pastelIndigo,
-              //         isSelected:
-              //             themeProvider.mainColor == ThemeProvider.pastelIndigo,
-              //         onTap:
-              //             () => themeProvider.setMainColor(
-              //               ThemeProvider.pastelIndigo,
-              //             ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
               const Divider(),
 
               SwitchListTile(
-                title: const Text('메모리 학습 정보 표시'),
-                subtitle: const Text('복습간격, 연속정답, 최근학습 정보를 표시합니다'),
+                title: Text(
+                  '메모리 학습 정보 표시',
+                  style: ThemeProvider.settingTitleStyle(context),
+                ),
+                subtitle: Text(
+                  '복습간격, 연속정답, 최근학습 정보를 표시합니다',
+                  style: ThemeProvider.settingExplainStyle(context),
+                ),
                 value: themeProvider.showMemoryParams,
                 onChanged: (_) => themeProvider.toggleMemoryParams(),
                 activeColor: themeProvider.mainColor,
@@ -188,8 +136,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
 
               ListTile(
-                title: const Text('메모리 학습 정보 초기화'),
-                subtitle: const Text('메모리 학습 정보를 초기화합니다'),
+                title: Text(
+                  '메모리 학습 정보 초기화',
+                  style: ThemeProvider.settingTitleStyle(context),
+                ),
+                subtitle: Text(
+                  '복습간격, 연속정답, 최근학습 정보를 초기화합니다',
+                  style: ThemeProvider.settingExplainStyle(context),
+                ),
                 trailing: Icon(Icons.restore, color: themeProvider.mainColor),
                 onTap: () => _showMemoryResetConfirmDialog(context),
               ),

@@ -193,7 +193,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                             ? _formatDate(mem.lastReviewedAt!)
                             : '미학습';
                     return Text(
-                      '복습간격: $interval일 / 연속정답: $rep회 / 최근학습: $last',
+                      '복습간격: $interval일 - 연속정답: $rep회 - 최근학습: $last',
                       style: ThemeProvider.metaDataStyle(context),
                       textAlign: TextAlign.center,
                     );

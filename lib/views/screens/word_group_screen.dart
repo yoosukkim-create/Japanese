@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,6 +10,97 @@ import 'package:japanese/providers/study_provider.dart';
 import 'package:japanese/views/screens/word_list_screen.dart';
 import 'package:japanese/views/screens/memory_mode_screen.dart';
 import 'package:japanese/views/screens/settings_screen.dart';
+
+class AnimatedHaloButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  const AnimatedHaloButton({super.key, required this.onPressed});
+
+  @override
+  State<AnimatedHaloButton> createState() => _AnimatedHaloButtonState();
+}
+
+class _AnimatedHaloButtonState extends State<AnimatedHaloButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat(); // 계속 회전
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 80,
+      height: 80,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // 회전 애니메이션
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return Transform.rotate(
+                angle: _controller.value * 2 * pi,
+                child: CustomPaint(
+                  size: const Size(80, 80),
+                  painter: HaloPainter(),
+                ),
+              );
+            },
+          ),
+          // 버튼 이미지
+          RawMaterialButton(
+            onPressed: widget.onPressed,
+            shape: const CircleBorder(),
+            fillColor: Colors.transparent,
+            constraints: const BoxConstraints.tightFor(width: 80, height: 80),
+            child: ClipOval(
+              child: Image.asset(
+                'assets/images/memory_transparent.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class HaloPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = Colors.white.withOpacity(0.4)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 4
+          ..strokeCap = StrokeCap.round;
+
+    final path =
+        Path()..addArc(
+          Rect.fromLTWH(0, 0, size.width, size.height),
+          0,
+          pi * 1.2, // 원 전체가 아니라 일부만, 붓글씨 느낌
+        );
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
 
 class WordGroupScreen extends StatelessWidget {
   final Wordbook wordbook;
@@ -137,32 +230,15 @@ class WordGroupScreen extends StatelessWidget {
       ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 12.0),
-        child: SizedBox(
-          width: 100,
-          height: 100,
-          child: FloatingActionButton(
-            backgroundColor: themeProvider.mainColor.withOpacity(0.7),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MemoryModeScreen(wordbook: wordbook),
-                ),
-              );
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.psychology, size: 32, color: textColor(context)),
-                const SizedBox(height: 4),
-                Text(
-                  '메모리 모드',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, color: textColor(context)),
-                ),
-              ],
-            ),
-          ),
+        child: AnimatedHaloButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MemoryModeScreen(wordbook: wordbook),
+              ),
+            );
+          },
         ),
       ),
     );

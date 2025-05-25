@@ -63,13 +63,7 @@ class ThemeProvider extends ChangeNotifier {
 
   static const Alignment appBarAlignment = Alignment.centerLeft;
   static const String wordbookBarTitle = '메모리 メモリ';
-
-  // static const String fontAppBar = 'Jua';
-  // static const String fontWord = 'Roboto';
-  // static const String fontMeta = 'Jua';
-  static const String fontAppBar = 'Inter';
-  static const String fontWord = 'Inter';
-  static const String fontMeta = 'Inter';
+  static const String fontGlobal = 'Inter';
 
   static TextStyle adaptiveFontSize(
     BuildContext context,
@@ -97,13 +91,13 @@ class ThemeProvider extends ChangeNotifier {
     0.1,
     120,
     fontWeight: FontWeight.w700,
-    fontFamily: fontWord,
+    fontFamily: fontGlobal,
   );
   static TextStyle wordReadMean(BuildContext context) => adaptiveFontSize(
     context,
     0.03,
     48,
-    fontFamily: fontWord,
+    fontFamily: fontGlobal,
     color: Colors.grey[700],
   );
 
@@ -112,7 +106,7 @@ class ThemeProvider extends ChangeNotifier {
     0.06,
     96,
     fontWeight: FontWeight.w700,
-    fontFamily: fontWord,
+    fontFamily: fontGlobal,
   );
 
   // 예문 관련
@@ -121,44 +115,44 @@ class ThemeProvider extends ChangeNotifier {
     0.033,
     48,
     fontWeight: FontWeight.w700,
-    fontFamily: fontWord,
+    fontFamily: fontGlobal,
   );
   static TextStyle exampleReadMean(BuildContext context) => adaptiveFontSize(
     context,
     0.03,
     32,
-    fontFamily: fontWord,
+    fontFamily: fontGlobal,
     color: Colors.grey[700],
   );
 
   // 상단바 및 제목
   static TextStyle mainBarStyle(BuildContext context) => adaptiveFontSize(
     context,
-    0.04,
+    0.03,
     60,
     fontWeight: FontWeight.w600,
-    fontFamily: fontAppBar,
+    fontFamily: fontGlobal,
   );
   static TextStyle mainListStyle(BuildContext context) => adaptiveFontSize(
     context,
-    0.025,
+    0.02,
     32,
     fontWeight: FontWeight.w900,
-    fontFamily: fontAppBar,
+    fontFamily: fontGlobal,
   );
   static TextStyle mainListNameStyle(BuildContext context) => adaptiveFontSize(
     context,
-    0.03,
+    0.025,
     36,
     fontWeight: FontWeight.w600,
-    fontFamily: fontWord,
+    fontFamily: fontGlobal,
   );
   static TextStyle settingsBarStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.03,
     40,
     fontWeight: FontWeight.w600,
-    fontFamily: fontWord,
+    fontFamily: fontGlobal,
   );
 
   // 부가 정보
@@ -167,13 +161,23 @@ class ThemeProvider extends ChangeNotifier {
     0.02,
     24,
     fontWeight: FontWeight.w400,
-    fontFamily: fontMeta,
+    fontFamily: fontGlobal,
   );
   static TextStyle metaDataStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.02,
     24,
-    fontFamily: fontWord,
+    fontFamily: fontGlobal,
     color: Colors.grey,
   );
+  static TextStyle settingTitleStyle(BuildContext context) =>
+      adaptiveFontSize(context, 0.025, 24, fontFamily: fontGlobal);
+  static TextStyle settingExplainStyle(BuildContext context) =>
+      adaptiveFontSize(
+        context,
+        0.02,
+        24,
+        fontFamily: fontGlobal,
+        color: Colors.grey,
+      );
 }
