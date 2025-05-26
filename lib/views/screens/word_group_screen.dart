@@ -10,7 +10,7 @@ import 'package:japanese/providers/study_provider.dart';
 import 'package:japanese/views/screens/word_list_screen.dart';
 import 'package:japanese/views/screens/memory_mode_screen.dart';
 import 'package:japanese/views/screens/settings_screen.dart';
-import 'package:japanese/widgets/list_card.dart';
+import 'package:japanese/widgets/card_container.dart';
 
 class AnimatedHaloButton extends StatefulWidget {
   final VoidCallback onPressed;
@@ -162,7 +162,6 @@ class WordGroupScreen extends StatelessWidget {
           CardContainer(
             isDarkMode: isDarkMode(context),
             children: [
-              const CardTitle('단어 그룹 목록'),
               ...wordbook.wordgroups.entries.map((entry) {
                 final key = entry.key;
                 final wordgroup = entry.value;

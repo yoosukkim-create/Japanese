@@ -134,13 +134,6 @@ class ThemeProvider extends ChangeNotifier {
     fontWeight: FontWeight.w600,
     fontFamily: globalFont,
   );
-  static TextStyle cardTitleStyle(BuildContext context) => adaptiveFontSize(
-    context,
-    0.02,
-    40,
-    fontWeight: FontWeight.w900,
-    fontFamily: globalFont,
-  );
   static TextStyle cardListStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.025,

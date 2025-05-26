@@ -9,7 +9,7 @@ import 'package:japanese/providers/study_provider.dart';
 import 'package:japanese/views/screens/word_list_screen.dart';
 import 'package:japanese/views/screens/word_group_screen.dart';
 import 'package:japanese/views/screens/settings_screen.dart';
-import 'package:japanese/widgets/list_card.dart';
+import 'package:japanese/widgets/card_container.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,13 +35,22 @@ class _HomeScreenState extends State<HomeScreen> {
     return CardContainer(
       isDarkMode: isDarkMode(context),
       children: [
-        CardTitle('최근 본 단어장'),
         studyProvider.recentWordLists.isEmpty
             ? Padding(
               padding: ThemeProvider.cardPadding,
-              child: Text(
-                '아직 확인한 단어장이 없습니다',
-                style: ThemeProvider.cardExplainStyle(context),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.push_pin,
+                    color: themeProvider.mainColor,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    '아직 확인한 단어장이 없습니다',
+                    style: ThemeProvider.cardExplainStyle(context),
+                  ),
+                ],
               ),
             )
             : InkWell(
@@ -52,9 +61,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      studyProvider.recentWordLists[0]['title'].toString(),
-                      style: ThemeProvider.cardListStyle(context),
+                    Row(
+                      children: [
+                        Transform.rotate(
+                          angle: -3.14 / 4,
+                          child: Icon(
+                            Icons.push_pin,
+                            color: themeProvider.mainColor,
+                            size: 28,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          studyProvider.recentWordLists[0]['title'].toString(),
+                          style: ThemeProvider.cardListStyle(context),
+                        ),
+                      ],
                     ),
                     Text(
                       studyProvider.getProgressText(
@@ -81,7 +103,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return CardContainer(
       isDarkMode: isDarkMode(context),
       children: [
-        CardTitle('기본 단어장'),
         ...wordbooks.asMap().entries.map((entry) {
           final index = entry.key + 1; // 숫자 1부터 시작
           final wordbook = entry.value;
@@ -146,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         '$studiedWords/$totalWords',
                         style: ThemeProvider.metaCountStyle(
                           context,
-                        ).copyWith(color: Colors.grey),
+                        ).copyWith(color: themeProvider.mainColor),
                       );
                     },
                   ),
@@ -164,12 +185,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return CardContainer(
       isDarkMode: isDarkMode(context),
       children: [
-        CardTitle('커스텀 단어장'),
-        Padding(
-          padding: ThemeProvider.cardPadding,
-          child: Text(
-            'Coming soon...',
-            style: ThemeProvider.cardExplainStyle(context),
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: Icon(
+              Icons.add_circle_outline,
+              size: 48,
+              color: themeProvider.mainColor,
+            ),
           ),
         ),
       ],
