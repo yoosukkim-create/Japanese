@@ -89,6 +89,7 @@ class ThemeProvider extends ChangeNotifier {
   }) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double size = min(screenHeight * ratio, maxSize);
+
     return GoogleFonts.getFont(
       fontFamily,
       fontSize: size,
