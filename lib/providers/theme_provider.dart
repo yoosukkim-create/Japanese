@@ -11,9 +11,6 @@ class ThemeProvider extends ChangeNotifier {
   bool get showMemoryParams => _showMemoryParams;
   Color get mainColor => _mainColor;
 
-  static const Color cardBlack = Color(0xFF1C1B1F);
-  static const Color cardWhite = Color(0xFFFAFAFA);
-
   ThemeData get themeData {
     final isDark = _isDarkMode;
 
@@ -47,24 +44,15 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  static const EdgeInsets cardPadding = EdgeInsets.symmetric(
-    horizontal: 16.0,
-    vertical: 12.0,
-  );
-  static const EdgeInsets cardMargin = EdgeInsets.symmetric(
-    horizontal: 16.0,
-    vertical: 8.0,
-  );
-  static const EdgeInsets memoryButtonPadding = EdgeInsets.symmetric(
-    horizontal: 12.0,
-    vertical: 4.0,
-  );
-
+  //// GLOBAL //////////////////////////////////////////////////
   static const String globalTitle = '메모리 メモリ';
   static const String globalFont = 'Inter';
-  static const double globalCornerRadius = 30.0;
+  static const double globalCornerRadius = 20.0;
   static const Alignment globalBarAlignment = Alignment.centerLeft;
+  static const Color cardBlack = Color(0xFF1C1B1F);
+  static const Color cardWhite = Color(0xFFFAFAFA);
 
+  //// IMAGE ////////////////////////////////////////////////////
   static double adaptiveImageSize(
     BuildContext context,
     double ratio, [
@@ -79,6 +67,7 @@ class ThemeProvider extends ChangeNotifier {
   static double memoryIconImage(BuildContext context) =>
       adaptiveImageSize(context, 0.35, 80);
 
+  //// TEXT //////////////////////////////////////////////////////
   static TextStyle adaptiveFontSize(
     BuildContext context,
     double ratio,
@@ -98,9 +87,7 @@ class ThemeProvider extends ChangeNotifier {
     );
   }
 
-  // 텍스트 스타일 묶음 구간
-
-  // Word 관련
+  // 단어
   static TextStyle wordText(BuildContext context) => adaptiveFontSize(
     context,
     0.1,
@@ -115,7 +102,6 @@ class ThemeProvider extends ChangeNotifier {
     fontFamily: globalFont,
     color: Colors.grey[700],
   );
-
   static TextStyle wordTextSmall(BuildContext context) => adaptiveFontSize(
     context,
     0.06,
@@ -124,7 +110,7 @@ class ThemeProvider extends ChangeNotifier {
     fontFamily: globalFont,
   );
 
-  // 예문 관련
+  // 예문
   static TextStyle exampleText(BuildContext context) => adaptiveFontSize(
     context,
     0.033,
@@ -141,34 +127,29 @@ class ThemeProvider extends ChangeNotifier {
   );
 
   // 상단바 및 제목
-  static TextStyle mainBarStyle(BuildContext context) => adaptiveFontSize(
+  static TextStyle globalBarStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.03,
     60,
     fontWeight: FontWeight.w600,
     fontFamily: globalFont,
   );
-  static TextStyle mainListStyle(BuildContext context) => adaptiveFontSize(
+  static TextStyle cardTitleStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.02,
-    32,
+    40,
     fontWeight: FontWeight.w900,
     fontFamily: globalFont,
   );
-  static TextStyle mainListNameStyle(BuildContext context) => adaptiveFontSize(
+  static TextStyle cardListStyle(BuildContext context) => adaptiveFontSize(
     context,
     0.025,
-    36,
+    50,
     fontWeight: FontWeight.w600,
     fontFamily: globalFont,
   );
-  static TextStyle settingsBarStyle(BuildContext context) => adaptiveFontSize(
-    context,
-    0.03,
-    40,
-    fontWeight: FontWeight.w600,
-    fontFamily: globalFont,
-  );
+  static TextStyle cardExplainStyle(BuildContext context) =>
+      adaptiveFontSize(context, 0.02, 40, fontFamily: globalFont);
   static TextStyle wordListBottomStyle(BuildContext context) =>
       adaptiveFontSize(context, 0.018, 24, fontFamily: globalFont);
 
@@ -187,6 +168,8 @@ class ThemeProvider extends ChangeNotifier {
     fontFamily: globalFont,
     color: Colors.grey,
   );
+
+  // 설정
   static TextStyle settingTitleStyle(BuildContext context) =>
       adaptiveFontSize(context, 0.025, 24, fontFamily: globalFont);
   static TextStyle settingExplainStyle(BuildContext context) =>
@@ -197,4 +180,25 @@ class ThemeProvider extends ChangeNotifier {
         fontFamily: globalFont,
         color: Colors.grey,
       );
+  static TextStyle settingsBarStyle(BuildContext context) => adaptiveFontSize(
+    context,
+    0.03,
+    40,
+    fontWeight: FontWeight.w600,
+    fontFamily: globalFont,
+  );
+
+  //// PADDING & MARGIN /////////////////////////////////////////////
+  static const EdgeInsets cardPadding = EdgeInsets.symmetric(
+    horizontal: 16.0,
+    vertical: 12.0,
+  );
+  static const EdgeInsets cardMargin = EdgeInsets.symmetric(
+    horizontal: 16.0,
+    vertical: 8.0,
+  );
+  static const EdgeInsets memoryButtonPadding = EdgeInsets.symmetric(
+    horizontal: 12.0,
+    vertical: 4.0,
+  );
 }

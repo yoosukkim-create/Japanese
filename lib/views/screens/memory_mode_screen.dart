@@ -453,7 +453,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                 alignment: ThemeProvider.globalBarAlignment,
                 child: Text(
                   widget.wordbook.title,
-                  style: ThemeProvider.mainBarStyle(
+                  style: ThemeProvider.globalBarStyle(
                     context,
                   ).copyWith(color: themeProvider.mainColor),
                 ),

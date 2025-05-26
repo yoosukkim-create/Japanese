@@ -10,6 +10,7 @@ import 'package:japanese/providers/study_provider.dart';
 import 'package:japanese/views/screens/word_list_screen.dart';
 import 'package:japanese/views/screens/memory_mode_screen.dart';
 import 'package:japanese/views/screens/settings_screen.dart';
+import 'package:japanese/widgets/list_card.dart';
 
 class AnimatedHaloButton extends StatefulWidget {
   final VoidCallback onPressed;
@@ -138,7 +139,7 @@ class WordGroupScreen extends StatelessWidget {
           alignment: ThemeProvider.globalBarAlignment,
           child: Text(
             wordbook.title,
-            style: ThemeProvider.mainBarStyle(
+            style: ThemeProvider.globalBarStyle(
               context,
             ).copyWith(color: themeProvider.mainColor),
           ),
@@ -158,84 +159,66 @@ class WordGroupScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.only(bottom: 24.0),
         children: [
-          Card(
-            margin: ThemeProvider.cardMargin,
-            elevation: 0,
-            color: cardColor(context),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                ThemeProvider.globalCornerRadius,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: ThemeProvider.cardPadding,
-                  child: Text(
-                    '단어 그룹 목록',
-                    style: ThemeProvider.mainListStyle(
-                      context,
-                    ).copyWith(color: themeProvider.mainColor),
-                  ),
-                ),
-                ...wordbook.wordgroups.entries.map((entry) {
-                  final key = entry.key;
-                  final wordgroup = entry.value;
+          CardContainer(
+            isDarkMode: isDarkMode(context),
+            children: [
+              const CardTitle('단어 그룹 목록'),
+              ...wordbook.wordgroups.entries.map((entry) {
+                final key = entry.key;
+                final wordgroup = entry.value;
 
-                  return InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => WordListScreen(
-                                title: key,
-                                words:
-                                    wordgroup.words
-                                        .map(
-                                          (word) => {
-                                            'id': word.id,
-                                            '단어': word.word,
-                                            '읽기': word.reading,
-                                            '뜻': word.meaning,
-                                            '예문': word.example,
-                                            '예문읽기': word.exampleReading,
-                                            '예문뜻': word.exampleMeaning,
-                                          },
-                                        )
-                                        .toList(),
-                              ),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: ThemeProvider.cardPadding,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            key,
-                            style: ThemeProvider.mainListNameStyle(
-                              context,
-                            ).copyWith(color: textColor(context)),
-                          ),
-                          Text(
-                            studyProvider.getWordgroupProgressText(
-                              wordgroup.words,
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => WordListScreen(
+                              title: key,
+                              words:
+                                  wordgroup.words
+                                      .map(
+                                        (word) => {
+                                          'id': word.id,
+                                          '단어': word.word,
+                                          '읽기': word.reading,
+                                          '뜻': word.meaning,
+                                          '예문': word.example,
+                                          '예문읽기': word.exampleReading,
+                                          '예문뜻': word.exampleMeaning,
+                                        },
+                                      )
+                                      .toList(),
                             ),
-                            style: ThemeProvider.metaCountStyle(
-                              context,
-                            ).copyWith(color: Colors.grey),
-                          ),
-                        ],
                       ),
+                    );
+                  },
+                  child: Padding(
+                    padding: ThemeProvider.cardPadding,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          key,
+                          style: ThemeProvider.cardListStyle(
+                            context,
+                          ).copyWith(color: textColor(context)),
+                        ),
+                        Text(
+                          studyProvider.getWordgroupProgressText(
+                            wordgroup.words,
+                          ),
+                          style: ThemeProvider.metaCountStyle(
+                            context,
+                          ).copyWith(color: Colors.grey),
+                        ),
+                      ],
                     ),
-                  );
-                }),
-                const SizedBox(height: 8),
-              ],
-            ),
+                  ),
+                );
+              }),
+              const SizedBox(height: 8),
+            ],
           ),
         ],
       ),

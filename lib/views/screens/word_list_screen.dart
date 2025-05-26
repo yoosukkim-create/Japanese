@@ -92,7 +92,7 @@ class _WordListScreenState extends State<WordListScreen>
                 alignment: ThemeProvider.globalBarAlignment,
                 child: Text(
                   widget.title,
-                  style: ThemeProvider.mainBarStyle(
+                  style: ThemeProvider.globalBarStyle(
                     context,
                   ).copyWith(color: themeProvider.mainColor),
                 ),
