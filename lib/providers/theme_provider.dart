@@ -138,7 +138,7 @@ class ThemeProvider extends ChangeNotifier {
     context,
     0.025,
     50,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w300,
     fontFamily: globalFont,
   );
   static TextStyle cardExplainStyle(BuildContext context) =>
