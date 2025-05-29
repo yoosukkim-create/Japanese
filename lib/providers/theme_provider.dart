@@ -51,6 +51,7 @@ class ThemeProvider extends ChangeNotifier {
   static const Alignment globalBarAlignment = Alignment.centerLeft;
   static const Color cardBlack = Color(0xFF1C1B1F);
   static const Color cardWhite = Color(0xFFFAFAFA);
+  static const gap8 = SizedBox(width: 8.0, height: 8.0);
 
   //// IMAGE ////////////////////////////////////////////////////
   static double adaptiveImageSize(
@@ -63,9 +64,11 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   static double mainIconImage(BuildContext context) =>
-      adaptiveImageSize(context, 0.2, 50);
+      adaptiveImageSize(context, 0.2, 40);
   static double memoryIconImage(BuildContext context) =>
-      adaptiveImageSize(context, 0.35, 80);
+      adaptiveImageSize(context, 0.35, 70);
+  static double cardIconImage(BuildContext context) =>
+      adaptiveImageSize(context, 0.1, 30);
 
   //// TEXT //////////////////////////////////////////////////////
   static TextStyle adaptiveFontSize(

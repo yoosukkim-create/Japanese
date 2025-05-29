@@ -213,7 +213,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                       style: ThemeProvider.wordReadMean(context),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 4),
+                    ThemeProvider.gap8,
 
                     // ✅ 캔버스 모드일 때
                     if (showCanvas) ...[
@@ -245,7 +245,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      ThemeProvider.gap8,
                     ] else ...[
                       // 일반 모드일 때
                       FittedBox(
@@ -267,7 +267,8 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                       textAlign: TextAlign.center,
                     ),
 
-                    const SizedBox(height: 16),
+                    ThemeProvider.gap8,
+                    ThemeProvider.gap8,
 
                     // 예문 영역
                     if (showExamples) ...[
@@ -276,7 +277,6 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                         style: ThemeProvider.wordReadMean(context),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 4),
 
                       if (showCanvas) ...[
                         Text(
@@ -317,7 +317,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                           color: Colors.grey,
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      ThemeProvider.gap8,
 
                       // ✅ FittedBox 적용: 버튼 3개를 줄바꿈 없이 축소해서 보여줌
                       FittedBox(
@@ -341,7 +341,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                                       }
                                       : null,
                             ),
-                            const SizedBox(width: 8),
+                            ThemeProvider.gap8,
                             _buildMemoryButton(
                               context: context,
                               text: '애매함',
@@ -357,7 +357,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                                       }
                                       : null,
                             ),
-                            const SizedBox(width: 8),
+                            ThemeProvider.gap8,
                             _buildMemoryButton(
                               context: context,
                               text: '잘 암',
@@ -376,7 +376,6 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
                     ],
                   ),
                 ),

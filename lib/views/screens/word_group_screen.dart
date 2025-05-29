@@ -216,7 +216,7 @@ class WordGroupScreen extends StatelessWidget {
                   ),
                 );
               }),
-              const SizedBox(height: 8),
+              ThemeProvider.gap8,
             ],
           ),
         ],

@@ -166,7 +166,7 @@ class _WordListScreenState extends State<WordListScreen>
                   children: [
                     for (int i = 0; i < 4; i++) ...[
                       Expanded(child: _buildButtonByIndex(context, i)),
-                      if (i < 3) const SizedBox(width: 8),
+                      if (i < 3) ThemeProvider.gap8,
                     ],
                   ],
                 ),
