@@ -19,10 +19,10 @@ class CustomWordbookCard extends StatelessWidget {
       children: [
         Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            padding: ThemeProvider.plusIconPadding,
             child: Icon(
               Icons.add_circle_outline,
-              size: 48,
+              size: ThemeProvider.plusIconImage(context),
               color: themeProvider.mainColor,
             ),
           ),

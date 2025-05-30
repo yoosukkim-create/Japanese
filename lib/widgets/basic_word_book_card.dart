@@ -53,11 +53,9 @@ class BasicWordBookCard extends StatelessWidget {
                         alignment: Alignment.center,
                         child: Text(
                           'Lv$index',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: ThemeProvider.wordInIconStyle(
+                            context,
+                          ).copyWith(color: Colors.white),
                         ),
                       ),
                       ThemeProvider.gap8,

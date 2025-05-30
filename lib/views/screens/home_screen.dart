@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
     HomeViewModel homeVM,
   ) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: ThemeProvider.cardPadding,
       child: TextField(
         controller: homeVM.searchController,
         onChanged:
@@ -143,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Wordbook> wordbooks,
   ) {
     return ListView(
-      padding: const EdgeInsets.only(bottom: 24.0),
+      padding: ThemeProvider.bottomPadding,
       children: [
         RecentWordBookCard(
           studyProvider: studyProvider,

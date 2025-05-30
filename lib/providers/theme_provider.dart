@@ -52,6 +52,13 @@ class ThemeProvider extends ChangeNotifier {
   static const Color cardBlack = Color(0xFF1C1B1F);
   static const Color cardWhite = Color(0xFFFAFAFA);
   static const gap8 = SizedBox(width: 8.0, height: 8.0);
+  static bool isDark(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark;
+  }
+
+  static Color textColor(BuildContext context) {
+    return isDark(context) ? Colors.white : Colors.black87;
+  }
 
   //// IMAGE ////////////////////////////////////////////////////
   static double adaptiveImageSize(
@@ -69,6 +76,8 @@ class ThemeProvider extends ChangeNotifier {
       adaptiveImageSize(context, 0.35, 70);
   static double cardIconImage(BuildContext context) =>
       adaptiveImageSize(context, 0.1, 30);
+  static double plusIconImage(BuildContext context) =>
+      adaptiveImageSize(context, 0.2, 40);
 
   //// TEXT //////////////////////////////////////////////////////
   static TextStyle adaptiveFontSize(
@@ -148,6 +157,13 @@ class ThemeProvider extends ChangeNotifier {
       adaptiveFontSize(context, 0.02, 40, fontFamily: globalFont);
   static TextStyle wordListBottomStyle(BuildContext context) =>
       adaptiveFontSize(context, 0.018, 24, fontFamily: globalFont);
+  static TextStyle wordInIconStyle(BuildContext context) => adaptiveFontSize(
+    context,
+    0.01,
+    14,
+    fontFamily: globalFont,
+    fontWeight: FontWeight.bold,
+  );
 
   // 부가 정보
   static TextStyle metaCountStyle(BuildContext context) => adaptiveFontSize(
@@ -196,5 +212,10 @@ class ThemeProvider extends ChangeNotifier {
   static const EdgeInsets memoryButtonPadding = EdgeInsets.symmetric(
     horizontal: 12.0,
     vertical: 4.0,
+  );
+  static const EdgeInsets bottomPadding = EdgeInsets.only(bottom: 24.0);
+  static const EdgeInsets memoryIconPadding = EdgeInsets.only(bottom: 12.0);
+  static const EdgeInsets plusIconPadding = EdgeInsets.symmetric(
+    vertical: 10.0,
   );
 }

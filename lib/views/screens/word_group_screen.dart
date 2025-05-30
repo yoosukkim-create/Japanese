@@ -30,7 +30,7 @@ class _AnimatedHaloButtonState extends State<AnimatedHaloButton>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
-    )..repeat(); // 계속 회전
+    )..repeat();
   }
 
   @override
@@ -41,41 +41,34 @@ class _AnimatedHaloButtonState extends State<AnimatedHaloButton>
 
   @override
   Widget build(BuildContext context) {
+    final size = ThemeProvider.memoryIconImage(context);
     return SizedBox(
-      width: ThemeProvider.memoryIconImage(context),
-      height: ThemeProvider.memoryIconImage(context),
+      width: size,
+      height: size,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // 회전 애니메이션
           AnimatedBuilder(
             animation: _controller,
             builder: (context, child) {
               final haloColor =
-                  Theme.of(context).brightness == Brightness.dark
+                  ThemeProvider.isDark(context)
                       ? Colors.white.withOpacity(0.4)
                       : Colors.black.withOpacity(0.4);
               return Transform.rotate(
                 angle: _controller.value * 2 * pi,
                 child: CustomPaint(
-                  size: Size(
-                    ThemeProvider.memoryIconImage(context),
-                    ThemeProvider.memoryIconImage(context),
-                  ),
-                  painter: HaloPainter(color: haloColor),
+                  size: Size(size, size),
+                  painter: _HaloPainter(color: haloColor),
                 ),
               );
             },
           ),
-          // 버튼 이미지
           RawMaterialButton(
             onPressed: widget.onPressed,
             shape: const CircleBorder(),
             fillColor: Colors.transparent,
-            constraints: BoxConstraints.tightFor(
-              width: ThemeProvider.memoryIconImage(context),
-              height: ThemeProvider.memoryIconImage(context),
-            ),
+            constraints: BoxConstraints.tightFor(width: size, height: size),
             child: ClipOval(
               child: Image.asset(
                 'assets/images/memory_transparent.png',
@@ -89,10 +82,9 @@ class _AnimatedHaloButtonState extends State<AnimatedHaloButton>
   }
 }
 
-class HaloPainter extends CustomPainter {
+class _HaloPainter extends CustomPainter {
   final Color color;
-
-  HaloPainter({required this.color});
+  const _HaloPainter({required this.color});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -119,13 +111,35 @@ class WordGroupScreen extends StatelessWidget {
 
   const WordGroupScreen({super.key, required this.wordbook});
 
-  @override
-  bool isDarkMode(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark;
-  Color cardColor(BuildContext context) =>
-      isDarkMode(context) ? ThemeProvider.cardBlack : ThemeProvider.cardWhite;
-  Color textColor(BuildContext context) =>
-      isDarkMode(context) ? Colors.white : Colors.black87;
+  void _navigateToWordList(
+    BuildContext context,
+    String title,
+    List<WordCard> words,
+  ) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => WordListScreen(
+              title: title,
+              words:
+                  words
+                      .map(
+                        (word) => {
+                          'id': word.id,
+                          '단어': word.word,
+                          '읽기': word.reading,
+                          '뜻': word.meaning,
+                          '예문': word.example,
+                          '예문읽기': word.exampleReading,
+                          '예문뜻': word.exampleMeaning,
+                        },
+                      )
+                      .toList(),
+            ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,41 +171,18 @@ class WordGroupScreen extends StatelessWidget {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.only(bottom: 24.0),
+        padding: ThemeProvider.bottomPadding,
         children: [
           CardContainer(
-            isDarkMode: isDarkMode(context),
+            isDarkMode: ThemeProvider.isDark(context),
             children: [
               ...wordbook.wordgroups.entries.map((entry) {
                 final key = entry.key;
                 final wordgroup = entry.value;
 
                 return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => WordListScreen(
-                              title: key,
-                              words:
-                                  wordgroup.words
-                                      .map(
-                                        (word) => {
-                                          'id': word.id,
-                                          '단어': word.word,
-                                          '읽기': word.reading,
-                                          '뜻': word.meaning,
-                                          '예문': word.example,
-                                          '예문읽기': word.exampleReading,
-                                          '예문뜻': word.exampleMeaning,
-                                        },
-                                      )
-                                      .toList(),
-                            ),
-                      ),
-                    );
-                  },
+                  onTap:
+                      () => _navigateToWordList(context, key, wordgroup.words),
                   child: Padding(
                     padding: ThemeProvider.cardPadding,
                     child: Row(
@@ -201,7 +192,7 @@ class WordGroupScreen extends StatelessWidget {
                           key,
                           style: ThemeProvider.cardListStyle(
                             context,
-                          ).copyWith(color: textColor(context)),
+                          ).copyWith(color: ThemeProvider.textColor(context)),
                         ),
                         Text(
                           studyProvider.getWordgroupProgressText(
@@ -222,7 +213,7 @@ class WordGroupScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 12.0),
+        padding: ThemeProvider.memoryIconPadding,
         child: AnimatedHaloButton(
           onPressed: () {
             Navigator.push(
