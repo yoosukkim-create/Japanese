@@ -73,7 +73,7 @@ class ThemeProvider extends ChangeNotifier {
   static double mainIconImage(BuildContext context) =>
       adaptiveImageSize(context, 0.2, 40);
   static double memoryIconImage(BuildContext context) =>
-      adaptiveImageSize(context, 0.35, 70);
+      adaptiveImageSize(context, 0.3, 120);
   static double cardIconImage(BuildContext context) =>
       adaptiveImageSize(context, 0.1, 30);
   static double plusIconImage(BuildContext context) =>
