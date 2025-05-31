@@ -308,139 +308,169 @@ class WordListItem extends StatelessWidget {
             ? ThemeProvider.cardBlack
             : ThemeProvider.cardWhite;
 
+    // 실제 카드 내부 콘텐츠 부분 (Padding 포함)
+    final cardContent = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // ─── 상단: 단어/히라가나/뜻 영역 ────────────────────
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ───── 히라가나 ────────────────────────────
+              Visibility(
+                visible: showHiragana,
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 4.0),
+                  child: Text(
+                    word['읽기'] ?? '',
+                    style: ThemeProvider.wordReadMean(context),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+
+              // ───── 단어 (한자) ──────────────────────────
+              Text(
+                word['단어'] ?? '',
+                style:
+                    isFlashcardMode
+                        ? ThemeProvider.wordText(context)
+                        : ThemeProvider.wordTextSmall(context),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+
+              // ───── 뜻 ─────────────────────────────────
+              Visibility(
+                visible: showMeaning,
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Text(
+                    word['뜻'] ?? '',
+                    style: ThemeProvider.wordReadMean(context),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // ─── 예문 영역: 리스트 모드에서는 '예문 숨김 시 공간 제거',
+          //               '예문 보임 시에는 자식(예문읽기/예문본문/예문뜻) 크기 고정'
+          const SizedBox(height: 12.0),
+          Visibility(
+            visible: showExamples,
+            // 리스트 모드일 때는 (isFlashcardMode == false)이므로
+            // showExamples==false면 container가 사라져서 공간 없음 → showExamples==true면 보임.
+            // 플래시카드 모드에서는 `maintainSize`로 고정(기존 기능 유지)
+            maintainSize: isFlashcardMode,
+            maintainAnimation: isFlashcardMode,
+            maintainState: isFlashcardMode,
+            child: Container(
+              decoration: BoxDecoration(
+                color: bgColor,
+                borderRadius: BorderRadius.circular(
+                  ThemeProvider.globalCornerRadius * 0.8,
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12.0,
+                vertical: 8.0,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // ─── 예문 읽기(히라가나) ─────────────────
+                  Visibility(
+                    visible: showHiragana,
+                    // ★ 예문이 보이는 상태(showExamples==true)라면 항상 공간을 유지
+                    // → 리스트 모드에서도 예문 보임 상태에서는 공간 유지를 위해 showExamples 사용
+                    maintainSize: showExamples,
+                    maintainAnimation: showExamples,
+                    maintainState: showExamples,
+                    child: Text(
+                      word['예문읽기'] ?? '',
+                      style: ThemeProvider.exampleReadMean(context),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+
+                  // ─── 예문 본문 (항상 visible) ─────────────────────────────
+                  Text(
+                    word['예문'] ?? '',
+                    style: ThemeProvider.exampleText(context),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+
+                  // ─── 예문 뜻 ───────────────────────────────
+                  Visibility(
+                    visible: showMeaning,
+                    // ★ 예문이 보이는 상태(showExamples==true)라면 항상 공간을 유지
+                    maintainSize: showExamples,
+                    maintainAnimation: showExamples,
+                    maintainState: showExamples,
+                    child: Text(
+                      word['예문뜻'] ?? '',
+                      style: ThemeProvider.exampleReadMean(context),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    // ──────────────────────────────────────────────────────────────────────────────
+    // ★ 플래시카드 모드일 때: 카드가 화면 전체(패딩 제외)만큼 꽉 차도록 SizedBox.expand 사용
+    if (isFlashcardMode) {
+      return SizedBox.expand(
+        child: Card(
+          color: bgColor,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              ThemeProvider.globalCornerRadius,
+            ),
+          ),
+          child: cardContent,
+        ),
+      );
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────────
+    // ★ 리스트 모드일 때: 예문숨김 시(container Visibility false → 공간 사라짐),
+    //   예문보임 시(container Visibility true)에는 '예문읽기'와 '예문뜻' 모두
+    //   ***항상 공간 유지*** → showExamples==true 이므로 유지
     return Card(
       color: bgColor,
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(ThemeProvider.globalCornerRadius),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-        // Column에 mainAxisSize.min을 지정하여, 자식들이 필요한 만큼만 높이를 차지
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // ─── 상단 단어/히라가나/뜻 영역 ────────────────────
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // ───── 히라가나 ────────────────────────────
-                Visibility(
-                  visible: showHiragana,
-                  maintainSize: true,
-                  maintainAnimation: true,
-                  maintainState: true,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 4.0),
-                    child: Text(
-                      word['읽기'] ?? '',
-                      style: ThemeProvider.wordReadMean(context),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-
-                // ───── 단어 (한자) ──────────────────────────
-                Text(
-                  word['단어'] ?? '',
-                  style:
-                      isFlashcardMode
-                          ? ThemeProvider.wordText(context)
-                          : ThemeProvider.wordTextSmall(context),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-
-                // ───── 뜻 ─────────────────────────────────
-                Visibility(
-                  visible: showMeaning,
-                  maintainSize: true,
-                  maintainAnimation: true,
-                  maintainState: true,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
-                    child: Text(
-                      word['뜻'] ?? '',
-                      style: ThemeProvider.wordReadMean(context),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            // ─── 예문 영역 (showExamples 토글 시 투명/표시) ───────────
-            const SizedBox(height: 12.0),
-            Visibility(
-              visible: showExamples,
-              maintainSize: true,
-              maintainAnimation: true,
-              maintainState: true,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: bgColor,
-                  borderRadius: BorderRadius.circular(
-                    ThemeProvider.globalCornerRadius * 0.8,
-                  ),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 8.0,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // ─── 예문 읽기(히라가나) ─────────────────
-                    Visibility(
-                      visible: showHiragana,
-                      maintainSize: true,
-                      maintainAnimation: true,
-                      maintainState: true,
-                      child: Text(
-                        word['예문읽기'] ?? '',
-                        style: ThemeProvider.exampleReadMean(context),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-
-                    // ─── 예문 본문 ─────────────────────────────
-                    Text(
-                      word['예문'] ?? '',
-                      style: ThemeProvider.exampleText(context),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-
-                    // ─── 예문 뜻 ───────────────────────────────
-                    Visibility(
-                      visible: showMeaning,
-                      maintainSize: true,
-                      maintainAnimation: true,
-                      maintainState: true,
-                      child: Text(
-                        word['예문뜻'] ?? '',
-                        style: ThemeProvider.exampleReadMean(context),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      child: cardContent,
     );
   }
 }
@@ -546,16 +576,15 @@ class _FlashcardViewState extends State<FlashcardView> {
 
         return GestureDetector(
           onTap: () => _toggleCardState(wordId),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: WordListItem(
-                word: word,
-                showHiragana: _hiraganaShown[wordId] ?? false,
-                showMeaning: _meaningShown[wordId] ?? false,
-                showExamples: widget.showExamples,
-                isFlashcardMode: true,
-              ),
+          child: Padding(
+            // 화면 가장자리에는 동일한 패딩을 주고, 그 안에서 카드가 꽉 차도록
+            padding: const EdgeInsets.all(16.0),
+            child: WordListItem(
+              word: word,
+              showHiragana: _hiraganaShown[wordId] ?? false,
+              showMeaning: _meaningShown[wordId] ?? false,
+              showExamples: widget.showExamples,
+              isFlashcardMode: true,
             ),
           ),
         );
