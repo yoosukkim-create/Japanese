@@ -325,9 +325,13 @@ class WordListItem extends StatelessWidget {
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // 히라가나
-                if (showHiragana)
-                  Padding(
+                // ───── 히라가나 ────────────────────────────
+                Visibility(
+                  visible: showHiragana,
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  child: Padding(
                     padding: const EdgeInsets.only(bottom: 4.0),
                     child: Text(
                       word['읽기'] ?? '',
@@ -337,8 +341,9 @@ class WordListItem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                ),
 
-                // 단어 (한자)
+                // ───── 단어 (한자) ──────────────────────────
                 Text(
                   word['단어'] ?? '',
                   style:
@@ -350,9 +355,13 @@ class WordListItem extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
 
-                // 뜻
-                if (showMeaning)
-                  Padding(
+                // ───── 뜻 ─────────────────────────────────
+                Visibility(
+                  visible: showMeaning,
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  child: Padding(
                     padding: const EdgeInsets.only(top: 4.0),
                     child: Text(
                       word['뜻'] ?? '',
@@ -362,13 +371,18 @@ class WordListItem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                ),
               ],
             ),
 
-            // ─── 예문 영역 (showExamples가 true일 때만) ───────────
-            if (showExamples) ...[
-              const SizedBox(height: 12.0),
-              Container(
+            // ─── 예문 영역 (showExamples 토글 시 투명/표시) ───────────
+            const SizedBox(height: 12.0),
+            Visibility(
+              visible: showExamples,
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              child: Container(
                 decoration: BoxDecoration(
                   color: bgColor,
                   borderRadius: BorderRadius.circular(
@@ -382,16 +396,22 @@ class WordListItem extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // 예문 읽기(히라가나)
-                    if (showHiragana)
-                      Text(
+                    // ─── 예문 읽기(히라가나) ─────────────────
+                    Visibility(
+                      visible: showHiragana,
+                      maintainSize: true,
+                      maintainAnimation: true,
+                      maintainState: true,
+                      child: Text(
                         word['예문읽기'] ?? '',
                         style: ThemeProvider.exampleReadMean(context),
                         textAlign: TextAlign.center,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    // 예문 본문
+                    ),
+
+                    // ─── 예문 본문 ─────────────────────────────
                     Text(
                       word['예문'] ?? '',
                       style: ThemeProvider.exampleText(context),
@@ -399,19 +419,25 @@ class WordListItem extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    // 예문 뜻
-                    if (showMeaning)
-                      Text(
+
+                    // ─── 예문 뜻 ───────────────────────────────
+                    Visibility(
+                      visible: showMeaning,
+                      maintainSize: true,
+                      maintainAnimation: true,
+                      maintainState: true,
+                      child: Text(
                         word['예문뜻'] ?? '',
                         style: ThemeProvider.exampleReadMean(context),
                         textAlign: TextAlign.center,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
+                    ),
                   ],
                 ),
               ),
-            ],
+            ),
           ],
         ),
       ),
