@@ -11,6 +11,7 @@ import 'package:japanese/views/screens/word_list_screen.dart';
 import 'package:japanese/views/screens/memory_mode_screen.dart';
 import 'package:japanese/views/screens/settings_screen.dart';
 import 'package:japanese/widgets/card_container.dart';
+import 'package:japanese/widgets/word_group_card.dart';
 
 class AnimatedHaloButton extends StatefulWidget {
   final VoidCallback onPressed;
@@ -175,40 +176,7 @@ class WordGroupScreen extends StatelessWidget {
         children: [
           CardContainer(
             isDarkMode: ThemeProvider.isDark(context),
-            children: [
-              ...wordbook.wordgroups.entries.map((entry) {
-                final key = entry.key;
-                final wordgroup = entry.value;
-
-                return InkWell(
-                  onTap:
-                      () => _navigateToWordList(context, key, wordgroup.words),
-                  child: Padding(
-                    padding: ThemeProvider.cardPadding,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          key,
-                          style: ThemeProvider.cardListStyle(
-                            context,
-                          ).copyWith(color: ThemeProvider.textColor(context)),
-                        ),
-                        Text(
-                          studyProvider.getWordgroupProgressText(
-                            wordgroup.words,
-                          ),
-                          style: ThemeProvider.metaCountStyle(
-                            context,
-                          ).copyWith(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }),
-              ThemeProvider.gap8,
-            ],
+            children: [WordGroupList(wordbook: wordbook)],
           ),
         ],
       ),
