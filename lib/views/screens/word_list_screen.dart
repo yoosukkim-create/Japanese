@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,8 +19,7 @@ class WordListScreen extends StatefulWidget {
   State<WordListScreen> createState() => _WordListScreenState();
 }
 
-class _WordListScreenState extends State<WordListScreen>
-    with SingleTickerProviderStateMixin {
+class _WordListScreenState extends State<WordListScreen> {
   bool showHiragana = false;
   bool showMeaning = false;
   late List<Map<String, dynamic>> currentWords;
@@ -29,49 +30,49 @@ class _WordListScreenState extends State<WordListScreen>
   @override
   void initState() {
     super.initState();
+    // 위젯 생성 시 단어 목록 복사
     currentWords = List<Map<String, dynamic>>.from(widget.words);
     _studyProvider = Provider.of<StudyProvider>(context, listen: false);
+    // 최근 본 단어장에 추가
     _studyProvider.addToRecentLists(widget.title, widget.words);
   }
 
   void _toggleWordState(String wordId) {
+    // 단어별 히라가나/뜻 표시 상태를 토글
     final currentHira = _hiraganaShown[wordId] ?? showHiragana;
     final currentMean = _meaningShown[wordId] ?? showMeaning;
-
     final shouldTurnOff = currentHira && currentMean;
 
     setState(() {
-      // 둘 다 켜져 있으면 -> 둘 다 끔
       if (shouldTurnOff) {
+        // 둘 다 켜져 있으면 모두 끔
         _hiraganaShown[wordId] = false;
         _meaningShown[wordId] = false;
       } else {
-        // 하나라도 꺼져 있으면 -> 둘 다 켬
+        // 하나라도 꺼져 있으면 모두 켬
         _hiraganaShown[wordId] = true;
         _meaningShown[wordId] = true;
       }
-
-      // 이걸 여기에 두면 안됨: 전역 상태는 개별 토글 시 바꾸면 안돼!
-      // showHiragana = _hiraganaShown[wordId]!;
-      // showMeaning = _meaningShown[wordId]!;
     });
   }
 
   @override
   void dispose() {
+    // 화면 나갈 때 임시 스테이트 커밋(저장)
     _studyProvider.commitTempStates();
+    // 셔플 모드 해제
     _studyProvider.setShuffleMode(false);
     super.dispose();
   }
 
-  // 단어 순서를 섞는 함수
+  /// 단어 셔플 모드를 토글하고, 순서를 다시 계산
   void _shuffleWords() {
     setState(() {
       if (_studyProvider.isShuffleMode) {
-        // 셔플 모드가 켜질 때마다 새로운 순서로 섞기
+        // 셔플 모드 활성화: 무작위 정렬
         currentWords = _studyProvider.getSortedWords(widget.words);
       } else {
-        // 셔플 모드가 꺼지면 원래 순서로 복원
+        // 셔플 모드 비활성화: 원래 순서 복원
         currentWords = List<Map<String, dynamic>>.from(widget.words);
       }
     });
@@ -123,6 +124,8 @@ class _WordListScreenState extends State<WordListScreen>
                 ),
               ],
             ),
+
+            // 바디: 플래시카드 모드냐 리스트 모드냐 선택
             body:
                 studyProvider.isFlashcardMode
                     ? FlashcardView(
@@ -156,6 +159,8 @@ class _WordListScreenState extends State<WordListScreen>
                         );
                       },
                     ),
+
+            // 하단 네비게이션 버튼 4개
             bottomNavigationBar: SafeArea(
               child: Container(
                 padding: ThemeProvider.cardPadding,
@@ -190,6 +195,7 @@ class _WordListScreenState extends State<WordListScreen>
           onPressed: studyProvider.toggleFlashcardMode,
           alwaysActive: true,
         );
+
       case 1:
         return _buildButton(
           context,
@@ -200,6 +206,7 @@ class _WordListScreenState extends State<WordListScreen>
             _shuffleWords();
           },
         );
+
       case 2:
         return _buildButton(
           context,
@@ -215,6 +222,7 @@ class _WordListScreenState extends State<WordListScreen>
             });
           },
         );
+
       case 3:
         return _buildButton(
           context,
@@ -230,21 +238,10 @@ class _WordListScreenState extends State<WordListScreen>
             });
           },
         );
+
       default:
         return const SizedBox.shrink();
     }
-  }
-
-  void _toggleBoth() {
-    setState(() {
-      if (showHiragana && showMeaning) {
-        showHiragana = false;
-        showMeaning = false;
-      } else {
-        showHiragana = true;
-        showMeaning = true;
-      }
-    });
   }
 
   Widget _buildButton(
@@ -255,7 +252,7 @@ class _WordListScreenState extends State<WordListScreen>
     bool alwaysActive = false,
   }) {
     final color =
-        alwaysActive || isSelected
+        (alwaysActive || isSelected)
             ? Theme.of(context).primaryColor
             : Colors.grey;
 
@@ -267,7 +264,7 @@ class _WordListScreenState extends State<WordListScreen>
         ),
         side: BorderSide(color: color),
         backgroundColor:
-            alwaysActive || isSelected ? color.withOpacity(0.1) : null,
+            (alwaysActive || isSelected) ? color.withOpacity(0.1) : null,
         padding: ThemeProvider.memoryButtonPadding,
       ),
       child: Text(
@@ -284,6 +281,9 @@ class _WordListScreenState extends State<WordListScreen>
   }
 }
 
+//──────────────────────────────────────────────────────────────────────────────
+//                       WordListItem (카드 한 줄)
+//──────────────────────────────────────────────────────────────────────────────
 class WordListItem extends StatelessWidget {
   final Map<String, dynamic> word;
   final bool showHiragana;
@@ -302,33 +302,35 @@ class WordListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // padding 상하 합 32, 섹션 사이 간격 12
+    // 고정 패딩값
     const double verticalPadding = 32.0;
     const double midSpacing = 12.0;
 
-    // 1) 전체 높이(fullHeight)와 반절 높이(halfHeight) 계산
+    // 화면 전체 높이를 가져와서
+    final double screenHeight = MediaQuery.of(context).size.height;
+    // 플래시카드 모드면 높이의 70%, 아니면 50% 이하 최대 320으로 제한
     final double fullHeight =
-        isFlashcardMode ? MediaQuery.of(context).size.height * 0.7 : 320.0;
+        isFlashcardMode ? screenHeight * 0.7 : min(screenHeight * 0.5, 320.0);
     final double halfHeight = (fullHeight - verticalPadding - midSpacing) / 2;
 
-    // 2) collapsedHeight: 예문 숨김 시 카드 전체 높이
+    // “예문 숨김” 상태인 경우 카드 전체 높이를 축소
     final double collapsedHeight = fullHeight - halfHeight - midSpacing;
 
-    // 3) 카드 높이 결정 (flashcard 모드면 무조건 fullHeight)
+    // 예문 표시 여부에 따라 높이 결정
     final bool hasExampleForHeight = isFlashcardMode || showExamples;
     final double containerHeight =
         hasExampleForHeight ? fullHeight : collapsedHeight;
 
-    // 4) 섹션 높이 계산
+    // 상단(단어) 영역 높이
     final double sectionHeight =
         hasExampleForHeight ? halfHeight : (containerHeight - verticalPadding);
 
-    // 5) 예문 섹션 렌더링 여부 (오직 showExamples 만 체크)
+    // 실제 예문을 그릴지 확인
     final bool hasExampleForContent = showExamples;
 
     return Card(
       color:
-          Theme.of(context).brightness == Brightness.dark
+          ThemeProvider.isDark(context)
               ? ThemeProvider.cardBlack
               : ThemeProvider.cardWhite,
       elevation: 0,
@@ -341,44 +343,56 @@ class WordListItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
         child: Column(
           children: [
-            // 상단 단어 영역
+            // ─── 상단 단어/히라가나/뜻 영역 ─────────────────────
             SizedBox(
               height: sectionHeight,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // 히라가나
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 4.0),
-                    child: Text(
-                      showHiragana ? (word['읽기'] ?? '') : ' ',
-                      style: ThemeProvider.wordReadMean(context),
-                      textAlign: TextAlign.center,
+                  // 히라가나(위)
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 4.0),
+                      child: Text(
+                        showHiragana ? (word['읽기'] ?? '') : ' ',
+                        style: ThemeProvider.wordReadMean(context),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
-                  // 단어 (한자)
-                  Text(
-                    word['단어'] ?? '',
-                    style:
-                        isFlashcardMode
-                            ? ThemeProvider.wordText(context)
-                            : ThemeProvider.wordTextSmall(context),
-                    textAlign: TextAlign.center,
-                  ),
-                  // 뜻
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
+                  // 단어(한자)
+                  Flexible(
                     child: Text(
-                      showMeaning ? (word['뜻'] ?? '') : ' ',
-                      style: ThemeProvider.wordReadMean(context),
+                      word['단어'] ?? '',
+                      style:
+                          isFlashcardMode
+                              ? ThemeProvider.wordText(context)
+                              : ThemeProvider.wordTextSmall(context),
                       textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  // 뜻(아래)
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Text(
+                        showMeaning ? (word['뜻'] ?? '') : ' ',
+                        style: ThemeProvider.wordReadMean(context),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
 
-            // 예문 영역 (오직 showExamples가 true일 때만)
+            // ─── 예문 영역 (showExamples가 true일 때만) ───────────
             if (hasExampleForContent) ...[
               const SizedBox(height: midSpacing),
               SizedBox(
@@ -387,10 +401,12 @@ class WordListItem extends StatelessWidget {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color:
-                        Theme.of(context).brightness == Brightness.dark
+                        ThemeProvider.isDark(context)
                             ? ThemeProvider.cardBlack
                             : ThemeProvider.cardWhite,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(
+                      ThemeProvider.globalCornerRadius / 1.5,
+                    ),
                   ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12.0,
@@ -407,16 +423,19 @@ class WordListItem extends StatelessWidget {
                           style: ThemeProvider.exampleReadMean(context),
                           textAlign: TextAlign.center,
                           softWrap: true,
-                          overflow: TextOverflow.visible,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                         ),
                       ),
-                      // 예문
+                      // 예문 본문
                       Flexible(
                         child: Text(
                           word['예문'] ?? '',
                           style: ThemeProvider.exampleText(context),
                           textAlign: TextAlign.center,
                           softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                         ),
                       ),
                       // 예문 뜻
@@ -426,6 +445,8 @@ class WordListItem extends StatelessWidget {
                           style: ThemeProvider.exampleReadMean(context),
                           textAlign: TextAlign.center,
                           softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                         ),
                       ),
                     ],
@@ -440,6 +461,9 @@ class WordListItem extends StatelessWidget {
   }
 }
 
+//──────────────────────────────────────────────────────────────────────────────
+//                        FlashcardView (플래시카드 모드)
+//──────────────────────────────────────────────────────────────────────────────
 class FlashcardView extends StatefulWidget {
   final List<Map<String, dynamic>> words;
   final bool showHiragana;
@@ -469,7 +493,7 @@ class _FlashcardViewState extends State<FlashcardView> {
     super.initState();
     _pageController = PageController();
 
-    // 초기 상태 반영
+    // 처음 생성 시, 전달받은 플래시카드 모드 초기값 반영
     for (var word in widget.words) {
       final wordId = word['id'].toString();
       _hiraganaShown[wordId] = widget.showHiragana;
@@ -480,8 +504,7 @@ class _FlashcardViewState extends State<FlashcardView> {
   @override
   void didUpdateWidget(covariant FlashcardView oldWidget) {
     super.didUpdateWidget(oldWidget);
-
-    // 히라가나 전역 토글 반영
+    // 상단 히라가나 토글이 바뀌면 전부 반영
     if (oldWidget.showHiragana != widget.showHiragana) {
       setState(() {
         for (var word in widget.words) {
@@ -490,8 +513,7 @@ class _FlashcardViewState extends State<FlashcardView> {
         }
       });
     }
-
-    // 뜻 전역 토글 반영
+    // 상단 뜻 토글이 바뀌면 전부 반영
     if (oldWidget.showMeaning != widget.showMeaning) {
       setState(() {
         for (var word in widget.words) {
@@ -503,6 +525,7 @@ class _FlashcardViewState extends State<FlashcardView> {
   }
 
   void _toggleCardState(String wordId) {
+    // 카드 한 장에 한해서만 히라가나/뜻 토글
     final currentHira = _hiraganaShown[wordId] ?? false;
     final currentMean = _meaningShown[wordId] ?? false;
     final shouldTurnOff = currentHira && currentMean;
@@ -528,6 +551,7 @@ class _FlashcardViewState extends State<FlashcardView> {
         setState(() {
           _currentIndex = index;
         });
+        // 페이지가 바뀔 때마다 상태 저장
         context.read<StudyProvider>().updateWordState(
           widget.words[index]['id'].toString(),
         );
@@ -535,7 +559,6 @@ class _FlashcardViewState extends State<FlashcardView> {
       itemBuilder: (context, index) {
         final word = widget.words[index];
         final wordId = word['id'].toString();
-        final wordState = context.read<StudyProvider>().getWordState(wordId);
 
         return GestureDetector(
           onTap: () => _toggleCardState(wordId),
