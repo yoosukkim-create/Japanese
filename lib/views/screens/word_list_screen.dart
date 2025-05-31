@@ -281,9 +281,9 @@ class _WordListScreenState extends State<WordListScreen> {
   }
 }
 
-//──────────────────────────────────────────────────────────────────────────────
-//                       WordListItem (카드 한 줄)
-//──────────────────────────────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────────────────────────
+//                              WordListItem (카드 한 줄)
+// ──────────────────────────────────────────────────────────────────────────────
 class WordListItem extends StatelessWidget {
   final Map<String, dynamic> word;
   final bool showHiragana;
@@ -302,155 +302,113 @@ class WordListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 고정 패딩값
-    const double verticalPadding = 32.0;
-    const double midSpacing = 12.0;
-
-    // 화면 전체 높이를 가져와서
-    final double screenHeight = MediaQuery.of(context).size.height;
-    // 플래시카드 모드면 높이의 70%, 아니면 50% 이하 최대 320으로 제한
-    final double fullHeight =
-        isFlashcardMode ? screenHeight * 0.7 : min(screenHeight * 0.5, 320.0);
-    final double halfHeight = (fullHeight - verticalPadding - midSpacing) / 2;
-
-    // “예문 숨김” 상태인 경우 카드 전체 높이를 축소
-    final double collapsedHeight = fullHeight - halfHeight - midSpacing;
-
-    // 예문 표시 여부에 따라 높이 결정
-    final bool hasExampleForHeight = isFlashcardMode || showExamples;
-    final double containerHeight =
-        hasExampleForHeight ? fullHeight : collapsedHeight;
-
-    // 상단(단어) 영역 높이
-    final double sectionHeight =
-        hasExampleForHeight ? halfHeight : (containerHeight - verticalPadding);
-
-    // 실제 예문을 그릴지 확인
-    final bool hasExampleForContent = showExamples;
+    // 카드 배경 색을 다크/라이트 모드에 맞춤
+    final bgColor =
+        ThemeProvider.isDark(context)
+            ? ThemeProvider.cardBlack
+            : ThemeProvider.cardWhite;
 
     return Card(
-      color:
-          ThemeProvider.isDark(context)
-              ? ThemeProvider.cardBlack
-              : ThemeProvider.cardWhite,
+      color: bgColor,
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(ThemeProvider.globalCornerRadius),
       ),
-      child: Container(
-        width: double.infinity,
-        height: containerHeight,
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+        // Column에 mainAxisSize.min을 지정하여, 자식들이 필요한 만큼만 높이를 차지
         child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ─── 상단 단어/히라가나/뜻 영역 ─────────────────────
-            SizedBox(
-              height: sectionHeight,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // 히라가나(위)
-                  Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 4.0),
-                      child: Text(
-                        showHiragana ? (word['읽기'] ?? '') : ' ',
-                        style: ThemeProvider.wordReadMean(context),
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+            // ─── 상단 단어/히라가나/뜻 영역 ────────────────────
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 히라가나
+                if (showHiragana)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4.0),
+                    child: Text(
+                      word['읽기'] ?? '',
+                      style: ThemeProvider.wordReadMean(context),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  // 단어(한자)
-                  Flexible(
+
+                // 단어 (한자)
+                Text(
+                  word['단어'] ?? '',
+                  style:
+                      isFlashcardMode
+                          ? ThemeProvider.wordText(context)
+                          : ThemeProvider.wordTextSmall(context),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+
+                // 뜻
+                if (showMeaning)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
                     child: Text(
-                      word['단어'] ?? '',
-                      style:
-                          isFlashcardMode
-                              ? ThemeProvider.wordText(context)
-                              : ThemeProvider.wordTextSmall(context),
+                      word['뜻'] ?? '',
+                      style: ThemeProvider.wordReadMean(context),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+              ],
+            ),
+
+            // ─── 예문 영역 (showExamples가 true일 때만) ───────────
+            if (showExamples) ...[
+              const SizedBox(height: 12.0),
+              Container(
+                decoration: BoxDecoration(
+                  color: bgColor,
+                  borderRadius: BorderRadius.circular(
+                    ThemeProvider.globalCornerRadius * 0.8,
+                  ),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12.0,
+                  vertical: 8.0,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 예문 읽기(히라가나)
+                    if (showHiragana)
+                      Text(
+                        word['예문읽기'] ?? '',
+                        style: ThemeProvider.exampleReadMean(context),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    // 예문 본문
+                    Text(
+                      word['예문'] ?? '',
+                      style: ThemeProvider.exampleText(context),
                       textAlign: TextAlign.center,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  // 뜻(아래)
-                  Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        showMeaning ? (word['뜻'] ?? '') : ' ',
-                        style: ThemeProvider.wordReadMean(context),
+                    // 예문 뜻
+                    if (showMeaning)
+                      Text(
+                        word['예문뜻'] ?? '',
+                        style: ThemeProvider.exampleReadMean(context),
                         textAlign: TextAlign.center,
-                        maxLines: 1,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // ─── 예문 영역 (showExamples가 true일 때만) ───────────
-            if (hasExampleForContent) ...[
-              const SizedBox(height: midSpacing),
-              SizedBox(
-                height: sectionHeight,
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color:
-                        ThemeProvider.isDark(context)
-                            ? ThemeProvider.cardBlack
-                            : ThemeProvider.cardWhite,
-                    borderRadius: BorderRadius.circular(
-                      ThemeProvider.globalCornerRadius / 1.5,
-                    ),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 8.0,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // 예문 읽기(히라가나)
-                      Flexible(
-                        child: Text(
-                          showHiragana ? (word['예문읽기'] ?? '') : ' ',
-                          style: ThemeProvider.exampleReadMean(context),
-                          textAlign: TextAlign.center,
-                          softWrap: true,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                      ),
-                      // 예문 본문
-                      Flexible(
-                        child: Text(
-                          word['예문'] ?? '',
-                          style: ThemeProvider.exampleText(context),
-                          textAlign: TextAlign.center,
-                          softWrap: true,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                      ),
-                      // 예문 뜻
-                      Flexible(
-                        child: Text(
-                          showMeaning ? (word['예문뜻'] ?? '') : ' ',
-                          style: ThemeProvider.exampleReadMean(context),
-                          textAlign: TextAlign.center,
-                          softWrap: true,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
               ),
             ],
@@ -461,9 +419,9 @@ class WordListItem extends StatelessWidget {
   }
 }
 
-//──────────────────────────────────────────────────────────────────────────────
-//                        FlashcardView (플래시카드 모드)
-//──────────────────────────────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────────────────────────
+//                             FlashcardView (플래시카드 모드)
+// ──────────────────────────────────────────────────────────────────────────────
 class FlashcardView extends StatefulWidget {
   final List<Map<String, dynamic>> words;
   final bool showHiragana;
