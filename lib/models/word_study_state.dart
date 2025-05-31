@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class WordStudyState {
   final String wordId; // 단어의 고유 식별자
   final DateTime lastViewedAt; // 마지막으로 본 시간

@@ -23,7 +23,6 @@ class StudyProvider extends ChangeNotifier {
   final Map<String, WordMemoryState> _memoryStates = {};
 
   // 최근 본 단어장
-  static const int _maxRecentLists = 1;
   List<Map<String, dynamic>> _recentWordLists = [];
 
   // Getter
@@ -303,18 +302,6 @@ class StudyProvider extends ChangeNotifier {
 
     await _saveMemoryStates();
     notifyListeners();
-  }
-
-  Future<void> _loadMemoryStates() async {
-    final prefs = await SharedPreferences.getInstance();
-    final statesJson = prefs.getString('memory_states');
-    if (statesJson != null) {
-      final Map<String, dynamic> statesMap = json.decode(statesJson);
-      _memoryStates.clear();
-      statesMap.forEach((key, value) {
-        _memoryStates[key] = WordMemoryState.fromJson(value);
-      });
-    }
   }
 
   Future<void> _saveMemoryStates() async {

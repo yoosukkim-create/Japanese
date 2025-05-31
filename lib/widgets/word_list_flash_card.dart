@@ -110,7 +110,7 @@ class _FlashcardViewState extends State<FlashcardView> {
           onTap: () => _toggleCardState(wordId),
           child: Padding(
             // 화면 가장자리에는 동일한 패딩을 주고, 그 안에서 카드가 꽉 차도록
-            padding: const EdgeInsets.all(16.0),
+            padding: ThemeProvider.cardPadding,
             child: WordListItem(
               word: word,
               showHiragana: _hiraganaShown[wordId] ?? false,

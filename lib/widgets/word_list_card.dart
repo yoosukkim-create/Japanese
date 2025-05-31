@@ -30,7 +30,7 @@ class WordListItem extends StatelessWidget {
 
     // 실제 카드 내부 콘텐츠 부분 (Padding 포함)
     final cardContent = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      padding: ThemeProvider.cardPadding,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -46,7 +46,7 @@ class WordListItem extends StatelessWidget {
                 maintainAnimation: true,
                 maintainState: true,
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 4.0),
+                  padding: ThemeProvider.showUpPadding,
                   child: Text(
                     word['읽기'] ?? '',
                     style: ThemeProvider.wordReadMean(context),
@@ -76,7 +76,7 @@ class WordListItem extends StatelessWidget {
                 maintainAnimation: true,
                 maintainState: true,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
+                  padding: ThemeProvider.showDownPadding,
                   child: Text(
                     word['뜻'] ?? '',
                     style: ThemeProvider.wordReadMean(context),
@@ -91,7 +91,7 @@ class WordListItem extends StatelessWidget {
 
           // ─── 예문 영역: 리스트 모드에서는 '예문 숨김 시 공간 제거',
           //               '예문 보임 시에는 자식(예문읽기/예문본문/예문뜻) 크기 고정'
-          const SizedBox(height: 12.0),
+          ThemeProvider.gap12,
           Visibility(
             visible: showExamples,
             // 리스트 모드일 때는 (isFlashcardMode == false)이므로
@@ -107,10 +107,7 @@ class WordListItem extends StatelessWidget {
                   ThemeProvider.globalCornerRadius * 0.8,
                 ),
               ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12.0,
-                vertical: 8.0,
-              ),
+              padding: ThemeProvider.cardPadding,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [

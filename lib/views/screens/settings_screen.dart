@@ -62,10 +62,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         // 메인 색상을 기반으로 연한 색상 생성
-        final Color lightColor = Color.alphaBlend(
-          Colors.white.withOpacity(0.85),
-          themeProvider.mainColor,
-        );
         final Color trackColor = themeProvider.mainColor.withOpacity(0.3);
 
         return Scaffold(
@@ -153,37 +149,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         );
       },
-    );
-  }
-}
-
-class _ColorOption extends StatelessWidget {
-  final Color color;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _ColorOption({
-    required this.color,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 24,
-        height: 24,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: color,
-          border: Border.all(
-            color: isSelected ? Colors.black : Colors.transparent,
-            width: 2,
-          ),
-        ),
-      ),
     );
   }
 }

@@ -150,7 +150,6 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     bool showExamples,
     bool showCanvas,
   ) {
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
 
     return Card(

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -127,6 +125,7 @@ class _WordListScreenState extends State<WordListScreen> {
               ],
             ),
 
+            // ─────────────────────────────────────────────────────────
             // 바디: 플래시카드 모드냐 리스트 모드냐 선택
             body:
                 studyProvider.isFlashcardMode
@@ -162,122 +161,129 @@ class _WordListScreenState extends State<WordListScreen> {
                       },
                     ),
 
-            // 하단 네비게이션 버튼 4개
-            bottomNavigationBar: SafeArea(
-              child: Container(
-                padding: ThemeProvider.cardPadding,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                ),
-                child: Row(
-                  children: [
-                    for (int i = 0; i < 4; i++) ...[
-                      Expanded(child: _buildButtonByIndex(context, i)),
-                      if (i < 3) ThemeProvider.gap8,
-                    ],
-                  ],
-                ),
-              ),
-            ),
+            // ─────────────────────────────────────────────────────────
+            // 바텀 네비게이션 바 (토스 앱 스타일)
+            bottomNavigationBar: _buildBottomNavBar(context, studyProvider),
           );
         },
       ),
     );
   }
 
-  Widget _buildButtonByIndex(BuildContext context, int index) {
-    final studyProvider = Provider.of<StudyProvider>(context, listen: false);
+  /// 바텀 네비게이션 바 전체를 만들고 반환
+  Widget _buildBottomNavBar(BuildContext context, StudyProvider studyProvider) {
+    // 현재 플래시카드 모드 활성 여부와 셔플 모드/읽기/뜻 상태
+    final isFlash = studyProvider.isFlashcardMode;
+    final isShuffle = studyProvider.isShuffleMode;
 
-    switch (index) {
-      case 0:
-        return _buildButton(
-          context,
-          text: studyProvider.isFlashcardMode ? '목록' : '카드',
-          isSelected: studyProvider.isFlashcardMode,
-          onPressed: studyProvider.toggleFlashcardMode,
-          alwaysActive: true,
-        );
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        boxShadow: [
+          // 살짝 그림자(토스 앱 느낌)
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, -1),
+          ),
+        ],
+      ),
+      height: ThemeProvider.bottomBar(context), // 적당한 높이 (원하는 대로 조정)
+      child: Row(
+        children: [
+          // 1) 카드/목록 토글
+          Expanded(
+            child: _buildNavItem(
+              context: context,
+              icon: isFlash ? Icons.view_list : Icons.credit_card,
+              label: isFlash ? '목록' : '카드',
+              isSelected: isFlash, // 플래시카드 모드 활성 시 파란색
+              onTap: studyProvider.toggleFlashcardMode,
+            ),
+          ),
 
-      case 1:
-        return _buildButton(
-          context,
-          text: '셔플',
-          isSelected: studyProvider.isShuffleMode,
-          onPressed: () {
-            studyProvider.toggleShuffleMode();
-            _shuffleWords();
-          },
-        );
+          // 2) 셔플
+          Expanded(
+            child: _buildNavItem(
+              context: context,
+              icon: Icons.shuffle,
+              label: '셔플',
+              isSelected: isShuffle,
+              onTap: () {
+                studyProvider.toggleShuffleMode();
+                _shuffleWords();
+              },
+            ),
+          ),
 
-      case 2:
-        return _buildButton(
-          context,
-          text: '읽기',
-          isSelected: showHiragana,
-          onPressed: () {
-            setState(() {
-              showHiragana = !showHiragana;
-              for (var word in currentWords) {
-                final wordId = word['id'].toString();
-                _hiraganaShown[wordId] = showHiragana;
-              }
-            });
-          },
-        );
+          // 3) 읽기(히라가나) 토글
+          Expanded(
+            child: _buildNavItem(
+              context: context,
+              icon: Icons.text_fields,
+              label: '읽기',
+              isSelected: showHiragana,
+              onTap: () {
+                setState(() {
+                  showHiragana = !showHiragana;
+                  for (var word in currentWords) {
+                    final wordId = word['id'].toString();
+                    _hiraganaShown[wordId] = showHiragana;
+                  }
+                });
+              },
+            ),
+          ),
 
-      case 3:
-        return _buildButton(
-          context,
-          text: '뜻',
-          isSelected: showMeaning,
-          onPressed: () {
-            setState(() {
-              showMeaning = !showMeaning;
-              for (var word in currentWords) {
-                final wordId = word['id'].toString();
-                _meaningShown[wordId] = showMeaning;
-              }
-            });
-          },
-        );
-
-      default:
-        return const SizedBox.shrink();
-    }
+          // 4) 뜻(번역) 토글
+          Expanded(
+            child: _buildNavItem(
+              context: context,
+              icon: Icons.translate,
+              label: '뜻',
+              isSelected: showMeaning,
+              onTap: () {
+                setState(() {
+                  showMeaning = !showMeaning;
+                  for (var word in currentWords) {
+                    final wordId = word['id'].toString();
+                    _meaningShown[wordId] = showMeaning;
+                  }
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget _buildButton(
-    BuildContext context, {
-    required String text,
+  /// 바텀 네비게이션 바의 각각 아이템을 만드는 헬퍼
+  Widget _buildNavItem({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
     required bool isSelected,
-    required VoidCallback onPressed,
-    bool alwaysActive = false,
+    required VoidCallback onTap,
   }) {
-    final color =
-        (alwaysActive || isSelected)
-            ? Theme.of(context).primaryColor
-            : Colors.grey;
+    final primary = Theme.of(context).primaryColor;
+    final color = isSelected ? primary : Colors.grey;
 
-    return OutlinedButton(
-      onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(ThemeProvider.globalCornerRadius),
-        ),
-        side: BorderSide(color: color),
-        backgroundColor:
-            (alwaysActive || isSelected) ? color.withOpacity(0.1) : null,
-        padding: ThemeProvider.memoryButtonPadding,
-      ),
-      child: Text(
-        text,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        softWrap: false,
-        textAlign: TextAlign.center,
-        style: ThemeProvider.wordListBottomStyle(
-          context,
-        ).copyWith(color: color),
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: ThemeProvider.bottomIcon(context)),
+          ThemeProvider.gap4,
+          Text(
+            label,
+            style: ThemeProvider.wodListBottomStyle(
+              context,
+            ).copyWith(color: color),
+          ),
+        ],
       ),
     );
   }
