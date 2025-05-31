@@ -186,7 +186,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                       listen: false,
                     ).showMemoryParams) {
                       // showMemoryParams가 false면 빈 공간만 확보
-                      return SizedBox(height: 20);
+                      return const SizedBox(height: 20);
                     }
                     final interval = mem?.interval.toString() ?? '0';
                     final rep = mem?.repetition.toString() ?? '0';
@@ -286,18 +286,17 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
                       const SizedBox(height: 12),
 
-                      // 뜻
+                      // ──────────────────────────────────
+                      // 뜻 영역: showCanvas==true면 항상 보이고, 그렇지 않으면 _showAnswer 기준으로 보임
                       Visibility(
-                        visible: _showAnswer || !showCanvas,
+                        visible: showCanvas || _showAnswer,
                         maintainSize: true,
                         maintainAnimation: true,
                         maintainState: true,
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            showCanvas
-                                ? (word['뜻'] ?? '')
-                                : (_showAnswer ? (word['뜻'] ?? '') : ' '),
+                            word['뜻'] ?? '',
                             style: ThemeProvider.wordReadMean(context),
                             textAlign: TextAlign.center,
                           ),
@@ -306,6 +305,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
                       const SizedBox(height: 8),
 
+                      // ──────────────────────────────────
                       // 예문 영역
                       Visibility(
                         visible: showExamples,
@@ -334,13 +334,11 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
                             // 예문 본문
                             Visibility(
-                              visible: true,
+                              visible: !showCanvas || _showAnswer,
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
-                                  showCanvas
-                                      ? (word['예문'] ?? '')
-                                      : word['예문'] ?? '',
+                                  word['예문'] ?? '',
                                   style: ThemeProvider.exampleText(context),
                                   textAlign: TextAlign.center,
                                 ),
