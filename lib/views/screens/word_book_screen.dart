@@ -10,18 +10,18 @@ import 'package:japanese/models/word_book.dart';
 import 'package:japanese/views/screens/word_list_screen.dart';
 import 'package:japanese/views/screens/settings_screen.dart';
 
-import 'package:japanese/widgets/recent_word_book_card.dart';
-import 'package:japanese/widgets/basic_word_book_card.dart';
-import 'package:japanese/widgets/custom_word_book_card.dart';
+import 'package:japanese/widgets/word_book_recent_card.dart';
+import 'package:japanese/widgets/word_book_basic_card.dart';
+import 'package:japanese/widgets/word_book_custom_card.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class WordBookScreen extends StatefulWidget {
+  const WordBookScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<WordBookScreen> createState() => _WordBookScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _WordBookScreenState extends State<WordBookScreen> {
   bool isDarkMode(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark;
 

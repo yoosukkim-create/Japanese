@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:japanese/providers/study_provider.dart';
 import 'package:japanese/providers/theme_provider.dart';
 import 'package:japanese/widgets/resolution_guard.dart';
+import 'package:japanese/widgets/word_list_card.dart';
+import 'package:japanese/widgets/word_list_flash_card.dart';
 
 import 'package:japanese/views/screens/settings_screen.dart';
 
@@ -190,7 +192,7 @@ class _WordListScreenState extends State<WordListScreen> {
       case 0:
         return _buildButton(
           context,
-          text: studyProvider.isFlashcardMode ? '목록모드' : '단어장모드',
+          text: studyProvider.isFlashcardMode ? '목록' : '카드',
           isSelected: studyProvider.isFlashcardMode,
           onPressed: studyProvider.toggleFlashcardMode,
           alwaysActive: true,
@@ -199,7 +201,7 @@ class _WordListScreenState extends State<WordListScreen> {
       case 1:
         return _buildButton(
           context,
-          text: 'シャッフル',
+          text: '셔플',
           isSelected: studyProvider.isShuffleMode,
           onPressed: () {
             studyProvider.toggleShuffleMode();
@@ -210,7 +212,7 @@ class _WordListScreenState extends State<WordListScreen> {
       case 2:
         return _buildButton(
           context,
-          text: '히라가나',
+          text: '읽기',
           isSelected: showHiragana,
           onPressed: () {
             setState(() {
@@ -277,318 +279,6 @@ class _WordListScreenState extends State<WordListScreen> {
           context,
         ).copyWith(color: color),
       ),
-    );
-  }
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-//                              WordListItem (카드 한 줄)
-// ──────────────────────────────────────────────────────────────────────────────
-class WordListItem extends StatelessWidget {
-  final Map<String, dynamic> word;
-  final bool showHiragana;
-  final bool showMeaning;
-  final bool showExamples;
-  final bool isFlashcardMode;
-
-  const WordListItem({
-    super.key,
-    required this.word,
-    required this.showHiragana,
-    required this.showMeaning,
-    required this.showExamples,
-    this.isFlashcardMode = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // 카드 배경 색을 다크/라이트 모드에 맞춤
-    final bgColor =
-        ThemeProvider.isDark(context)
-            ? ThemeProvider.cardBlack
-            : ThemeProvider.cardWhite;
-
-    // 실제 카드 내부 콘텐츠 부분 (Padding 포함)
-    final cardContent = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // ─── 상단: 단어/히라가나/뜻 영역 ────────────────────
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // ───── 히라가나 ────────────────────────────
-              Visibility(
-                visible: showHiragana,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 4.0),
-                  child: Text(
-                    word['읽기'] ?? '',
-                    style: ThemeProvider.wordReadMean(context),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ),
-
-              // ───── 단어 (한자) ──────────────────────────
-              Text(
-                word['단어'] ?? '',
-                style:
-                    isFlashcardMode
-                        ? ThemeProvider.wordText(context)
-                        : ThemeProvider.wordTextSmall(context),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-
-              // ───── 뜻 ─────────────────────────────────
-              Visibility(
-                visible: showMeaning,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Text(
-                    word['뜻'] ?? '',
-                    style: ThemeProvider.wordReadMean(context),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          // ─── 예문 영역: 리스트 모드에서는 '예문 숨김 시 공간 제거',
-          //               '예문 보임 시에는 자식(예문읽기/예문본문/예문뜻) 크기 고정'
-          const SizedBox(height: 12.0),
-          Visibility(
-            visible: showExamples,
-            // 리스트 모드일 때는 (isFlashcardMode == false)이므로
-            // showExamples==false면 container가 사라져서 공간 없음 → showExamples==true면 보임.
-            // 플래시카드 모드에서는 `maintainSize`로 고정(기존 기능 유지)
-            maintainSize: isFlashcardMode,
-            maintainAnimation: isFlashcardMode,
-            maintainState: isFlashcardMode,
-            child: Container(
-              decoration: BoxDecoration(
-                color: bgColor,
-                borderRadius: BorderRadius.circular(
-                  ThemeProvider.globalCornerRadius * 0.8,
-                ),
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12.0,
-                vertical: 8.0,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // ─── 예문 읽기(히라가나) ─────────────────
-                  Visibility(
-                    visible: showHiragana,
-                    // ★ 예문이 보이는 상태(showExamples==true)라면 항상 공간을 유지
-                    // → 리스트 모드에서도 예문 보임 상태에서는 공간 유지를 위해 showExamples 사용
-                    maintainSize: showExamples,
-                    maintainAnimation: showExamples,
-                    maintainState: showExamples,
-                    child: Text(
-                      word['예문읽기'] ?? '',
-                      style: ThemeProvider.exampleReadMean(context),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-
-                  // ─── 예문 본문 (항상 visible) ─────────────────────────────
-                  Text(
-                    word['예문'] ?? '',
-                    style: ThemeProvider.exampleText(context),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-
-                  // ─── 예문 뜻 ───────────────────────────────
-                  Visibility(
-                    visible: showMeaning,
-                    // ★ 예문이 보이는 상태(showExamples==true)라면 항상 공간을 유지
-                    maintainSize: showExamples,
-                    maintainAnimation: showExamples,
-                    maintainState: showExamples,
-                    child: Text(
-                      word['예문뜻'] ?? '',
-                      style: ThemeProvider.exampleReadMean(context),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    // ──────────────────────────────────────────────────────────────────────────────
-    // ★ 플래시카드 모드일 때: 카드가 화면 전체(패딩 제외)만큼 꽉 차도록 SizedBox.expand 사용
-    if (isFlashcardMode) {
-      return SizedBox.expand(
-        child: Card(
-          color: bgColor,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              ThemeProvider.globalCornerRadius,
-            ),
-          ),
-          child: cardContent,
-        ),
-      );
-    }
-
-    // ──────────────────────────────────────────────────────────────────────────────
-    // ★ 리스트 모드일 때: 예문숨김 시(container Visibility false → 공간 사라짐),
-    //   예문보임 시(container Visibility true)에는 '예문읽기'와 '예문뜻' 모두
-    //   ***항상 공간 유지*** → showExamples==true 이므로 유지
-    return Card(
-      color: bgColor,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(ThemeProvider.globalCornerRadius),
-      ),
-      child: cardContent,
-    );
-  }
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-//                             FlashcardView (플래시카드 모드)
-// ──────────────────────────────────────────────────────────────────────────────
-class FlashcardView extends StatefulWidget {
-  final List<Map<String, dynamic>> words;
-  final bool showHiragana;
-  final bool showMeaning;
-  final bool showExamples;
-
-  const FlashcardView({
-    super.key,
-    required this.words,
-    required this.showHiragana,
-    required this.showMeaning,
-    required this.showExamples,
-  });
-
-  @override
-  State<FlashcardView> createState() => _FlashcardViewState();
-}
-
-class _FlashcardViewState extends State<FlashcardView> {
-  final Map<String, bool> _hiraganaShown = {};
-  final Map<String, bool> _meaningShown = {};
-  late PageController _pageController;
-  int _currentIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-
-    // 처음 생성 시, 전달받은 플래시카드 모드 초기값 반영
-    for (var word in widget.words) {
-      final wordId = word['id'].toString();
-      _hiraganaShown[wordId] = widget.showHiragana;
-      _meaningShown[wordId] = widget.showMeaning;
-    }
-  }
-
-  @override
-  void didUpdateWidget(covariant FlashcardView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // 상단 히라가나 토글이 바뀌면 전부 반영
-    if (oldWidget.showHiragana != widget.showHiragana) {
-      setState(() {
-        for (var word in widget.words) {
-          final wordId = word['id'].toString();
-          _hiraganaShown[wordId] = widget.showHiragana;
-        }
-      });
-    }
-    // 상단 뜻 토글이 바뀌면 전부 반영
-    if (oldWidget.showMeaning != widget.showMeaning) {
-      setState(() {
-        for (var word in widget.words) {
-          final wordId = word['id'].toString();
-          _meaningShown[wordId] = widget.showMeaning;
-        }
-      });
-    }
-  }
-
-  void _toggleCardState(String wordId) {
-    // 카드 한 장에 한해서만 히라가나/뜻 토글
-    final currentHira = _hiraganaShown[wordId] ?? false;
-    final currentMean = _meaningShown[wordId] ?? false;
-    final shouldTurnOff = currentHira && currentMean;
-
-    setState(() {
-      _hiraganaShown[wordId] = !shouldTurnOff;
-      _meaningShown[wordId] = !shouldTurnOff;
-    });
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return PageView.builder(
-      controller: _pageController,
-      itemCount: widget.words.length,
-      onPageChanged: (index) {
-        setState(() {
-          _currentIndex = index;
-        });
-        // 페이지가 바뀔 때마다 상태 저장
-        context.read<StudyProvider>().updateWordState(
-          widget.words[index]['id'].toString(),
-        );
-      },
-      itemBuilder: (context, index) {
-        final word = widget.words[index];
-        final wordId = word['id'].toString();
-
-        return GestureDetector(
-          onTap: () => _toggleCardState(wordId),
-          child: Padding(
-            // 화면 가장자리에는 동일한 패딩을 주고, 그 안에서 카드가 꽉 차도록
-            padding: const EdgeInsets.all(16.0),
-            child: WordListItem(
-              word: word,
-              showHiragana: _hiraganaShown[wordId] ?? false,
-              showMeaning: _meaningShown[wordId] ?? false,
-              showExamples: widget.showExamples,
-              isFlashcardMode: true,
-            ),
-          ),
-        );
-      },
     );
   }
 }

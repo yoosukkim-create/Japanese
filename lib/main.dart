@@ -5,7 +5,7 @@ import 'package:japanese/providers/theme_provider.dart';
 import 'package:japanese/providers/study_provider.dart';
 import 'package:japanese/viewmodels/home_viewmodel.dart';
 import 'package:japanese/widgets/resolution_guard.dart';
-import 'package:japanese/views/screens/home_screen.dart';
+import 'package:japanese/views/screens/word_book_screen.dart';
 
 void main() {
   runApp(
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
             title: '메모리',
             theme: themeProvider.themeData,
             debugShowCheckedModeBanner: false,
-            home: const ResolutionGuard(child: HomeScreen()),
+            home: const ResolutionGuard(child: WordBookScreen()),
           ),
     );
   }
