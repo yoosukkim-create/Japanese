@@ -51,7 +51,6 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
 
     // 단어용 컨트롤러 색상이 달라졌으면
     if (_sigControllerWord.penColor != newColor) {
-      // 기존에 그린 포인트들 보관
       final oldPoints = List.of(_sigControllerWord.points);
       _sigControllerWord.dispose();
       _sigControllerWord = SignatureController(
@@ -144,233 +143,226 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     });
   }
 
-  // ✅ 오버플로우 없이 레이아웃을 자동으로 줄이도록 수정한 buildMemoryCard 버전
+  /// ========================
+  /// ✅ 수정된 _buildMemoryCard:
+  ///   - card를 가득 채우되 Visibility(maintainSize: true)로 toggle 시 공간 유지
+  ///   - 상단 정보 / 중앙 콘텐츠 / 하단 평가 버튼을 `Column(mainAxisAlignment: spaceBetween)`으로 분리
+  /// ========================
   Widget _buildMemoryCard(
     Map<String, dynamic> word,
     bool showExamples,
     bool showCanvas,
   ) {
     final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor =
+        isDark ? ThemeProvider.cardBlack : ThemeProvider.cardWhite;
 
-    return Card(
-      color:
-          Theme.of(context).brightness == Brightness.dark
-              ? ThemeProvider.cardBlack
-              : ThemeProvider.cardWhite,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(ThemeProvider.globalCornerRadius),
-      ),
-      child: InkWell(
-        onTap: () => setState(() => _showAnswer = !_showAnswer),
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // 상단 정보
-              Align(
-                alignment: Alignment.topCenter,
-                child: Consumer<StudyProvider>(
+    return SizedBox.expand(
+      child: Card(
+        color: cardColor,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(ThemeProvider.globalCornerRadius),
+        ),
+        child: InkWell(
+          onTap: () => setState(() => _showAnswer = !_showAnswer),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              // 상단 정보 / 중앙 콘텐츠 / 하단 평가 버튼을 세로로 분리
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // ──────────────────────────────────
+                // 1) 상단 정보(학습 상태) 영역
+                Consumer<StudyProvider>(
                   builder: (ctx, prov, _) {
                     final mem = prov.getMemoryState(word['id']);
                     if (!Provider.of<ThemeProvider>(
                       ctx,
                       listen: false,
                     ).showMemoryParams) {
-                      return const SizedBox.shrink();
+                      // showMemoryParams가 false면 빈 공간만 확보
+                      return SizedBox(height: 20);
                     }
-                    //final ef = mem?.ef.toStringAsFixed(1) ?? '2.5';
                     final interval = mem?.interval.toString() ?? '0';
                     final rep = mem?.repetition.toString() ?? '0';
                     final last =
                         (mem != null && mem.lastReviewedAt != null)
                             ? _formatDate(mem.lastReviewedAt!)
                             : '미학습';
-                    return Text(
-                      '복습간격: $interval일 - 연속정답: $rep회 - 최근학습: $last',
-                      style: ThemeProvider.metaDataStyle(context),
-                      textAlign: TextAlign.center,
+                    return FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        '복습간격: $interval일  •  연속정답: $rep회  •  최근학습: $last',
+                        style: ThemeProvider.metaDataStyle(ctx),
+                        textAlign: TextAlign.center,
+                      ),
                     );
                   },
                 ),
-              ),
 
-              // 중앙 컨텐츠
-              Flexible(
-                flex: 6,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // 히라가나
-                    Text(
-                      _showAnswer ? (word['읽기'] ?? '') : ' ',
-                      style: ThemeProvider.wordReadMean(context),
-                      textAlign: TextAlign.center,
-                    ),
-                    ThemeProvider.gap8,
-
-                    // ✅ 캔버스 모드일 때
-                    if (showCanvas) ...[
-                      SizedBox(
-                        height: 120,
-                        width: double.infinity,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: backgroundColor,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                onTapDown: (_) {}, // 탭만 소비
-                                child: Signature(
-                                  controller: _sigControllerWord,
-                                  backgroundColor: Colors.transparent,
-                                ),
-                              ),
-                              Text(
-                                _showAnswer ? (word['단어'] ?? '') : ' ',
-                                style: ThemeProvider.wordText(context),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                // ──────────────────────────────────
+                // 2) 중앙 콘텐츠 영역 (단어/읽기/뜻/예문/캔버스)
+                Expanded(
+                  flex: 6,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // 히라가나 (toggle)
+                      Visibility(
+                        visible: _showAnswer,
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            word['읽기'] ?? '',
+                            style: ThemeProvider.wordReadMean(context),
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),
-                      ThemeProvider.gap8,
-                    ] else ...[
-                      // 일반 모드일 때
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          word['단어'] ?? '',
-                          style: ThemeProvider.wordText(context),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
 
-                    // 뜻
-                    Text(
-                      !showCanvas
-                          ? (_showAnswer ? (word['뜻'] ?? '') : ' ')
-                          : (word['뜻'] ?? ''),
-                      style: ThemeProvider.wordReadMean(context),
-                      textAlign: TextAlign.center,
-                    ),
+                      const SizedBox(height: 8),
 
-                    ThemeProvider.gap8,
-                    ThemeProvider.gap8,
-
-                    // 예문 영역
-                    if (showExamples) ...[
-                      Text(
-                        _showAnswer ? (word['예문읽기'] ?? '') : ' ',
-                        style: ThemeProvider.wordReadMean(context),
-                        textAlign: TextAlign.center,
-                      ),
-
+                      // 단어 본문 혹은 캔버스
                       if (showCanvas) ...[
-                        Text(
-                          _showAnswer ? (word['예문'] ?? '') : ' ',
-                          style: ThemeProvider.exampleText(context),
-                          textAlign: TextAlign.center,
+                        // 캔버스 모드: Signature 위에 단어 텍스트로 표시
+                        SizedBox(
+                          height: 120,
+                          width: double.infinity,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: backgroundColor,
+                              borderRadius: BorderRadius.circular(
+                                ThemeProvider.globalCornerRadius,
+                              ),
+                            ),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTapDown: (_) {}, // 탭만 소비
+                                  child: Signature(
+                                    controller: _sigControllerWord,
+                                    backgroundColor: Colors.transparent,
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: _showAnswer,
+                                  maintainSize: true,
+                                  maintainAnimation: true,
+                                  maintainState: true,
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      word['단어'] ?? '',
+                                      style: ThemeProvider.wordText(context),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ] else ...[
-                        Text(
-                          word['예문'] ?? '',
-                          style: ThemeProvider.exampleText(context),
-                          textAlign: TextAlign.center,
+                        // 일반 모드: 텍스트만
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            word['단어'] ?? '',
+                            style: ThemeProvider.wordText(context),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
-                      Text(
-                        _showAnswer ? (word['예문뜻'] ?? '') : ' ',
-                        style: ThemeProvider.exampleReadMean(context),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
 
-              // 하단 평가 영역
-              Flexible(
-                flex: 3,
-                child: AnimatedOpacity(
-                  duration: Duration(milliseconds: _showAnswer ? 300 : 0),
-                  opacity: _showAnswer ? 1.0 : 0.0,
-                  child: Column(
-                    children: [
-                      const Text(
-                        '이 단어를 얼마나 잘 기억하시나요?',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey,
+                      const SizedBox(height: 12),
+
+                      // 뜻
+                      Visibility(
+                        visible: _showAnswer || !showCanvas,
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            showCanvas
+                                ? (word['뜻'] ?? '')
+                                : (_showAnswer ? (word['뜻'] ?? '') : ' '),
+                            style: ThemeProvider.wordReadMean(context),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
-                      ThemeProvider.gap8,
 
-                      // ✅ FittedBox 적용: 버튼 3개를 줄바꿈 없이 축소해서 보여줌
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                      const SizedBox(height: 8),
+
+                      // 예문 영역
+                      Visibility(
+                        visible: showExamples,
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        child: Column(
                           children: [
-                            _buildMemoryButton(
-                              context: context,
-                              text: '모름',
-                              color: Colors.redAccent,
-                              onPressed:
-                                  _showAnswer
-                                      ? () {
-                                        Provider.of<StudyProvider>(
-                                          context,
-                                          listen: false,
-                                        ).updateMemoryState(word['id'], 1);
-                                        _moveToNextWord();
-                                      }
-                                      : null,
+                            // 예문 읽기 (히라가나)
+                            Visibility(
+                              visible: _showAnswer,
+                              maintainSize: true,
+                              maintainAnimation: true,
+                              maintainState: true,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  word['예문읽기'] ?? '',
+                                  style: ThemeProvider.wordReadMean(context),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
                             ),
-                            ThemeProvider.gap8,
-                            _buildMemoryButton(
-                              context: context,
-                              text: '애매함',
-                              color: Colors.orangeAccent,
-                              onPressed:
-                                  _showAnswer
-                                      ? () {
-                                        Provider.of<StudyProvider>(
-                                          context,
-                                          listen: false,
-                                        ).updateMemoryState(word['id'], 3);
-                                        _moveToNextWord();
-                                      }
-                                      : null,
+
+                            const SizedBox(height: 4),
+
+                            // 예문 본문
+                            Visibility(
+                              visible: true,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  showCanvas
+                                      ? (word['예문'] ?? '')
+                                      : word['예문'] ?? '',
+                                  style: ThemeProvider.exampleText(context),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
                             ),
-                            ThemeProvider.gap8,
-                            _buildMemoryButton(
-                              context: context,
-                              text: '잘 암',
-                              color: Colors.green,
-                              onPressed:
-                                  _showAnswer
-                                      ? () {
-                                        Provider.of<StudyProvider>(
-                                          context,
-                                          listen: false,
-                                        ).updateMemoryState(word['id'], 5);
-                                        _moveToNextWord();
-                                      }
-                                      : null,
+
+                            const SizedBox(height: 4),
+
+                            // 예문 뜻
+                            Visibility(
+                              visible: _showAnswer,
+                              maintainSize: true,
+                              maintainAnimation: true,
+                              maintainState: true,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  word['예문뜻'] ?? '',
+                                  style: ThemeProvider.exampleReadMean(context),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -378,8 +370,95 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                     ],
                   ),
                 ),
-              ),
-            ],
+
+                // ──────────────────────────────────
+                // 3) 하단 평가 버튼 영역
+                //    (_showAnswer == true)일 때만 보이되, 유지 공간 확보
+                Expanded(
+                  flex: 3,
+                  child: Visibility(
+                    visible: _showAnswer,
+                    maintainSize: true,
+                    maintainAnimation: true,
+                    maintainState: true,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          '이 단어를 얼마나 잘 기억하시나요?',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        // 버튼 3개: FittedBox로 가로 공간 부족 시 축소
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _buildMemoryButton(
+                                context: context,
+                                text: '모름',
+                                color: Colors.redAccent,
+                                onPressed:
+                                    _showAnswer
+                                        ? () {
+                                          Provider.of<StudyProvider>(
+                                            context,
+                                            listen: false,
+                                          ).updateMemoryState(word['id'], 1);
+                                          _moveToNextWord();
+                                        }
+                                        : null,
+                              ),
+                              const SizedBox(width: 8),
+                              _buildMemoryButton(
+                                context: context,
+                                text: '애매함',
+                                color: Colors.orangeAccent,
+                                onPressed:
+                                    _showAnswer
+                                        ? () {
+                                          Provider.of<StudyProvider>(
+                                            context,
+                                            listen: false,
+                                          ).updateMemoryState(word['id'], 3);
+                                          _moveToNextWord();
+                                        }
+                                        : null,
+                              ),
+                              const SizedBox(width: 8),
+                              _buildMemoryButton(
+                                context: context,
+                                text: '잘 암',
+                                color: Colors.green,
+                                onPressed:
+                                    _showAnswer
+                                        ? () {
+                                          Provider.of<StudyProvider>(
+                                            context,
+                                            listen: false,
+                                          ).updateMemoryState(word['id'], 5);
+                                          _moveToNextWord();
+                                        }
+                                        : null,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -392,9 +471,10 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     required Color color,
     required VoidCallback? onPressed,
   }) {
+    // 버튼 크기는 최대한 반응형으로, 가로폭에 맞게 줄어들도록 Flexible로 감싸도 됩니다.
     return SizedBox(
       width: 100,
-      height: 80,
+      height: 56,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -408,7 +488,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
         child: Text(
           text,
           style: const TextStyle(
-            fontSize: 18,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
@@ -463,7 +543,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                         icon: Icon(
                           study.showCanvas ? Icons.draw : Icons.draw_outlined,
                         ),
-                        tooltip: study.showCanvas ? '캔버스 숨기기' : '캔버 보기',
+                        tooltip: study.showCanvas ? '캔버스 숨기기' : '캔버스 보기',
                         onPressed: study.toggleShowCanvas,
                       ),
                 ),
@@ -492,16 +572,21 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
                 ),
               ],
             ),
-            body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child:
-                  sortedWords.isEmpty
-                      ? const Center(child: Text('학습할 단어가 없습니다.'))
-                      : _buildMemoryCard(
-                        sortedWords[_currentIndex],
-                        showExamples,
-                        showCanvas,
-                      ),
+
+            // Body 부분: Column + Expanded(_buildMemoryCard)로 변경
+            body: Column(
+              children: [
+                Expanded(
+                  child:
+                      sortedWords.isEmpty
+                          ? const Center(child: Text('학습할 단어가 없습니다.'))
+                          : _buildMemoryCard(
+                            sortedWords[_currentIndex],
+                            showExamples,
+                            showCanvas,
+                          ),
+                ),
+              ],
             ),
           );
         },
