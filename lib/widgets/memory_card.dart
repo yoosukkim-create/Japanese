@@ -219,6 +219,9 @@ class MemoryCard extends StatelessWidget {
                             // 예문 본문
                             Visibility(
                               visible: !showCanvas || showAnswer,
+                              maintainSize: true,
+                              maintainAnimation: true,
+                              maintainState: true,
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
