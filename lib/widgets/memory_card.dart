@@ -91,7 +91,7 @@ class MemoryCard extends StatelessWidget {
                 // ──────────────────────────────────
                 // 2) 중앙 콘텐츠 영역 (단어/읽기/뜻/예문/캔버스)
                 Expanded(
-                  flex: 6,
+                  flex: 7,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -111,7 +111,7 @@ class MemoryCard extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 8),
+                      ThemeProvider.gap4,
 
                       // 단어 본문 혹은 캔버스
                       if (showCanvas) ...[
@@ -167,7 +167,7 @@ class MemoryCard extends StatelessWidget {
                         ),
                       ],
 
-                      const SizedBox(height: 12),
+                      ThemeProvider.gap4,
 
                       // ──────────────────────────────────
                       // 뜻 영역: showCanvas==true면 항상 보이고, 그렇지 않으면 showAnswer 기준으로 보임
@@ -186,7 +186,8 @@ class MemoryCard extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 8),
+                      ThemeProvider.gap12,
+                      ThemeProvider.gap12,
 
                       // ──────────────────────────────────
                       // 예문 영역
@@ -213,7 +214,7 @@ class MemoryCard extends StatelessWidget {
                               ),
                             ),
 
-                            const SizedBox(height: 4),
+                            ThemeProvider.gap4,
 
                             // 예문 본문
                             Visibility(
@@ -228,7 +229,7 @@ class MemoryCard extends StatelessWidget {
                               ),
                             ),
 
-                            const SizedBox(height: 4),
+                            ThemeProvider.gap4,
 
                             // 예문 뜻
                             Visibility(
@@ -256,7 +257,7 @@ class MemoryCard extends StatelessWidget {
                 // 3) 하단 평가 버튼 영역
                 //    (showAnswer == true)일 때만 보이되, 공간 유지
                 Expanded(
-                  flex: 3,
+                  flex: 2,
                   child: Visibility(
                     visible: showAnswer,
                     maintainSize: true,
