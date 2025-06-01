@@ -242,4 +242,5 @@ class ThemeProvider extends ChangeNotifier {
   static const EdgeInsets plusIconPadding = EdgeInsets.symmetric(
     vertical: 10.0,
   );
+  static const EdgeInsets memoryPadding = EdgeInsets.all(24.0);
 }

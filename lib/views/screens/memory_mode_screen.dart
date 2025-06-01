@@ -36,7 +36,7 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
     );
     final rawWords = _getAllWordsFromWordbook(widget.wordbook);
     _allWords = rawWords;
-    //_allWords = _shuffleWithoutConsecutiveDuplicates(rawWords);
+    _allWords = _shuffleWithoutConsecutiveDuplicates(rawWords);
   }
 
   @override

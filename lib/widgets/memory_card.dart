@@ -49,7 +49,7 @@ class MemoryCard extends StatelessWidget {
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: ThemeProvider.memoryPadding,
             child: Column(
               // 상단 정보 / 중앙 콘텐츠 / 하단 버튼을 세로로 분리
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
