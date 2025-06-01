@@ -117,7 +117,7 @@ class MemoryCard extends StatelessWidget {
                       if (showCanvas) ...[
                         // 캔버스 모드: Signature 위에 단어 텍스트로 표시
                         SizedBox(
-                          height: 120,
+                          height: ThemeProvider.memoryCanvas(context),
                           width: double.infinity,
                           child: Container(
                             decoration: BoxDecoration(

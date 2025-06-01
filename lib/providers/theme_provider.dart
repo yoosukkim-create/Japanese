@@ -72,6 +72,15 @@ class ThemeProvider extends ChangeNotifier {
     return screenWidth * ratio > max ? max : screenWidth * ratio;
   }
 
+  static double adaptiveHeightSize(
+    BuildContext context,
+    double ratio, [
+    double max = 100,
+  ]) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    return screenHeight * ratio > max ? max : screenHeight * ratio;
+  }
+
   static double mainIconImage(BuildContext context) =>
       adaptiveSize(context, 0.2, 40);
   static double memoryIconImage(BuildContext context) =>
@@ -86,6 +95,8 @@ class ThemeProvider extends ChangeNotifier {
       adaptiveSize(context, 0.1, 80);
   static double memoryButton(BuildContext context) =>
       adaptiveSize(context, 0.3, 100);
+  static double memoryCanvas(BuildContext context) =>
+      adaptiveHeightSize(context, 0.13, 150);
 
   //// TEXT //////////////////////////////////////////////////////
   static TextStyle adaptiveFontSize(
