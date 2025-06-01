@@ -60,25 +60,29 @@ class MemoryCard extends StatelessWidget {
                 Builder(
                   builder: (ctx) {
                     final mem = studyProvider.getMemoryState(word['id']);
-                    if (!Provider.of<ThemeProvider>(
-                      ctx,
-                      listen: false,
-                    ).showMemoryParams) {
-                      // showMemoryParams가 false면 빈 공간만 확보
-                      return const SizedBox(height: 20);
-                    }
+
                     final interval = mem?.interval.toString() ?? '0';
                     final rep = mem?.repetition.toString() ?? '0';
                     final last =
                         (mem != null && mem.lastReviewedAt != null)
                             ? _formatDate(mem.lastReviewedAt!)
                             : '미학습';
-                    return FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        '복습간격: $interval일  •  연속정답: $rep회  •  최근학습: $last',
-                        style: ThemeProvider.metaDataStyle(ctx),
-                        textAlign: TextAlign.center,
+
+                    final text =
+                        '복습간격: $interval일  •  연속정답: $rep회  •  최근학습: $last';
+
+                    return Visibility(
+                      visible: Provider.of<ThemeProvider>(ctx).showMemoryParams,
+                      maintainSize: true,
+                      maintainAnimation: true,
+                      maintainState: true,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          text,
+                          style: ThemeProvider.metaDataStyle(ctx),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     );
                   },
