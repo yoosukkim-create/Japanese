@@ -24,17 +24,11 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
   bool _showAnswer = false;
   int _currentIndex = 0;
   late SignatureController _sigControllerWord;
-  late SignatureController _sigControllerExample;
 
   @override
   void initState() {
     super.initState();
     _sigControllerWord = SignatureController(
-      penStrokeWidth: 3,
-      penColor: Provider.of<ThemeProvider>(context, listen: false).mainColor,
-      exportBackgroundColor: Colors.transparent,
-    );
-    _sigControllerExample = SignatureController(
       penStrokeWidth: 3,
       penColor: Provider.of<ThemeProvider>(context, listen: false).mainColor,
       exportBackgroundColor: Colors.transparent,
@@ -60,24 +54,11 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
         exportBackgroundColor: Colors.transparent,
       );
     }
-
-    // 예문용 컨트롤러 색상이 달라졌으면
-    if (_sigControllerExample.penColor != newColor) {
-      final oldPoints = List.of(_sigControllerExample.points);
-      _sigControllerExample.dispose();
-      _sigControllerExample = SignatureController(
-        points: oldPoints,
-        penStrokeWidth: 3,
-        penColor: newColor,
-        exportBackgroundColor: Colors.transparent,
-      );
-    }
   }
 
   @override
   void dispose() {
     _sigControllerWord.dispose();
-    _sigControllerExample.dispose();
     super.dispose();
   }
 
@@ -133,7 +114,6 @@ class _MemoryModeScreenState extends State<MemoryModeScreen> {
   void _moveToNextWord() {
     setState(() {
       _sigControllerWord.clear();
-      _sigControllerExample.clear();
       _showAnswer = false;
       if (_currentIndex < _allWords.length - 1) {
         _currentIndex++;
