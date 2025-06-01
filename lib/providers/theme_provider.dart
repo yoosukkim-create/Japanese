@@ -75,7 +75,7 @@ class ThemeProvider extends ChangeNotifier {
   static double mainIconImage(BuildContext context) =>
       adaptiveSize(context, 0.2, 40);
   static double memoryIconImage(BuildContext context) =>
-      adaptiveSize(context, 0.3, 120);
+      adaptiveSize(context, 0.26, 120);
   static double cardIconImage(BuildContext context) =>
       adaptiveSize(context, 0.1, 30);
   static double plusIconImage(BuildContext context) =>
@@ -85,7 +85,7 @@ class ThemeProvider extends ChangeNotifier {
   static double bottomIcon(BuildContext context) =>
       adaptiveSize(context, 0.1, 80);
   static double memoryButton(BuildContext context) =>
-      adaptiveSize(context, 0.5, 100);
+      adaptiveSize(context, 0.3, 100);
 
   //// TEXT //////////////////////////////////////////////////////
   static TextStyle adaptiveFontSize(
@@ -177,11 +177,19 @@ class ThemeProvider extends ChangeNotifier {
 
   static TextStyle memoryButtonStyle(BuildContext context) => adaptiveFontSize(
     context,
-    0.02,
-    40,
-    fontWeight: FontWeight.bold,
+    0.023,
+    60,
+    //fontWeight: FontWeight.bold,
     fontFamily: globalFont,
   );
+  static TextStyle memoryQuestionStyle(BuildContext context) =>
+      adaptiveFontSize(
+        context,
+        0.023,
+        60,
+        fontWeight: FontWeight.w500,
+        fontFamily: globalFont,
+      );
 
   // 부가 정보
   static TextStyle metaCountStyle(BuildContext context) => adaptiveFontSize(
@@ -226,10 +234,6 @@ class ThemeProvider extends ChangeNotifier {
   static const EdgeInsets cardMargin = EdgeInsets.symmetric(
     horizontal: 16.0,
     vertical: 8.0,
-  );
-  static const EdgeInsets memoryButtonPadding = EdgeInsets.symmetric(
-    horizontal: 12.0,
-    vertical: 4.0,
   );
   static const EdgeInsets bottomPadding = EdgeInsets.only(bottom: 24.0);
   static const EdgeInsets memoryIconPadding = EdgeInsets.only(bottom: 12.0);

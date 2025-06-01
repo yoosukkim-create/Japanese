@@ -34,6 +34,7 @@ class MemoryCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardColor =
         isDark ? ThemeProvider.cardBlack : ThemeProvider.cardWhite;
+    final mainColor = Theme.of(context).primaryColor;
 
     return SizedBox.expand(
       child: Card(
@@ -260,13 +261,11 @@ class MemoryCard extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
+                        Text(
                           '이 단어를 얼마나 잘 기억하시나요?',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey,
-                          ),
+                          style: ThemeProvider.memoryQuestionStyle(
+                            context,
+                          ).copyWith(color: mainColor),
                           textAlign: TextAlign.center,
                         ),
 
@@ -363,11 +362,15 @@ class MemoryCard extends StatelessWidget {
             ),
           ),
         ),
-        child: Text(
-          text,
-          style: ThemeProvider.memoryButtonStyle(
-            context,
-          ).copyWith(color: ThemeProvider.textColor(context)),
+        child: FittedBox(
+          // ✅ 글자가 너무 크면 자동으로 줄어듦
+          fit: BoxFit.scaleDown,
+          child: Text(
+            text,
+            style: ThemeProvider.memoryButtonStyle(
+              context,
+            ).copyWith(color: ThemeProvider.textColor(context)),
+          ),
         ),
       ),
     );
