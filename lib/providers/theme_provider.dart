@@ -63,7 +63,7 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   //// IMAGE ////////////////////////////////////////////////////
-  static double adaptiveImageSize(
+  static double adaptiveSize(
     BuildContext context,
     double ratio, [
     double max = 100,
@@ -73,17 +73,19 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   static double mainIconImage(BuildContext context) =>
-      adaptiveImageSize(context, 0.2, 40);
+      adaptiveSize(context, 0.2, 40);
   static double memoryIconImage(BuildContext context) =>
-      adaptiveImageSize(context, 0.3, 120);
+      adaptiveSize(context, 0.3, 120);
   static double cardIconImage(BuildContext context) =>
-      adaptiveImageSize(context, 0.1, 30);
+      adaptiveSize(context, 0.1, 30);
   static double plusIconImage(BuildContext context) =>
-      adaptiveImageSize(context, 0.2, 40);
+      adaptiveSize(context, 0.2, 40);
   static double bottomBar(BuildContext context) =>
-      adaptiveImageSize(context, 0.3, 120);
+      adaptiveSize(context, 0.3, 120);
   static double bottomIcon(BuildContext context) =>
-      adaptiveImageSize(context, 0.1, 80);
+      adaptiveSize(context, 0.1, 80);
+  static double memoryButton(BuildContext context) =>
+      adaptiveSize(context, 0.5, 100);
 
   //// TEXT //////////////////////////////////////////////////////
   static TextStyle adaptiveFontSize(
@@ -172,6 +174,14 @@ class ThemeProvider extends ChangeNotifier {
   );
   static TextStyle wodListBottomStyle(BuildContext context) =>
       adaptiveFontSize(context, 0.02, 24, fontFamily: globalFont);
+
+  static TextStyle memoryButtonStyle(BuildContext context) => adaptiveFontSize(
+    context,
+    0.02,
+    40,
+    fontWeight: FontWeight.bold,
+    fontFamily: globalFont,
+  );
 
   // 부가 정보
   static TextStyle metaCountStyle(BuildContext context) => adaptiveFontSize(

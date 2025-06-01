@@ -351,8 +351,8 @@ class MemoryCard extends StatelessWidget {
     required VoidCallback? onPressed,
   }) {
     return SizedBox(
-      width: 100,
-      height: 56,
+      width: ThemeProvider.memoryButton(context),
+      height: ThemeProvider.memoryButton(context) / 1.5,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -365,11 +365,9 @@ class MemoryCard extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+          style: ThemeProvider.memoryButtonStyle(
+            context,
+          ).copyWith(color: ThemeProvider.textColor(context)),
         ),
       ),
     );
