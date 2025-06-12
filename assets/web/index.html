@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🦊 Kuroshiro 자동 후리가나</title>
+  <script src="js/pako.min.js"></script>
+  <script src="js/kuroshiro.min.js"></script>
+  <script src="js/kuroshiro-analyzer-kuromoji.min.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 16px; }
+    #output { background: #f0f0f0; padding: 12px; margin-top: 12px; }
+    ruby { ruby-position: over; font-size: 1.2em; }
+    rt { font-size: 0.6em; color: gray; }
+  </style>
+</head>
+<body>
+  <h1>🦊 자동 후리가나 변환</h1>
+  <div id="output">대기 중…</div>
+
+  <script>
+    (async () => {
+      // Kuroshiro 초기화
+      const KuroClass = window.Kuroshiro?.default || window.Kuroshiro;
+      const AnalyzerClass = window.KuromojiAnalyzer?.default || window.KuromojiAnalyzer;
+      const analyzer = new AnalyzerClass({ dictPath: '/dict/' });
+      const kuro = new KuroClass();
+      await kuro.init(analyzer);
+      // 전역 참조
+      window.kuro = kuro;
+      // Flutter에게 준비 완료 알림
+      window.flutter_inappwebview.callHandler('ready', 'initialized');
+    })();
+
+    // Flutter에서 호출할 함수
+    window.convertText = async (text) => {
+      try {
+        const rubyHtml = await window.kuro.convert(text, { to: 'hiragana', mode: 'furigana' });
+        document.getElementById('output').innerHTML = rubyHtml;
+        window.flutter_inappwebview.callHandler('onResult', JSON.stringify({ success: true, result: rubyHtml }));
+      } catch (e) {
+        window.flutter_inappwebview.callHandler('onResult', JSON.stringify({ success: false, error: e.toString() }));
+      }
+    };
+  </script>
+</body>
+</html>

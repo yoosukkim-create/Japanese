@@ -6,6 +6,7 @@ import 'package:japanese/providers/study_provider.dart';
 import 'package:japanese/viewmodels/home_viewmodel.dart';
 import 'package:japanese/widgets/resolution_guard.dart';
 import 'package:japanese/views/screens/word_book_screen.dart';
+import 'package:japanese/views/screens/web_kuroshiro_screen.dart';
 
 void main() {
   runApp(
@@ -31,7 +32,8 @@ class MyApp extends StatelessWidget {
             title: '메모리',
             theme: themeProvider.themeData,
             debugShowCheckedModeBanner: false,
-            home: const ResolutionGuard(child: WordBookScreen()),
+            //home: const ResolutionGuard(child: WordBookScreen()),
+            home: const ResolutionGuard(child: WebKuroshiroScreen()),
           ),
     );
   }
