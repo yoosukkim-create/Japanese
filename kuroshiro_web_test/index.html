@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🦊 Kuroshiro 웹 테스트 (디버그 모드)</title>
+  <!-- 1) pako (압축 해제용) -->
+  <script src="js/pako.min.js"></script>
+  <!-- 2) Kuroshiro 코어 (UMD) -->
+  <script src="js/kuroshiro.min.js"></script>
+  <!-- 3) Kuromoji Analyzer (UMD) -->
+  <script src="js/kuroshiro-analyzer-kuromoji.min.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 16px; }
+    textarea { width: 100%; box-sizing: border-box; }
+    button { margin-top: 8px; padding: 8px 16px; }
+    pre { background: #f0f0f0; padding: 12px; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <h1>🦊 Kuroshiro 테스트 (디버그)</h1>
+
+  <label for="input">변환할 일본어 입력:</label>
+  <textarea id="input" rows="2">先生はすごい</textarea>
+  <br/>
+  <button id="go" disabled>히라가나로 변환!</button>
+
+  <h2>결과</h2>
+  <pre id="output">여기에 결과가 표시됩니다.</pre>
+
+  <!-- ★★ JS 초기화 & 디버그 로깅 ★★ -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // UMD vs ESM 확인
+      console.log('📦 window.Kuroshiro:', window.Kuroshiro);
+      console.log('typeof window.Kuroshiro:', typeof window.Kuroshiro);
+      console.log('📦 window.Kuroshiro.default:', window.Kuroshiro?.default);
+      console.log('📦 window.KuromojiAnalyzer:', window.KuromojiAnalyzer);
+      console.log('typeof window.KuromojiAnalyzer:', typeof window.KuromojiAnalyzer);
+      console.log('📦 window.KuromojiAnalyzer.default:', window.KuromojiAnalyzer?.default);
+
+      // 진짜 생성자 뽑기 (UMD or ESM 대응)
+      const KuroClass = window.Kuroshiro?.default || window.Kuroshiro;
+      const AnalyzerClass = window.KuromojiAnalyzer?.default || window.KuromojiAnalyzer;
+      console.log('👷‍♂️ Using KuroClass:', KuroClass);
+      console.log('👷‍♂️ Using AnalyzerClass:', AnalyzerClass);
+
+      // dictPath 설정
+      const dictPath = '/dict/';  // public/dict 폴더 위치에 맞게 바꿔주세요
+      console.log('🔍 dictPath =', dictPath);
+
+      // pako 확인
+      console.log('📦 window.pako =', window.pako);
+
+      // 사전 파일 Fetch 테스트
+      const dictFiles = [
+        'base.dat.gz','cc.dat.gz','check.dat.gz',
+        'tid_map.dat.gz','tid_pos.dat.gz','tid.dat.gz',
+        'unk.dat.gz','unk_char.dat.gz','unk_compat.dat.gz',
+        'unk_invoke.dat.gz','unk_map.dat.gz','unk_pos.dat.gz'
+      ];
+      for (const file of dictFiles) {
+        const url = dictPath + file;
+        try {
+          const resp = await fetch(url);
+          console.log(`✅ fetch ${url} → ${resp.status} ${resp.statusText}`);
+        } catch (e) {
+          console.error(`❌ fetch ${url} failed:`, e);
+        }
+      }
+
+      // Analyzer 생성 (init은 Kuroshiro.init 내부에서 처리)
+      let analyzer, kuro;
+      try {
+        console.log('▶ new AnalyzerClass({ dictPath }) ...');
+        analyzer = new AnalyzerClass({ dictPath });
+        console.log('   analyzer instance =', analyzer);
+
+        // Kuroshiro 생성 & 초기화 (이 안에서 analyzer.init() 이 호출됩니다)
+        console.log('▶ new KuroClass() ...');
+        kuro = new KuroClass();
+        console.log('   kuro instance =', kuro);
+
+        console.log('▶ kuro.init(analyzer) ...');
+        await kuro.init(analyzer);
+        console.log('✔ kuro.init() succeeded');
+
+      } catch (err) {
+        console.error('❗ 초기화 중 오류 발생:', err);
+        document.getElementById('output').textContent = '초기화 오류: ' + err.message;
+        return;
+      }
+
+      // 버튼 활성화 & 클릭 핸들러 연결
+      const btn = document.getElementById('go');
+      btn.disabled = false;
+      btn.addEventListener('click', async () => {
+        const text = document.getElementById('input').value.trim();
+        console.log('▶ convert 요청:', text);
+        if (!text) return;
+        try {
+          const result = await kuro.convert(text, { to: 'hiragana', mode: 'spaced' });
+          console.log('✔ convert 결과:', result);
+          document.getElementById('output').textContent = result;
+        } catch (e) {
+          console.error('❌ convert 실패:', e);
+          document.getElementById('output').textContent = '변환 오류: ' + e.message;
+        }
+      });
+
+      console.log('✅ 디버그 모드 초기화 완료. 버튼 클릭 대기 중...');
+    });
+  </script>
+</body>
+</html>
