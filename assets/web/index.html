@@ -3,21 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🦊 Kuroshiro 자동 후리가나</title>
   <script src="js/pako.min.js"></script>
   <script src="js/kuroshiro.min.js"></script>
   <script src="js/kuroshiro-analyzer-kuromoji.min.js"></script>
-  <style>
-    body { font-family: sans-serif; padding: 16px; }
-    #output { background: #f0f0f0; padding: 12px; margin-top: 12px; }
-    ruby { ruby-position: over; font-size: 1.2em; }
-    rt { font-size: 0.6em; color: gray; }
-  </style>
 </head>
 <body>
-  <h1>🦊 자동 후리가나 변환</h1>
-  <div id="output">대기 중…</div>
-
   <script>
     (async () => {
       // Kuroshiro 초기화
@@ -26,18 +16,46 @@
       const analyzer = new AnalyzerClass({ dictPath: '/dict/' });
       const kuro = new KuroClass();
       await kuro.init(analyzer);
-      // 전역 참조
       window.kuro = kuro;
-      // Flutter에게 준비 완료 알림
       window.flutter_inappwebview.callHandler('ready', 'initialized');
     })();
 
-    // Flutter에서 호출할 함수
-    window.convertText = async (text) => {
+    /**
+     * 후리가나 JSON 생성 함수
+     * @param {{ text: string, targetWord?: string, targetReading?: string }} args
+     */
+    window.convertText = async ({ text, targetWord, targetReading }) => {
       try {
-        const rubyHtml = await window.kuro.convert(text, { to: 'hiragana', mode: 'furigana' });
-        document.getElementById('output').innerHTML = rubyHtml;
-        window.flutter_inappwebview.callHandler('onResult', JSON.stringify({ success: true, result: rubyHtml }));
+        const html = await window.kuro.convert(text, { to: 'hiragana', mode: 'furigana' });
+        const parts = html.split(/(<ruby>[\s\S]*?<\/ruby>)/g).filter(p => p);
+        const result = [];
+
+        parts.forEach(part => {
+          if (part.startsWith('<ruby>')) {
+            const reibun = part
+              .replace(/<rp>[()]*<\/rp>/g, '')
+              .replace(/<ruby>|<\/ruby>/g, '')
+              .replace(/<rt>[\s\S]*?<\/rt>/g, '')
+              .trim();
+            const rtMatch = part.match(/<rt>([\s\S]*?)<\/rt>/);
+            const furigana = rtMatch ? rtMatch[1] : '';
+
+            if (!furigana && reibun.length > 1) {
+              Array.from(reibun).forEach(ch => result.push({ furigana: '', reibun: ch }));
+            } else {
+              result.push({ furigana, reibun });
+            }
+          } else {
+            part.split('').forEach(ch => result.push({ furigana: '', reibun: ch }));
+          }
+        });
+
+        if (targetWord && targetReading) {
+          const idx = result.findIndex(r => r.reibun === '_');
+          if (idx !== -1) result[idx] = { furigana: targetReading, reibun: targetWord };
+        }
+
+        window.flutter_inappwebview.callHandler('onResult', JSON.stringify({ success: true, data: result }));
       } catch (e) {
         window.flutter_inappwebview.callHandler('onResult', JSON.stringify({ success: false, error: e.toString() }));
       }
