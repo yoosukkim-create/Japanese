@@ -6,9 +6,13 @@ import 'package:japanese/providers/study_provider.dart';
 import 'package:japanese/viewmodels/home_viewmodel.dart';
 import 'package:japanese/widgets/resolution_guard.dart';
 import 'package:japanese/views/screens/word_book_screen.dart';
-import 'package:japanese/views/screens/web_kuroshiro_screen.dart';
+import 'package:japanese/services/kuroshiro_service.dart'; // KuroshiroService import
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // KuroshiroService 초기화
+  await KuroshiroService.instance.initialize();
+
   runApp(
     MultiProvider(
       providers: [
@@ -32,8 +36,7 @@ class MyApp extends StatelessWidget {
             title: '메모리',
             theme: themeProvider.themeData,
             debugShowCheckedModeBanner: false,
-            //home: const ResolutionGuard(child: WordBookScreen()),
-            home: const ResolutionGuard(child: WebKuroshiroScreen()),
+            home: const ResolutionGuard(child: WordBookScreen()),
           ),
     );
   }
